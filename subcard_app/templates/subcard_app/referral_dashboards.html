@@ -1,0 +1,1574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Referral Dashboard — Earn Together</title>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --blue:      rgb(52,52,255);
+  --blue-pill: rgb(207,207,255);
+  --blue-lt:   rgb(194,194,253);
+  --grad-gold: linear-gradient(to right, rgb(217,119,6), rgb(251,191,36));
+  --grad-grn:  linear-gradient(to right, rgb(22,163,74), rgb(74,222,128));
+  --grad-blu:  linear-gradient(to right, blue, rgb(136,136,250), rgb(168,168,255));
+  --sh:        2px 2px 10px rgb(215,215,255);
+  --sh-md:     5px 5px 40px rgb(206,205,205);
+  --sh-lg:     10px 10px 39px rgb(194,194,253);
+  --text:      rgb(83,82,82);
+  --white:     #ffffff;
+  --bg:        #f7f7ff;
+  --r-sm:      9px;
+  --r-md:      16px;
+  --r-pill:    30px;
+  --font:      'DM Sans', sans-serif;
+  --header-h:  62px;
+}
+
+html { scroll-behavior: smooth; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+a  { text-decoration: none; color: var(--text); }
+li { list-style: none; }
+button { cursor: pointer; font-family: var(--font); }
+table  { border-collapse: collapse; width: 100%; }
+
+/* ══ HEADER ═════════════════════════════════════════ */
+header {
+  height: var(--header-h);
+  display: flex; align-items: center;
+  padding: 0 28px; gap: 16px;
+  background: var(--white);
+  border-bottom: 1px solid rgb(225,225,245);
+  box-shadow: var(--sh);
+  position: sticky; top: 0; z-index: 200;
+}
+.logo { font-family:'Pacifico',cursive; font-size:1.4rem; color:rgb(64,64,240); flex-shrink:0; }
+.logo-badge {
+  display:inline-block; font-family:var(--font); font-size:9px; font-weight:600;
+  background:var(--grad-gold); color:white; padding:2px 7px; border-radius:30px;
+  margin-left:6px; vertical-align:middle; letter-spacing:.04em;
+}
+.hdr-center { flex:1; display:flex; justify-content:center; }
+.hdr-title { font-size: 1.1rem; font-weight: 600; color: var(--text); }
+.hdr-right { display:flex; align-items:center; gap:10px; flex-shrink:0; }
+.notif-btn {
+  position:relative; width:36px; height:36px; border-radius:50%;
+  background:var(--blue-pill); border:none;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:var(--sh); transition:box-shadow .2s;
+}
+.notif-btn:hover { box-shadow:var(--sh-lg); }
+.notif-dot {
+  position:absolute; top:6px; right:6px;
+  width:8px; height:8px; border-radius:50%;
+  background:rgb(74,222,128); border:2px solid white;
+}
+.user-avatar {
+  width:36px; height:36px; border-radius:50%;
+  background:var(--grad-blu); color:white;
+  display:flex; align-items:center; justify-content:center;
+  font-size:13px; font-weight:600; box-shadow:var(--sh-lg);
+}
+.hamburger {
+  display:none; flex-direction:column; gap:5px;
+  background:none; border:none; padding:5px;
+}
+.hamburger span { display:block; width:22px; height:2px; background:var(--blue); border-radius:2px; transition:transform .3s,opacity .3s; }
+.hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity:0; }
+.hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+
+/* ══ MOBILE NAV DRAWER ══════════════════════════════ */
+.mob-nav {
+  display:none; position:fixed;
+  top:var(--header-h); left:0; right:0; bottom:0;
+  background:rgba(255,255,255,.97);
+  flex-direction:column; align-items:center; justify-content:center; gap:20px;
+  z-index:190; transform:translateX(100%);
+  transition:transform .35s cubic-bezier(.22,1,.36,1);
+}
+.mob-nav.open { transform:translateX(0); }
+.mob-nav-item {
+  display:flex; align-items:center; gap:10px;
+  font-size:1.1rem; font-weight:600; color:var(--text);
+  cursor:pointer; transition:color .2s;
+}
+.mob-nav-item:hover, .mob-nav-item.active { color:var(--blue); }
+
+/* ══ LAYOUT ══════════════════════════════════════════ */
+.layout { display:grid; grid-template-columns:230px 1fr; min-height:calc(100vh - var(--header-h)); }
+
+/* ══ SIDEBAR ════════════════════════════════════════ */
+.sidebar {
+  background:var(--white); border-right:1px solid rgb(225,225,245);
+  padding:20px 0; box-shadow:var(--sh);
+  position:sticky; top:var(--header-h);
+  height:calc(100vh - var(--header-h)); overflow-y:auto;
+}
+
+.sb-profile {
+  margin:0 14px 18px; padding:16px;
+  border-radius:var(--r-md); background:var(--grad-blu);
+  box-shadow:var(--sh-lg); color:white;
+  position:relative; overflow:hidden;
+  animation:floatCard 4s ease-in-out infinite;
+}
+.sb-profile::before { content:''; position:absolute; top:-20px; right:-20px; width:80px; height:80px; background:rgba(255,255,255,.12); border-radius:50%; }
+.sb-profile::after  { content:''; position:absolute; bottom:-15px; left:-15px; width:60px; height:60px; background:rgba(255,255,255,.08); border-radius:50%; }
+.sb-profile > * { position:relative; z-index:1; }
+.sb-av { width:42px; height:42px; border-radius:50%; background:rgba(255,255,255,.3); display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:700; margin-bottom:10px; }
+.sb-name   { font-size:0.95rem; font-weight:600; }
+.sb-role   { font-size:10px; opacity:.8; text-transform:uppercase; letter-spacing:.08em; margin-top:2px; }
+.sb-status { display:inline-flex; align-items:center; gap:5px; font-size:10px; opacity:.85; margin-top:6px; }
+.sb-dot    { width:7px; height:7px; border-radius:50%; background:rgb(74,222,128); }
+
+.nav-sec { font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.1em; color:rgb(180,180,200); padding:0 18px; margin:14px 0 4px; }
+.nav-item {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 18px; margin:2px 8px;
+  border-radius:var(--r-sm); font-size:0.88rem;
+  color:var(--text); cursor:pointer; transition:all .2s;
+}
+.nav-item svg { flex-shrink:0; }
+.nav-item:hover { background:var(--blue-pill); color:var(--blue); box-shadow:var(--sh); }
+.nav-item.active { background:var(--grad-blu); color:white; box-shadow:var(--sh-lg); }
+.nav-item.active svg { stroke:white; }
+.nav-badge {
+  margin-left:auto; font-size:9px; font-weight:600; padding:2px 7px;
+  border-radius:30px; background:var(--grad-gold); color:white;
+}
+
+/* ══ MAIN ════════════════════════════════════════════ */
+.main { padding:24px; display:flex; flex-direction:column; gap:20px; min-width:0; }
+
+.panel { display:none; flex-direction:column; gap:20px; }
+.panel.active { display:flex; }
+
+/* ══ STAT CARDS ══════════════════════════════════════ */
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.stat-card {
+  background: var(--white); border-radius: var(--r-md);
+  padding: 20px; box-shadow: var(--sh);
+  display: flex; flex-direction: column; gap: 8px;
+  border-left: 4px solid;
+  transition: all 0.3s ease;
+}
+.stat-card:hover { transform: translateY(-2px); box-shadow: var(--sh-lg); }
+.stat-card.gold { border-left-color: rgb(251,191,36); }
+.stat-card.green { border-left-color: rgb(74,222,128); }
+.stat-card.blue { border-left-color: rgb(52,52,255); }
+.stat-label { font-size: 0.85rem; color: rgb(160,160,180); font-weight: 500; }
+.stat-value { font-size: 1.8rem; font-weight: 700; color: var(--blue); }
+.stat-sublabel { font-size: 0.75rem; color: rgb(180,180,200); }
+
+/* ══ REFERRAL CODE CARD ══════════════════════════════ */
+.refcode-card {
+  background: var(--grad-gold); border-radius: var(--r-md);
+  padding: 24px; box-shadow: var(--sh-lg); color: white;
+  display: flex; flex-direction: column; gap: 12px;
+  position: relative; overflow: hidden;
+}
+.refcode-card::before { content: ''; position: absolute; top: -40px; right: -40px; width: 120px; height: 120px; background: rgba(255,255,255,.1); border-radius: 50%; }
+.refcode-card > * { position: relative; z-index: 1; }
+.refcode-label { font-size: 0.9rem; opacity: 0.95; }
+.refcode-display {
+  background: rgba(255,255,255,.25); border-radius: var(--r-pill);
+  padding: 12px 16px; font-size: 1.3rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.copy-btn {
+  background: rgba(255,255,255,.35); border: none; color: white;
+  padding: 8px 16px; border-radius: var(--r-pill);
+  font-size: 0.85rem; font-weight: 600; cursor: pointer;
+  transition: all 0.2s ease;
+}
+.copy-btn:hover { background: rgba(255,255,255,.5); transform: scale(1.05); }
+.copy-btn:active { transform: scale(0.95); }
+
+/* ══ TABLE STYLES ════════════════════════════════════ */
+.table-wrap { background: var(--white); border-radius: var(--r-md); box-shadow: var(--sh); overflow: hidden; }
+.table-header { padding: 16px 20px; border-bottom: 1px solid rgb(225,225,245); display: flex; align-items: center; justify-content: space-between; }
+.table-title { font-size: 1.05rem; font-weight: 600; }
+.filter-group { display: flex; gap: 8px; }
+.filter-btn {
+  padding: 6px 12px; border: 1px solid rgb(225,225,245);
+  background: var(--white); border-radius: var(--r-sm);
+  font-size: 0.85rem; cursor: pointer; transition: all 0.2s;
+  color: var(--text);
+}
+.filter-btn:hover, .filter-btn.active { background: var(--blue-pill); color: var(--blue); border-color: var(--blue); }
+
+table { width: 100%; font-size: 0.9rem; }
+thead { background: rgb(250,250,255); }
+th { padding: 12px 16px; text-align: left; font-weight: 600; color: rgb(160,160,180); font-size: 0.85rem; }
+td { padding: 12px 16px; border-bottom: 1px solid rgb(240,240,248); }
+tbody tr { transition: background 0.2s; }
+tbody tr:hover { background: rgb(250,250,255); }
+
+/* User in table */
+.td-user {
+  display: flex; align-items: center; gap: 10px;
+}
+.u-av {
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 600; font-size: 0.85rem; color: white; flex-shrink: 0;
+}
+.u-name { font-weight: 600; color: var(--text); }
+.u-email { font-size: 0.8rem; color: rgb(160,160,180); }
+
+.badge {
+  display: inline-block; padding: 4px 10px; border-radius: var(--r-pill);
+  font-size: 0.75rem; font-weight: 600;
+}
+.badge-active { background: rgba(74,222,128,0.2); color: rgb(22,163,74); }
+.badge-pending { background: rgba(251,191,36,0.2); color: rgb(217,119,6); }
+.badge-completed { background: rgba(74,222,128,0.2); color: rgb(22,163,74); }
+.badge-failed { background: rgba(248,113,113,0.2); color: rgb(220,38,38); }
+
+.action-btn {
+  padding: 6px 12px; border: 1px solid rgb(225,225,245);
+  background: var(--white); border-radius: var(--r-sm);
+  font-size: 0.85rem; cursor: pointer; transition: all 0.2s;
+  color: var(--blue); font-weight: 500;
+}
+.action-btn:hover { background: var(--blue-pill); box-shadow: var(--sh); }
+
+/* ══ TOAST ═════════════════════════════════════════ */
+#toast {
+  position: fixed; bottom: 20px; left: 20px; z-index: 9999;
+  background: var(--grad-blu); color: white;
+  padding: 12px 20px; border-radius: var(--r-pill);
+  box-shadow: var(--sh-lg); font-size: 0.9rem; font-weight: 500;
+  opacity: 0; transform: translateY(20px); transition: all 0.3s;
+}
+#toast.show { opacity: 1; transform: translateY(0); }
+
+/* ══ MODAL ════════════════════════════════════════════ */
+.modal {
+  display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.3); z-index: 500;
+  align-items: center; justify-content: center;
+  animation: fadeIn 0.2s;
+}
+.modal.open { display: flex; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.modal-box {
+  background: var(--white); border-radius: var(--r-md);
+  padding: 28px; width: 90%; max-width: 500px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  animation: slideUp 0.3s cubic-bezier(0.22,1,0.36,1);
+}
+@keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+.modal-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 16px; }
+.form-group { margin-bottom: 16px; display: flex; flex-direction: column; gap: 6px; }
+.form-label { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+.form-input {
+  padding: 10px 12px; border: 1px solid rgb(225,225,245);
+  border-radius: var(--r-sm); font-family: var(--font);
+  font-size: 0.9rem; transition: border 0.2s;
+}
+.form-input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(52,52,255,0.1); }
+
+.modal-footer {
+  display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end;
+}
+.btn-primary {
+  background: var(--grad-blu); color: white; border: none;
+  padding: 10px 20px; border-radius: var(--r-sm); cursor: pointer;
+  font-weight: 600; transition: all 0.2s;
+}
+.btn-primary:hover { transform: scale(1.02); box-shadow: var(--sh-lg); }
+.btn-secondary {
+  background: var(--white); color: var(--text); border: 1px solid rgb(225,225,245);
+  padding: 10px 20px; border-radius: var(--r-sm); cursor: pointer;
+  font-weight: 600; transition: all 0.2s;
+}
+.btn-secondary:hover { background: rgb(250,250,255); }
+
+/* ══ RESPONSIVE ══════════════════════════════════════ */
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; position: fixed; top: var(--header-h); left: 0; width: 100%; height: auto; max-height: 60vh; overflow-y: auto; z-index: 150; }
+  .sidebar.open { display: block; }
+  .hamburger { display: flex; }
+  .stat-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+  .refcode-card { grid-column: 1 / -1; }
+}
+
+/* ══ RESPONSIVE ══════════════════════════════════════ */
+@media (max-width: 1200px) {
+  .stat-grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+}
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { 
+    display: none; 
+    position: fixed; 
+    top: var(--header-h); 
+    left: 0; 
+    width: 100%; 
+    height: auto; 
+    max-height: 60vh; 
+    overflow-y: auto; 
+    z-index: 150; 
+    border-right: none;
+    border-bottom: 1px solid rgb(225,225,245);
+  }
+  .sidebar.open { display: flex; flex-direction: column; }
+  .hamburger { display: flex; }
+  .main { padding: 16px; }
+  .stat-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+  .refcode-card { grid-column: 1 / -1; }
+  
+  .table-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  
+  .filter-group {
+    width: 100%;
+    overflow-x: auto;
+  }
+  
+  table {
+    font-size: 0.85rem;
+  }
+  
+  th, td {
+    padding: 10px 12px;
+  }
+  
+  .modal-box {
+    width: 95%;
+    padding: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --header-h: 56px;
+  }
+  
+  header {
+    padding: 0 16px;
+    gap: 8px;
+  }
+  
+  .logo {
+    font-size: 1.1rem;
+  }
+  
+  .hdr-center {
+    display: none;
+  }
+  
+  .main {
+    padding: 12px;
+    gap: 16px;
+  }
+  
+  .stat-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .stat-card {
+    padding: 16px;
+  }
+  
+  .stat-value {
+    font-size: 1.5rem;
+  }
+  
+  .stat-label {
+    font-size: 0.8rem;
+  }
+  
+  .refcode-card {
+    padding: 16px;
+  }
+  
+  .refcode-display {
+    font-size: 1.1rem;
+    padding: 10px 12px;
+  }
+  
+  .copy-btn {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+  
+  h2 {
+    font-size: 1.1rem;
+  }
+  
+  .btn-primary, .btn-secondary {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+  
+  .table-wrap {
+    border-radius: var(--r-sm);
+    overflow: hidden;
+  }
+  
+  table {
+    font-size: 0.8rem;
+  }
+  
+  th, td {
+    padding: 8px 10px;
+  }
+  
+  .td-user {
+    flex-direction: column;
+  }
+  
+  .u-av {
+    width: 32px;
+    height: 32px;
+    font-size: 0.75rem;
+  }
+  
+  .u-name {
+    font-size: 0.85rem;
+  }
+  
+  .u-email {
+    font-size: 0.75rem;
+  }
+  
+  .action-btn {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+  }
+  
+  .badge {
+    padding: 3px 8px;
+    font-size: 0.7rem;
+  }
+  
+  .modal-box {
+    width: 90%;
+    padding: 16px;
+  }
+  
+  .modal-title {
+    font-size: 1.1rem;
+  }
+  
+  .form-input, .form-label {
+    font-size: 0.9rem;
+  }
+  
+  .form-group {
+    margin-bottom: 12px;
+  }
+  
+  .modal-footer {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .modal-footer button {
+    width: 100%;
+  }
+  
+  div[style*="display:flex"][style*="gap:12px"] button {
+    width: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --r-md: 12px;
+    --r-sm: 6px;
+  }
+  
+  header {
+    padding: 0 12px;
+    height: 50px;
+  }
+  
+  .logo {
+    font-size: 1rem;
+  }
+  
+  .logo-badge {
+    font-size: 8px;
+    padding: 2px 5px;
+    margin-left: 4px;
+  }
+  
+  .notif-btn, .user-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 0.85rem;
+  }
+  
+  .main {
+    padding: 8px;
+    gap: 12px;
+  }
+  
+  .stat-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  .stat-card {
+    padding: 12px;
+  }
+  
+  .stat-value {
+    font-size: 1.3rem;
+  }
+  
+  .stat-label {
+    font-size: 0.75rem;
+  }
+  
+  .refcode-card {
+    padding: 12px;
+  }
+  
+  .refcode-display {
+    font-size: 0.95rem;
+    padding: 8px 10px;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .copy-btn {
+    width: 100%;
+    padding: 8px;
+  }
+  
+  h2 {
+    font-size: 1rem;
+  }
+  
+  .hdr-title {
+    font-size: 0.95rem;
+  }
+  
+  .btn-primary, .btn-secondary {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+  
+  .table-header {
+    padding: 12px;
+    font-size: 0.9rem;
+  }
+  
+  table {
+    font-size: 0.75rem;
+  }
+  
+  th, td {
+    padding: 6px 8px;
+  }
+  
+  .u-av {
+    width: 28px;
+    height: 28px;
+    font-size: 0.7rem;
+  }
+  
+  .u-name {
+    font-size: 0.8rem;
+  }
+  
+  .u-email {
+    font-size: 0.7rem;
+    display: none;
+  }
+  
+  .action-btn {
+    padding: 4px 6px;
+    font-size: 0.75rem;
+  }
+  
+  .badge {
+    padding: 2px 6px;
+    font-size: 0.65rem;
+  }
+  
+  .nav-badge {
+    font-size: 8px;
+    padding: 2px 5px;
+  }
+  
+  .modal-box {
+    width: 92%;
+    padding: 12px;
+    margin: auto;
+  }
+  
+  .modal-title {
+    font-size: 1rem;
+  }
+  
+  .form-label {
+    font-size: 0.85rem;
+  }
+  
+  .form-input {
+    padding: 8px 10px;
+    font-size: 0.85rem;
+  }
+  
+  .form-group {
+    margin-bottom: 10px;
+  }
+  
+  .sb-profile {
+    margin: 0 10px 14px;
+    padding: 12px;
+  }
+  
+  .sb-av {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
+  
+  .sb-name {
+    font-size: 0.9rem;
+  }
+  
+  .sb-role {
+    font-size: 9px;
+  }
+  
+  .nav-item {
+    padding: 8px 14px;
+    margin: 2px 4px;
+    font-size: 0.8rem;
+  }
+  
+  .nav-sec {
+    font-size: 9px;
+    padding: 0 14px;
+  }
+  
+  div[style*="display:flex"][style*="gap:12px"] {
+    flex-direction: column;
+    gap: 8px !important;
+  }
+  
+  div[style*="display:flex"][style*="gap:12px"] button {
+    width: 100%;
+  }
+  
+  div[style*="justify-content:space-between"] {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  div[style*="background:rgb(250,250,255)"][style*="border-radius"] {
+    padding: 10px;
+  }
+  
+  #toast {
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    font-size: 0.85rem;
+    padding: 10px 16px;
+  }
+}
+
+@media (max-width: 360px) {
+  .logo {
+    font-size: 0.9rem;
+  }
+  
+  .stat-value {
+    font-size: 1.2rem;
+  }
+  
+  .refcode-display {
+    font-size: 0.9rem;
+  }
+  
+  table {
+    font-size: 0.7rem;
+  }
+  
+  th, td {
+    padding: 4px 6px;
+  }
+}
+
+@keyframes floatCard { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+    }
+    
+    /* PIN Code Input Grid */
+    .pin-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 25px 0;
+    }
+
+    .pin-digit {
+      width: 100%;
+      height: 60px;
+      border-radius: var(--r-md);
+      border: 2px solid rgb(225,225,245);
+      background: var(--bg);
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--text);
+      outline: none;
+      transition: all .2s;
+    }
+
+    .pin-digit:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 4px rgba(52, 52, 255, .15);
+    }
+
+    .pin-modal-card {
+      max-width: 400px !important;
+      padding: 30px 24px !important;
+      text-align: center;
+    }
+
+    .pin-icon {
+      width: 64px;
+      height: 64px;
+      background: var(--blue-pill);
+      color: var(--blue);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ═════════════════════════════════════════ -->
+<header>
+  <div class="logo">Earn<span class="logo-badge">REFERRAL</span></div>
+  <div class="hdr-center">
+    <div class="hdr-title">My Referral Dashboard</div>
+  </div>
+  <div class="hdr-right">
+    <button class="notif-btn" onclick="toast('✓ 2 new referrals joined!')">
+      <span style="font-size:16px">🔔</span>
+      <div class="notif-dot"></div>
+    </button>
+    <div class="user-avatar" title="View Profile">{{ request.user.username|slice:":2"|upper }}</div>
+    <button id="ham" class="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- ══ SIDEBAR ════════════════════════════════════ -->
+  <aside id="sidebar" class="sidebar">
+    <div class="sb-profile">
+      <div class="sb-av">{{ request.user.username|slice:":2"|upper }}</div>
+      <div class="sb-name">{{ request.user.get_full_name|default:request.user.username }}</div>
+      <div class="sb-role">Active Referrer</div>
+      <div class="sb-status"><div class="sb-dot"></div> Online</div>
+    </div>
+
+    <div class="nav-sec">Menu</div>
+    <div class="nav-item active" id="snav-overview" onclick="switchPanel('overview',this)">
+      <span style="font-size:18px">📊</span> Overview
+    </div>
+    <div class="nav-item" id="snav-referrals" onclick="switchPanel('referrals',this)">
+      <span style="font-size:18px">👥</span> My Referrals
+      <span class="nav-badge" id="refBadge">{{ referral_count }}</span>
+    </div>
+    <div class="nav-item" id="snav-earnings" onclick="switchPanel('earnings',this)">
+      <span style="font-size:18px">💰</span> Earnings
+      <span class="nav-badge" id="earnBadge">₦{{ referral_wallet|floatformat:0 }}</span>
+    </div>
+    <div class="nav-item" id="snav-activity" onclick="switchPanel('activity',this)">
+      <span style="font-size:18px">📈</span> Activity Log
+    </div>
+    <div class="nav-item" id="snav-settings" onclick="switchPanel('settings',this)">
+      <span style="font-size:18px">⚙️</span> Settings
+    </div>
+  </aside>
+
+  <!-- ══ MAIN CONTENT ══════════════════════════════ -->
+  <main class="main">
+
+    <!-- ══ OVERVIEW PANEL ════════════════════════════ -->
+    <div id="panel-overview" class="panel active">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px">
+        <h2 style="font-size:1.3rem; font-weight:700">Welcome Back, {{ request.user.username }}! 👋</h2>
+        <button class="btn-primary" onclick="copyToClipboard('{{ referral_code }}')" style="padding:8px 16px; font-size:0.9rem">
+          Share Link
+        </button>
+      </div>
+
+      <!-- Referral Code Card -->
+      <div class="refcode-card">
+        <div class="refcode-label">Your Unique Referral Code</div>
+        <div class="refcode-display">
+          <span>{{ referral_code }}</span>
+          <button class="copy-btn" onclick="copyAndNotify('{{ referral_code }}')">Copy</button>
+        </div>
+        <div style="font-size:0.85rem; opacity:0.95">Share this with friends to earn ₦500 per successful referral!</div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stat-grid">
+        <div class="stat-card gold">
+          <div class="stat-label">💰 Total Earnings</div>
+          <div class="stat-value">₦{{ total_earnings|floatformat:2 }}</div>
+          <div class="stat-sublabel">All time rewards</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">👥 Active Referrals</div>
+          <div class="stat-value">{{ active_referrals_count }}</div>
+          <div class="stat-sublabel">Transacting users</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">✅ Total Referrals</div>
+          <div class="stat-value">{{ referral_count }}</div>
+          <div class="stat-sublabel">Joined with your code</div>
+        </div>
+        <div class="stat-card gold">
+          <div class="stat-label">🎯 Conversion Rate</div>
+          <div class="stat-value">{{ conversion_rate }}%</div>
+          <div class="stat-sublabel">Signups → Transactions</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ REFERRALS PANEL ════════════════════════ -->
+    <div id="panel-referrals" class="panel">
+      <h2 style="font-size:1.3rem; font-weight:700; margin-bottom:16px">👥 My Referrals</h2>
+      
+      <div class="table-wrap">
+        <div class="table-header">
+          <div class="table-title">All Referrals ({{ referral_count }} Total)</div>
+          <div class="filter-group">
+            <button class="filter-btn active" onclick="filterReferrals('all')">All</button>
+            <button class="filter-btn" onclick="filterReferrals('active')">Active</button>
+            <button class="filter-btn" onclick="filterReferrals('inactive')">Inactive</button>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Referral</th>
+              <th>Date Joined</th>
+              <th>Status</th>
+              <th>Transactions</th>
+              <th>Your Earnings</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="refTbody">
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══ EARNINGS PANEL ════════════════════════ -->
+    <div id="panel-earnings" class="panel">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px">
+        <h2 style="font-size:1.3rem; font-weight:700">💰 Earnings History</h2>
+        <div style="display:flex; gap:10px">
+          <button class="btn-primary" onclick="openWithdrawalModal()" style="padding:10px 20px; font-size:0.95rem">
+            🏦 Withdraw Now
+          </button>
+          <button class="btn-primary" onclick="openAddWalletModal()" style="padding:10px 20px; font-size:0.95rem; background:linear-gradient(to right, rgb(22,163,74), rgb(74,222,128))">
+            💳 Add to Wallet
+          </button>
+        </div>
+      </div>
+      
+      <div class="table-wrap">
+        <div class="table-header">
+          <div class="table-title">Recent Earnings ({{ earnings_history.count }} Total)</div>
+          <div class="filter-group">
+            <button class="filter-btn active" onclick="filterEarnings('all')">All</button>
+            <button class="filter-btn" onclick="filterEarnings('completed')">Completed</button>
+            <button class="filter-btn" onclick="filterEarnings('pending')">Pending</button>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Referral</th>
+              <th>Transaction Type</th>
+              <th>Commission</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="earnTbody">
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══ ACTIVITY PANEL ════════════════════════ -->
+    <div id="panel-activity" class="panel">
+      <h2 style="font-size:1.3rem; font-weight:700; margin-bottom:16px">📈 Activity Log</h2>
+      
+      <div class="table-wrap">
+        <div class="table-header">
+          <div class="table-title">Recent Activity (Last 30 Days)</div>
+          <div class="filter-group">
+            <button class="filter-btn active" onclick="filterActivity('all')">All</button>
+            <button class="filter-btn" onclick="filterActivity('signup')">Signups</button>
+            <button class="filter-btn" onclick="filterActivity('transaction')">Transactions</button>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Date & Time</th>
+              <th>Activity Type</th>
+              <th>Details</th>
+              <th>Impact</th>
+            </tr>
+          </thead>
+          <tbody id="actTbody">
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══ SETTINGS PANEL ════════════════════════ -->
+    <div id="panel-settings" class="panel">
+      <h2 style="font-size:1.3rem; font-weight:700; margin-bottom:16px">⚙️ Referral Settings</h2>
+      
+      <div class="table-wrap" style="padding:24px;">
+        <div class="form-group">
+          <label class="form-label">Referral Commission Rate</label>
+          <select class="form-input">
+            <option>5% per referral (Standard)</option>
+            <option selected>10% per referral (Premium)</option>
+            <option>15% per referral (VIP)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Payout Method</label>
+          <select class="form-input">
+            <option selected>Bank Transfer</option>
+            <option>Mobile Wallet</option>
+            <option>Airtime Credit</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Notification Preferences</label>
+          <div style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
+            <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+              <input type="checkbox" checked>
+              <span>Email me on new referrals</span>
+            </label>
+            <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+              <input type="checkbox" checked>
+              <span>SMS on successful transactions</span>
+            </label>
+            <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+              <input type="checkbox">
+              <span>Weekly earnings summary</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top:20px;">
+          <button class="btn-primary" onclick="toast('✓ Settings saved successfully!')">Save Changes</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ══ ADD TO WALLET MODAL ════════════════════════════ -->
+<div id="addWalletModal" class="modal" onclick="closeAddWalletModal(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <h3 class="modal-title">💳 Add Earnings to Wallet</h3>
+    
+    <div style="background:rgb(240,248,255); border-radius:var(--r-md); padding:14px; margin-bottom:20px; border-left:4px solid var(--blue)">
+      <div style="font-size:0.85rem; color:rgb(160,160,180); margin-bottom:4px">Available Earnings</div>
+      <div style="font-size:1.6rem; font-weight:700; color:var(--blue)">₦{{ referral_wallet|floatformat:2 }}</div>
+    </div>
+
+    <div style="background:rgb(240,250,240); border-radius:var(--r-md); padding:12px; margin-bottom:20px; border-left:4px solid rgb(74,222,128)">
+      <strong style="color:rgb(22,163,74)">💰 Use in Your Account</strong>
+      <div style="font-size:0.85rem; color:rgb(100,140,80); margin-top:4px">Add funds to your wallet for instant purchases on services!</div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Amount to Add to Wallet</label>
+      <div style="display:flex; gap:8px">
+        <input type="number" id="aw-amount" class="form-input" placeholder="Enter amount" min="100" max="{{ referral_wallet }}" style="flex:1">
+        <button class="btn-primary" onclick="setMaxAddWallet()" style="padding:10px 16px; background:rgb(74,222,128)">Max</button>
+      </div>
+      <div style="font-size:0.8rem; color:rgb(180,180,200); margin-top:4px">Minimum: ₦100 | Available: ₦{{ referral_wallet|floatformat:2 }}</div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Wallet Details</label>
+      <div style="background:rgb(250,250,255); border-radius:var(--r-md); padding:12px; border:1px solid rgb(225,225,245)">
+        <div style="display:flex; justify-content:space-between; margin-bottom:8px">
+          <span style="color:rgb(160,160,180)">Current Wallet Balance:</span>
+          <span style="font-weight:600; color:var(--blue)">₦{{ wallet_balance|floatformat:2 }}</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; padding-top:8px; border-top:1px solid rgb(225,225,245)">
+          <span style="color:rgb(160,160,180)">After Adding:</span>
+          <span style="font-weight:600; color:var(--blue)" id="newWalletBalance">₦{{ wallet_balance|floatformat:2 }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="walletCharges" class="form-group">
+      <div style="display:flex; justify-content:space-between; padding:12px; background:rgb(250,250,255); border-radius:var(--r-sm); margin:10px 0">
+        <span style="color:rgb(160,160,180)">Amount:</span>
+        <span style="font-weight:600; color:var(--blue)" id="awAmountDisplay">₦0</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; padding:12px; background:rgb(250,250,255); border-radius:var(--r-sm); margin:10px 0">
+        <span style="color:rgb(160,160,180)">Processing Fee:</span>
+        <span style="font-weight:600; color:rgb(22,163,74)">FREE</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; padding:12px; background:rgb(240,248,240); border-radius:var(--r-sm); margin:10px 0; border:2px solid rgb(74,222,128)">
+        <span style="font-weight:600; color:rgb(22,163,74)">Amount Added:</span>
+        <span style="font-weight:700; font-size:1.1rem; color:rgb(22,163,74)" id="awReceiveDisplay">₦0</span>
+      </div>
+    </div>
+
+    <div style="background:rgb(240,250,240); border-radius:var(--r-md); padding:12px; margin:16px 0; font-size:0.85rem; color:rgb(22,100,74)">
+      <strong>✓ No Fees:</strong> 100% of your earnings go to your wallet. Use them immediately for airtime, data, cable, and more!
+    </div>
+
+    <div class="form-group">
+      <label style="display:flex; align-items:flex-start; gap:8px; cursor:pointer;">
+        <input type="checkbox" id="aw-agree" style="margin-top:4px">
+        <span style="font-size:0.85rem">I confirm I want to add ₦<span id="awConfirmAmount">0</span> to my wallet</span>
+      </label>
+    </div>
+
+    <div style="display:flex; gap:12px; margin-top:24px; justify-content:flex-end">
+      <button class="btn-secondary" onclick="closeAddWalletModal()" style="padding:12px 24px; font-size:0.95rem">Cancel</button>
+      <button onclick="submitAddWallet()" style="padding:14px 36px; font-size:1rem; font-weight:700; color:white; border:none; border-radius:var(--r-sm); background:linear-gradient(135deg, rgb(22,163,74), rgb(74,222,128)); cursor:pointer; transition:all 0.3s; box-shadow:0 4px 15px rgba(74,222,128,0.3)">
+        💳 Add ₦<span id="finalAmount">0</span> to Wallet
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ WITHDRAWAL MODAL ═══════════════════════════════ -->
+<div id="withdrawalModal" class="modal" onclick="closeWithdrawalModal(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <h3 class="modal-title">🏦 Request Withdrawal</h3>
+    
+    <div style="background:rgb(240,248,255); border-radius:var(--r-md); padding:14px; margin-bottom:20px; border-left:4px solid var(--blue)">
+      <div style="font-size:0.85rem; color:rgb(160,160,180); margin-bottom:4px">Available Balance</div>
+      <div style="font-size:1.6rem; font-weight:700; color:var(--blue)">₦{{ referral_wallet|floatformat:2 }}</div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Amount to Withdraw</label>
+      <div style="display:flex; gap:8px">
+        <input type="number" id="w-amount" class="form-input" placeholder="Enter amount" min="500" max="8500" style="flex:1">
+        <button class="btn-primary" onclick="setMaxWithdraw()" style="padding:10px 16px">Max</button>
+      </div>
+      <div style="font-size:0.8rem; color:rgb(180,180,200); margin-top:4px">Minimum: ₦500 | Available: ₦8,500</div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Payout Method</label>
+      <select class="form-input" id="w-method">
+        <option value="bank">Bank Transfer</option>
+        <option value="wallet">Mobile Wallet</option>
+        <option value="airtime">Airtime Credit</option>
+      </select>
+    </div>
+
+    <div id="bankDetails" class="form-group" style="display:none">
+      <label class="form-label">Bank Account Number</label>
+      <input type="text" class="form-input" id="w-account" placeholder="0123456789" maxlength="10">
+      <label class="form-label" style="margin-top:10px">Bank Name</label>
+      <select class="form-input" id="w-bank">
+        <option value="">Select your bank...</option>
+        <option value="gtb">Guaranty Trust Bank (GTB)</option>
+        <option value="zenith">Zenith Bank</option>
+        <option value="access">Access Bank</option>
+        <option value="firstbank">First Bank</option>
+        <option value="uba">United Bank for Africa (UBA)</option>
+        <option value="stanbic">Stanbic IBTC Bank</option>
+        <option value="fcmb">FCMB</option>
+        <option value="opay">OPay</option>
+        <option value="palmpay">PalmPay</option>
+        <option value="kuda">Kuda Bank</option>
+        <option value="moniepoint">Moniepoint</option>
+      </select>
+      <label class="form-label" style="margin-top:10px">Account Name</label>
+      <input type="text" class="form-input" id="w-account-name" placeholder="John Doe">
+    </div>
+
+    <div id="walletDetails" class="form-group" style="display:none">
+      <label class="form-label">Phone Number</label>
+      <input type="tel" class="form-input" placeholder="+234 8012345678">
+    </div>
+
+    <div id="airtimeDetails" class="form-group" style="display:none">
+      <label class="form-label">Phone Number</label>
+      <input type="tel" class="form-input" placeholder="+234 8012345678">
+      <label class="form-label" style="margin-top:10px">Network Provider</label>
+      <select class="form-input">
+        <option>MTN</option>
+        <option>Airtel</option>
+        <option>Glo</option>
+        <option>9Mobile</option>
+      </select>
+    </div>
+
+    <div style="background:rgb(250,245,231); border-radius:var(--r-md); padding:12px; margin:16px 0; font-size:0.85rem; color:rgb(160,80,0)">
+      <strong>⏱️ Processing Time:</strong> Withdrawals are processed within 24 hours. You'll receive a confirmation SMS.
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeWithdrawalModal()">Cancel</button>
+      <button class="btn-primary" onclick="submitWithdrawal()">Request Withdrawal</button>
+    </div>
+  </div>
+</div>
+<!-- ══ TRANSACTION PIN MODAL ══════════════════════════ -->
+<div id="pinModal" class="modal">
+  <div class="modal-box pin-modal-card">
+    <div class="pin-icon">
+      <span style="font-size: 32px;">🔒</span>
+    </div>
+    <h2 style="font-size: 1.4rem; font-weight: 700; color: var(--text); margin-bottom: 8px;">Enter PIN</h2>
+    <p style="font-size: 0.88rem; color: #666; margin-bottom: 5px;">Security Check</p>
+    <p style="font-size: 0.82rem; color: var(--blue); font-weight: 600; margin-bottom: 20px;" id="pin-service-name">
+      Confirm Transaction</p>
+
+    <div class="pin-grid">
+      <input type="password" class="pin-digit" maxlength="1" inputmode="numeric" id="pin1" autocomplete="off">
+      <input type="password" class="pin-digit" maxlength="1" inputmode="numeric" id="pin2" autocomplete="off">
+      <input type="password" class="pin-digit" maxlength="1" inputmode="numeric" id="pin3" autocomplete="off">
+      <input type="password" class="pin-digit" maxlength="1" inputmode="numeric" id="pin4" autocomplete="off">
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px;">
+      <button class="btn-secondary" onclick="closePinBtn()" style="width: 100%;">Cancel</button>
+      <button class="btn-primary" onclick="confirmPin()" style="width: 100%;" id="pin-confirm-btn">Verify</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PIN SETUP MODAL ════════════════════════════════ -->
+<div id="pinSetupModal" class="modal">
+  <div class="modal-box pin-modal-card">
+    <div class="pin-icon" style="background: rgba(245, 158, 11, 0.1); color: rgb(245, 158, 11);">
+      <span style="font-size: 32px;">⚠️</span>
+    </div>
+    <h2 style="font-size: 1.3rem; font-weight: 700; color: var(--text); margin-bottom: 12px;">Set Transaction PIN
+    </h2>
+    <p style="font-size: 0.88rem; color: #666; margin-bottom: 25px; line-height: 1.5;">
+      You haven't set a Transaction PIN yet. You need this to authorize withdrawals.
+    </p>
+
+    <button class="btn-primary" onclick="window.location.href='{% url 'dashboard' %}'" style="width: 100%; padding: 14px;">
+      Go to Settings
+    </button>
+  </div>
+</div>
+
+<!-- ══ TOAST ══════════════════════════════════════════ -->
+<div id="toast"></div>
+
+<!-- ══ JAVASCRIPT ═════════════════════════════════════ -->
+<script>
+const hasPin = {% if request.user.transaction_pin %}true{% else %}false{% endif %};
+let pendingAction = null;
+
+/* ── Transaction PIN Logic ──────────────────────────── */
+const pinDigits = [
+  document.getElementById('pin1'),
+  document.getElementById('pin2'),
+  document.getElementById('pin3'),
+  document.getElementById('pin4')
+];
+
+pinDigits.forEach((el, idx) => {
+  el.addEventListener('input', (e) => {
+    if (el.value.length === 1 && idx < 3) pinDigits[idx + 1].focus();
+    if (idx === 3 && el.value.length === 1) confirmPin();
+  });
+  el.addEventListener('keydown', (e) => {
+    if (e.key === 'Backspace' && !el.value && idx > 0) pinDigits[idx - 1].focus();
+  });
+});
+
+function openPinModal(serviceName, action) {
+  if (!hasPin) {
+    document.getElementById('pinSetupModal').classList.add('open');
+    return;
+  }
+  pendingAction = action;
+  document.getElementById('pin-service-name').innerText = serviceName;
+  document.getElementById('pinModal').classList.add('open');
+  pinDigits.forEach(el => el.value = '');
+  setTimeout(() => pinDigits[0].focus(), 300);
+}
+
+function closePinBtn() {
+  document.getElementById('pinModal').classList.remove('open');
+  pendingAction = null;
+}
+
+function confirmPin() {
+  const pin = pinDigits.map(el => el.value).join('');
+  if (pin.length < 4) return;
+  
+  const btn = document.getElementById('pin-confirm-btn');
+  btn.disabled = true;
+  btn.innerText = 'Verifying...';
+  
+  if (pendingAction) {
+    pendingAction(pin);
+  }
+}
+const avatarColors = [
+  'linear-gradient(135deg, rgb(255,107,107), rgb(255,127,80))',
+  'linear-gradient(135deg, rgb(74,144,226), rgb(52,152,219))',
+  'linear-gradient(135deg, rgb(74,222,128), rgb(46,213,115))',
+  'linear-gradient(135deg, rgb(255,193,7), rgb(255,152,0))',
+  'linear-gradient(135deg, rgb(156,39,176), rgb(103,58,183))',
+  'linear-gradient(135deg, rgb(0,188,212), rgb(0,172,193))',
+];
+
+// Referral Data
+let referrals = [
+  {% for item in referrals %}
+  {id:{{ item.user.id }}, name:'User {{ forloop.counter }}', email:'', joined:'{{ item.user.date_joined|date:"M d, Y" }}', status:'{% if item.user.transactions.exists %}active{% else %}inactive{% endif %}', txns:{{ item.user.transactions.count }}, earnings:'₦{{ item.earnings|floatformat:0 }}'},
+  {% endfor %}
+];
+
+// Earnings Data
+let earnings = [
+  {% for e in earnings_history %}
+  {date:'{{ e.created_at|date:"M d, g:i A" }}', referral:'User {{ forloop.counter }}', type:'{{ e.transaction.service|title }}', amount:'₦{{ e.amount|floatformat:0 }}', status:'completed'},
+  {% endfor %}
+];
+
+// Activity Data
+let activities = [
+  {% for a in activity_log %}
+  {date:'{{ a.created_at|date:"M d, g:i A" }}', type:'transaction', details:'Bonus from User {{ forloop.counter }} for {{ a.transaction.service }}', impact:'+₦{{ a.amount|floatformat:0 }}'},
+  {% endfor %}
+];
+
+let allReferrals = [...referrals];
+let allEarnings = [...earnings];
+let allActivities = [...activities];
+
+// Initial values for calculations
+const INITIAL_REFERRAL_WALLET = {{ referral_wallet|default:0 }};
+const INITIAL_WALLET_BALANCE = {{ wallet_balance|default:0 }};
+
+// Render Referrals
+function renderReferrals(data) {
+  document.getElementById('refTbody').innerHTML = data.map((r,i) => `
+    <tr>
+      <td><div class="td-user">
+        <div class="u-av" style="background:${avatarColors[i%avatarColors.length]}">${r.name.split(' ').map(n=>n[0]).join('').slice(0,2)}</div>
+        <div><div class="u-name">${r.name}</div><div class="u-email">${r.email}</div></div>
+      </div></td>
+      <td>${r.joined}</td>
+      <td><span class="badge ${r.status==='active'?'badge-active':'badge-pending'}">${r.status}</span></td>
+      <td>${r.txns}</td>
+      <td style="font-weight:600;color:var(--blue)">${r.earnings}</td>
+      <td><button class="action-btn" onclick="toast('Viewing ${r.name}…')">View</button></td>
+    </tr>`).join('');
+}
+
+// Render Earnings
+function renderEarnings(data) {
+  document.getElementById('earnTbody').innerHTML = data.map(e => `
+    <tr>
+      <td style="font-size:0.85rem;color:rgb(160,160,180)">${e.date}</td>
+      <td>${e.referral}</td>
+      <td><span class="badge" style="background:rgba(52,52,255,0.1);color:var(--blue)">${e.type}</span></td>
+      <td style="font-weight:600;color:var(--blue)">${e.amount}</td>
+      <td><span class="badge ${e.status==='completed'?'badge-completed':'badge-pending'}">${e.status}</span></td>
+      <td><button class="action-btn" onclick="toast('Loading details…')">Details</button></td>
+    </tr>`).join('');
+}
+
+// Render Activity
+function renderActivity(data) {
+  document.getElementById('actTbody').innerHTML = data.map(a => `
+    <tr>
+      <td style="font-size:0.85rem;color:rgb(160,160,180)">${a.date}</td>
+      <td><span class="badge" style="background:${a.type==='signup'?'rgba(74,222,128,0.2)':'rgba(52,52,255,0.1)'};color:${a.type==='signup'?'rgb(22,163,74)':'var(--blue)'}">${a.type}</span></td>
+      <td>${a.details}</td>
+      <td style="font-weight:600;color:rgb(22,163,74)">${a.impact}</td>
+    </tr>`).join('');
+}
+
+renderReferrals(allReferrals);
+renderEarnings(allEarnings);
+renderActivity(allActivities);
+
+// Payout method change listener
+document.getElementById('w-method').addEventListener('change', updatePayoutMethod);
+
+// Add to Wallet amount change listener
+document.getElementById('aw-amount').addEventListener('input', updateAddWalletCharges);
+
+// Filters
+function filterReferrals(val) {
+  renderReferrals(val==='all' ? allReferrals : allReferrals.filter(r=>r.status===val));
+}
+function filterEarnings(val) {
+  renderEarnings(val==='all' ? allEarnings : allEarnings.filter(e=>e.status===val));
+}
+function filterActivity(val) {
+  renderActivity(val==='all' ? allActivities : allActivities.filter(a=>a.type===val));
+}
+
+// Panel Switching
+function switchPanel(name, navEl) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  navEl.classList.add('active');
+  closeMenu();
+}
+
+// Copy Functions
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text);
+  toast('✓ Referral code copied!');
+}
+function copyAndNotify(text) {
+  copyToClipboard(text);
+}
+
+// Withdrawal Modal Functions
+function openWithdrawalModal() {
+  document.getElementById('withdrawalModal').classList.add('open');
+  document.getElementById('w-amount').focus();
+}
+
+function closeWithdrawalModal(event) {
+  if(event && event.target.id !== 'withdrawalModal') return;
+  document.getElementById('withdrawalModal').classList.remove('open');
+}
+
+function setMaxWithdraw() {
+  document.getElementById('w-amount').value = '8500';
+}
+
+function updatePayoutMethod() {
+  const method = document.getElementById('w-method').value;
+  document.getElementById('bankDetails').style.display = method === 'bank' ? 'block' : 'none';
+  document.getElementById('walletDetails').style.display = method === 'wallet' ? 'block' : 'none';
+  document.getElementById('airtimeDetails').style.display = method === 'airtime' ? 'block' : 'none';
+}
+
+function submitWithdrawal() {
+  const amount = parseInt(document.getElementById('w-amount').value);
+  const method = document.getElementById('w-method').value;
+  
+  if(!amount || amount < 500 || amount > 8500) {
+    toast('❌ Please enter a valid amount (₦500 - ₦8,500)');
+    return;
+  }
+
+  let bankName = '', accountNumber = '', accountName = '', phone = '', network = '';
+  
+  if(method === 'bank') {
+    accountNumber = document.getElementById('w-account').value;
+    bankName = document.getElementById('w-bank').value;
+    accountName = document.getElementById('w-account-name').value;
+    if(!accountNumber || accountNumber.length < 10 || !bankName || !accountName) {
+      toast('❌ Please fill in your complete bank details including Account Name');
+      return;
+    }
+  } else if(method === 'wallet') {
+    phone = document.querySelectorAll('#walletDetails input')[0].value;
+    if(!phone) {
+      toast('❌ Please enter your phone number');
+      return;
+    }
+  } else if(method === 'airtime') {
+    phone = document.querySelectorAll('#airtimeDetails input')[0].value;
+    network = document.querySelectorAll('#airtimeDetails select')[0].value;
+    if(!phone || !network) {
+      toast('❌ Please fill in your phone and network');
+      return;
+    }
+  }
+
+  openPinModal(`Withdrawal: ₦${amount.toLocaleString()} via ${method}`, (pin) => {
+    const fd = new FormData();
+    fd.append('amount', amount);
+    fd.append('method', method);
+    fd.append('bank_name', bankName);
+    fd.append('account_number', accountNumber);
+    fd.append('account_name', accountName);
+    fd.append('phone', phone);
+    fd.append('network', network);
+    fd.append('transaction_pin', pin);
+
+    fetch('{% url "request_withdrawal_payout" %}', {
+      method: 'POST',
+      headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+      body: fd
+    })
+    .then(r => r.json())
+    .then(data => {
+      if(data.success) {
+        document.getElementById('withdrawalModal').classList.remove('open');
+        closePinBtn();
+        toast(`✓ ${data.message}`);
+        setTimeout(() => location.reload(), 1500);
+      } else {
+        toast(`❌ ${data.error}`);
+        closePinBtn();
+        const pinBtn = document.getElementById('pin-confirm-btn');
+        pinBtn.disabled = false;
+        pinBtn.innerText = 'Verify';
+      }
+    })
+    .catch(err => {
+      toast('❌ Connection error');
+      closePinBtn();
+    });
+  });
+}
+
+// Cashout Modal Functions
+function openAddWalletModal() {
+  document.getElementById('addWalletModal').classList.add('open');
+  document.getElementById('aw-amount').focus();
+}
+
+function closeAddWalletModal(event) {
+  if(event && event.target.id !== 'addWalletModal') return;
+  document.getElementById('addWalletModal').classList.remove('open');
+}
+
+function setMaxAddWallet() {
+  document.getElementById('aw-amount').value = '8500';
+  updateAddWalletCharges();
+}
+
+function updateAddWalletCharges() {
+  const amount = parseInt(document.getElementById('aw-amount').value) || 0;
+  const currentBalance = 5240;
+  const newBalance = currentBalance + amount;
+  
+  document.getElementById('awAmountDisplay').textContent = '₦' + amount.toLocaleString();
+  document.getElementById('awReceiveDisplay').textContent = '₦' + amount.toLocaleString();
+  document.getElementById('newWalletBalance').textContent = '₦' + newBalance.toLocaleString();
+  document.getElementById('awConfirmAmount').textContent = amount.toLocaleString();
+  document.getElementById('finalAmount').textContent = amount.toLocaleString();
+}
+
+function submitAddWallet() {
+  const amount = parseInt(document.getElementById('aw-amount').value);
+  const agree = document.getElementById('aw-agree').checked;
+  
+  if(!amount || amount < 100) {
+    toast('❌ Minimum transfer is ₦100');
+    return;
+  }
+
+  if(!agree) {
+    toast('❌ Please confirm the amount to add to wallet');
+    return;
+  }
+
+  openPinModal(`Transfer to Wallet: ₦${amount.toLocaleString()}`, (pin) => {
+    const btn = document.querySelector('#addWalletModal .btn-primary:not([onclick*="Max"])');
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = 'Processing...';
+
+    const fd = new FormData();
+    fd.append('amount', amount);
+    fd.append('transaction_pin', pin);
+
+    fetch('{% url "withdraw_referral" %}', {
+      method: 'POST',
+      headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+      body: fd
+    })
+    .then(r => r.json())
+    .then(data => {
+      if(data.success) {
+        toast(`✓ ${data.message}`);
+        setTimeout(() => location.reload(), 1500);
+      } else {
+        toast(`❌ ${data.error}`);
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+        closePinBtn();
+        const pinBtn = document.getElementById('pin-confirm-btn');
+        pinBtn.disabled = false;
+        pinBtn.innerText = 'Verify';
+      }
+    })
+    .catch(err => {
+      toast('❌ Connection error');
+      btn.disabled = false;
+      btn.innerHTML = originalText;
+      closePinBtn();
+    });
+  });
+}
+
+// Toast
+let toastTimer;
+function toast(msg) {
+  const el=document.getElementById('toast');
+  el.textContent=msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),3200);
+}
+
+// Mobile Menu
+function toggleMenu() {
+  const ham=document.getElementById('ham');
+  const sidebar=document.getElementById('sidebar');
+  const open=!sidebar.classList.contains('open');
+  sidebar.classList.toggle('open',open);
+  ham.classList.toggle('open',open);
+  document.body.style.overflow=open?'hidden':'';
+}
+function closeMenu() {
+  document.getElementById('ham').classList.remove('open');
+  document.getElementById('sidebar').classList.remove('open');
+  document.body.style.overflow='';
+}
+window.addEventListener('resize',()=>{ if(window.innerWidth>900) closeMenu(); });
+</script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your Email</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 12px;
+            color: #666;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">SubCard</div>
+            <h1>Verify Your Email Address</h1>
+        </div>
+        
+        <p>Hello {{ user.username }},</p>
+        
+        <p>Thank you for registering with SubCard! To complete your registration and activate your account, please verify your email address by clicking the button below:</p>
+        
+        <div style="text-align: center;">
+            <a href="{{ verification_url }}" class="button">Verify Email Address</a>
+        </div>
+        
+        <div class="warning">
+            <strong>Important:</strong> This verification link will expire in 24 hours. If you didn't create an account with SubCard, please ignore this email.
+        </div>
+        
+        <p>If the button above doesn't work, you can also copy and paste this link into your browser:</p>
+        <p style="word-break: break-all; color: #007bff;">{{ verification_url }}</p>
+        
+        <p>Once your email is verified, you'll be able to:</p>
+        <ul>
+            <li>Access all our services including data, airtime, and cable TV subscriptions</li>
+            <li>Fund your wallet and make purchases</li>
+            <li>Refer friends and earn bonuses</li>
+            <li>Enjoy our full range of features</li>
+        </ul>
+        
+        <p>If you have any questions or need assistance, please don't hesitate to contact our support team.</p>
+        
+        <p>Best regards,<br>The SubCard Team</p>
+        
+        <div class="footer">
+            <p>&copy; 2024 SubCard. All rights reserved.</p>
+            <p>This is an automated message, please do not reply to this email.</p>
+        </div>
+    </div>
+</body>
+</html>

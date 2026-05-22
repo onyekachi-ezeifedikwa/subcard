@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ subject }}</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f4f7f6; }
+        .container { max-width: 600px; margin: 20px auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .header { background: linear-gradient(135deg, #3434ff, #8888fa); padding: 30px; text-align: center; color: #ffffff; }
+        .header h1 { margin: 0; font-size: 24px; letter-spacing: 1px; }
+        .content { padding: 40px 30px; min-height: 200px; font-size: 16px; color: #444; }
+        .content p { margin-bottom: 20px; }
+        .footer { background: #fafafa; padding: 20px; text-align: center; font-size: 12px; color: #888; border-top: 1px solid #eeeeee; }
+        .btn { display: inline-block; padding: 12px 25px; background-color: #3434ff; color: #ffffff !important; text-decoration: none; border-radius: 6px; font-weight: 600; margin-top: 20px; }
+        .social-links { margin-top: 15px; }
+        .social-links a { color: #888; text-decoration: none; margin: 0 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Subcard</h1>
+        </div>
+        <div class="content">
+            <p>Hello <strong>{{ username }}</strong>,</p>
+            <div>
+                {{ message|safe }}
+            </div>
+            <a href="{{ site_url }}" class="btn">Visit Dashboard</a>
+        </div>
+        <div class="footer">
+            <p>&copy; 2026 Subcard Services. All rights reserved.</p>
+            <p>You received this email because you are a registered member of Subcard.</p>
+            <div class="social-links">
+                <a href="#">Terms</a> | <a href="#">Support</a> | <a href="#">Unsubscribe</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

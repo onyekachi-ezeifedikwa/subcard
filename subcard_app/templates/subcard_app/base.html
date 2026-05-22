@@ -1,0 +1,147 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Subcard{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: rgb(52, 52, 255);
+            --secondary: rgb(136, 136, 250);
+            --gradient: linear-gradient(to right, blue, rgb(136, 136, 250), rgb(168, 168, 255));
+            --bg: #f7f7ff;
+            --white: #ffffff;
+            --text: rgb(83, 82, 82);
+            --border: rgb(225, 225, 245);
+            --sh: 2px 2px 10px rgb(215, 215, 255);
+            --font: 'DM Sans', sans-serif;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        header {
+            height: 62px;
+            display: flex;
+            align-items: center;
+            padding: 0 28px;
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            box-shadow: var(--sh);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-family: 'Pacifico', cursive;
+            font-size: 1.4rem;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        nav {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        nav ul {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text);
+            font-size: 0.92rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        nav a:hover {
+            color: var(--primary);
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        /* Django Messages */
+        #django-messages {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2000;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .django-msg {
+            padding: 12px 20px;
+            border-radius: 30px;
+            color: white;
+            margin-bottom: 10px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .msg-success { background: linear-gradient(to right, #16a34a, #22c55e); }
+        .msg-error { background: linear-gradient(to right, #dc3545, #ef4444); }
+        .msg-warning { background: linear-gradient(to right, #f59e0b, #fbbf24); }
+        .msg-info { background: linear-gradient(to right, #3b82f6, #60a5fa); }
+
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% if messages %}
+    <div id="django-messages">
+        {% for message in messages %}
+        <div class="django-msg msg-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    <script>
+        setTimeout(() => {
+            const msgs = document.querySelectorAll('.django-msg');
+            msgs.forEach(m => m.style.display = 'none');
+        }, 5000);
+    </script>
+    {% endif %}
+
+    <header>
+        <a href="{% url 'dashboard' %}" class="logo">subcard</a>
+        <nav>
+            <ul>
+                <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                <li><a href="{% url 'cable_tv' %}">Cable TV</a></li>
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

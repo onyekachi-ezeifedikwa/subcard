@@ -1,0 +1,380 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subcard — Join Us</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --navy: #f4f6ff;
+            --blue: #1a3bff;
+            --blue2: #3d5dff;
+            --cyan: #0099cc;
+            --amber: #d97706;
+            --text: #1a1f36;
+            --muted: #5a6480;
+            --white: #ffffff;
+            --radius: 20px;
+            --font-display: 'Syne', sans-serif;
+            --font-body: 'DM Sans', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--navy);
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            padding: 40px 20px;
+        }
+
+        /* Animated background mesh */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 60% 50% at 10% 20%, rgba(26, 59, 255, .08) 0%, transparent 65%),
+                radial-gradient(ellipse 50% 40% at 90% 80%, rgba(0, 153, 204, .07) 0%, transparent 65%),
+                radial-gradient(ellipse 40% 40% at 70% 10%, rgba(217, 119, 6, .05) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+            animation: meshShift 12s ease-in-out infinite alternate;
+        }
+
+        @keyframes meshShift {
+            0% {
+                transform: scale(1);
+            }
+
+            100% {
+                transform: scale(1.06);
+            }
+        }
+
+        /* Floating orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .orb-1 {
+            width: 300px;
+            height: 300px;
+            background: rgba(26, 59, 255, .1);
+            top: -100px;
+            left: -100px;
+        }
+
+        .orb-2 {
+            width: 250px;
+            height: 250px;
+            background: rgba(0, 153, 204, .08);
+            bottom: -50px;
+            right: -50px;
+        }
+
+        .register-card {
+            width: 100%;
+            max-width: 440px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            padding: 48px;
+            border-radius: var(--radius);
+            box-shadow: 0 25px 50px -12px rgba(26, 59, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            z-index: 1;
+            position: relative;
+        }
+
+        .logo-area {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo-area h1 {
+            font-family: var(--font-display);
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--blue);
+            letter-spacing: -1px;
+        }
+
+        .logo-area p {
+            color: var(--muted);
+            font-size: 0.95rem;
+            margin-top: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.88rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 18px;
+            background: var(--white);
+            border: 1.5px solid rgba(26, 59, 255, 0.1);
+            border-radius: 12px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.25s cubic-bezier(.22, 1, .36, 1);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--blue);
+            box-shadow: 0 0 0 4px rgba(26, 59, 255, 0.08);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--blue), var(--blue2));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 12px;
+            box-shadow: 0 10px 20px -5px rgba(26, 59, 255, 0.3);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px -8px rgba(26, 59, 255, 0.4);
+            opacity: 0.95;
+        }
+
+        .messages {
+            margin-bottom: 24px;
+        }
+
+        .msg {
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 0.88rem;
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+        }
+
+        .footer-link {
+            margin-top: 32px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .footer-link a {
+            color: var(--blue);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer-link a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 520px) {
+            body {
+                padding: 20px;
+                align-items: flex-start;
+                padding-top: 5vh;
+            }
+
+            .register-card {
+                padding: 32px 24px;
+                border-radius: 24px;
+                background: rgba(255, 255, 255, 0.9);
+                box-shadow: 0 15px 35px -10px rgba(26, 59, 255, 0.1);
+            }
+
+            .logo-area h1 {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            body {
+                padding: 0;
+            }
+
+            .register-card {
+                padding: 40px 24px;
+                border-radius: 0;
+                max-width: 100%;
+                min-height: 100vh;
+                background: var(--white);
+                border: none;
+                box-shadow: none;
+            }
+
+        .logo-area h1 {
+                font-size: 1.6rem;
+            }
+        }
+
+        /* Password Toggle Styles */
+        .password-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 14px;
+            cursor: pointer;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+            transition: color 0.2s;
+            user-select: none;
+            z-index: 10;
+        }
+
+        .toggle-password:hover {
+            color: var(--blue);
+        }
+
+        .form-input {
+            padding-right: 45px; /* Space for the eye icon */
+        }
+    </style>
+</head>
+
+<body>
+    {% include 'subcard_app/maintenance_overlay.html' %}
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <div class="register-card">
+        <div class="logo-area">
+            <h1>subcard</h1>
+            <p>Create your free account today</p>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="msg {{ message.tags }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" class="form-input" placeholder="e.g. jondoe" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" class="form-input" placeholder="name@example.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="text" id="phone" name="phone" class="form-input" placeholder="08012345678" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="password-wrapper">
+                    <input type="password" id="password" name="password" class="form-input" placeholder="••••••••" required>
+                    <span class="toggle-password" onclick="togglePasswordVisibility('password', this)">
+                        <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    </span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirm_password">Confirm Password</label>
+                <div class="password-wrapper">
+                    <input type="password" id="confirm_password" name="confirm_password" class="form-input"
+                        placeholder="••••••••" required>
+                    <span class="toggle-password" onclick="togglePasswordVisibility('confirm_password', this)">
+                        <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    </span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="referral_code">Referral (Optional)</label>
+                <input type="text" id="referral_code" name="referral_code" class="form-input" placeholder="Code if any">
+            </div>
+
+            <button type="submit" class="btn-submit">Create Account</button>
+        </form>
+
+        <div class="footer-link">
+            Already have an account? <a href="{% url 'login' %}">Login here</a>
+        </div>
+    </div>
+
+    <script>
+        function togglePasswordVisibility(fieldId, el) {
+            const passwordInput = document.getElementById(fieldId);
+            const icon = el.querySelector('svg');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                // Switch to eye-off icon
+                icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>';
+            } else {
+                passwordInput.type = 'password';
+                // Switch back to eye icon
+                icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
+            }
+        }
+    </script>
+</body>
+
+</html>

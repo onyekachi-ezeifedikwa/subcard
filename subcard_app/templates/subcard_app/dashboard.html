@@ -1,0 +1,4645 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subcard — Dashboard</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Pacifico&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&display=swap"
+    rel="stylesheet">
+
+  <style>
+    /* ══ RESET ══════════════════════════════════════════ */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      /* Colors */
+      --blue: rgb(52, 52, 255);
+      --blue-pill: rgb(207, 207, 255);
+      --blue-lt: rgb(194, 194, 253);
+      --grad: linear-gradient(to right, blue, rgb(136, 136, 250), rgb(168, 168, 255));
+      --sh: 2px 2px 10px rgb(215, 215, 255);
+      --sh-md: 5px 5px 40px rgb(206, 205, 205);
+      --sh-lg: 10px 10px 39px rgb(194, 194, 253);
+      --text: rgb(83, 82, 82);
+      --text-muted: rgb(160, 160, 180);
+      --white: #ffffff;
+      --bg: #f7f7ff;
+      --card-bg: #ffffff;
+      --input-bg: #fafaff;
+      --border: rgb(225, 225, 245);
+      --heading: #222;
+      --r-sm: 15px;
+      --r-md: 16px;
+      --r-pill: 30px;
+      --font: 'DM Sans', sans-serif;
+      --header-h: 62px;
+    }
+
+    [data-theme="dark"] {
+      --blue: rgb(110, 110, 255);
+      --blue-pill: rgba(52, 52, 255, 0.15);
+      --blue-lt: rgb(30, 30, 60);
+      --grad: linear-gradient(to right, #4f46e5, #7c3aed, #a78bfa);
+      --sh: 2px 2px 10px rgba(0, 0, 0, 0.4);
+      --sh-md: 5px 5px 40px rgba(0, 0, 0, 0.5);
+      --sh-lg: 10px 10px 39px rgba(0, 0, 0, 0.6);
+      --text: #cbd5e1;
+      --text-muted: #94a3b8;
+      --white: #1e293b;
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --input-bg: #0f172a;
+      --border: rgba(255, 255, 255, 0.08);
+      --heading: #f8fafc;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    li {
+      list-style: none;
+    }
+
+    button {
+      cursor: pointer;
+      font-family: var(--font);
+    }
+
+    /* ══ HEADER ═════════════════════════════════════════ */
+    header {
+      height: var(--header-h);
+      display: flex;
+      align-items: center;
+      padding: 0 28px;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--sh);
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      gap: 16px;
+    }
+
+    .logo {
+      font-family: 'Pacifico', cursive;
+      font-size: 1.4rem;
+      color: rgb(64, 64, 240);
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    nav {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    nav ul {
+      display: flex;
+      gap: 28px;
+    }
+
+    header nav {
+      justify-content: end;
+    }
+
+    nav a {
+      font-size: 0.92rem;
+      font-weight: 500;
+      color: var(--text);
+      position: relative;
+      transition: color .2s;
+      white-space: nowrap;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -3px;
+      width: 0;
+      height: 2px;
+      background: var(--blue);
+      transition: width .25s;
+      border-radius: 2px;
+    }
+
+    nav a:hover {
+      color: var(--blue);
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    .hdr-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .btn-login {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 20px;
+      border-radius: var(--r-pill);
+      border: none;
+      background: var(--grad);
+      color: white;
+      font-size: 0.86rem;
+      font-weight: 500;
+      box-shadow: var(--sh-lg);
+      transition: opacity .2s, transform .2s;
+      white-space: nowrap;
+    }
+
+    .btn-login:hover {
+      opacity: .88;
+      transform: translateY(-1px);
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      padding: 5px;
+      flex-shrink: 0;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--blue);
+      border-radius: 2px;
+      transition: transform .3s, opacity .3s;
+    }
+
+    .hamburger.open span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+
+    .hamburger.open span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.open span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    /* ══ MOBILE NAV DRAWER ═══════════════════════════════ */
+    .mob-nav {
+      display: none;
+      position: fixed;
+      top: var(--header-h);
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, .97);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      z-index: 190;
+      transform: translateX(100%);
+      transition: transform .35s cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .mob-nav.open {
+      transform: translateX(0);
+    }
+
+    .mob-nav a {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--text);
+      transition: color .2s;
+    }
+
+    .mob-nav a:hover {
+      color: var(--blue);
+    }
+
+    /* ══ WALLET BANNER ══════════════════════════════════ */
+    .wallet-banner {
+      display: none;
+      background: var(--grad);
+      color: white;
+      padding: 12px 20px;
+      position: sticky;
+      top: var(--header-h);
+      z-index: 150;
+      box-shadow: var(--sh-lg);
+      overflow: hidden;
+    }
+
+    .wallet-banner::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      width: 80px;
+      height: 80px;
+      background: rgba(255, 255, 255, .12);
+      border-radius: 50%;
+    }
+
+    .wallet-banner::after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 45%;
+      width: 55px;
+      height: 55px;
+      background: rgba(255, 255, 255, .08);
+      border-radius: 50%;
+    }
+
+    .wb-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      z-index: 1;
+      gap: 10px;
+    }
+
+    .wb-left .wb-label {
+      font-size: 10px;
+      opacity: .85;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .wb-left .wb-amount {
+      font-size: 1.4rem;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .wb-left .wb-sub {
+      font-size: 10px;
+      opacity: .75;
+      margin-top: 1px;
+    }
+
+    .wb-fund {
+      padding: 7px 16px;
+      border-radius: var(--r-pill);
+      border: 1.5px solid rgba(255, 255, 255, .5);
+      background: rgba(255, 255, 255, .18);
+      color: white;
+      font-size: 0.8rem;
+      font-weight: 500;
+      font-family: var(--font);
+      transition: background .2s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .wb-fund:hover {
+      background: rgba(255, 255, 255, .3);
+    }
+
+    @keyframes floatCard {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-4px);
+      }
+    }
+
+    /* ══ LAYOUT ══════════════════════════════════════════ */
+    .layout {
+      display: grid;
+      grid-template-columns: 230px 1fr;
+      min-height: calc(100vh - var(--header-h));
+    }
+
+    /* ══ SIDEBAR ════════════════════════════════════════ */
+    .sidebar {
+      background: var(--white);
+      border-right: 1px solid var(--border);
+      padding: 20px 0;
+      box-shadow: var(--sh);
+      position: sticky;
+      top: var(--header-h);
+      height: calc(100vh - var(--header-h));
+      overflow-y: auto;
+    }
+
+    .sb-wallet {
+      margin: 0 14px 18px;
+      padding: 18px;
+      border-radius: var(--r-md);
+      background: var(--grad);
+      box-shadow: var(--sh-lg);
+      color: white;
+      position: relative;
+      overflow: hidden;
+      animation: floatCard 4s ease-in-out infinite;
+    }
+
+    .sb-wallet::before {
+      content: '';
+      position: absolute;
+      top: -25px;
+      right: -25px;
+      width: 90px;
+      height: 90px;
+      background: rgba(255, 255, 255, .12);
+      border-radius: 50%;
+    }
+
+    .sb-wallet::after {
+      content: '';
+      position: absolute;
+      bottom: -18px;
+      left: -18px;
+      width: 65px;
+      height: 65px;
+      background: rgba(255, 255, 255, .08);
+      border-radius: 50%;
+    }
+
+    .sb-wallet>* {
+      position: relative;
+      z-index: 1;
+    }
+
+    .sb-label {
+      font-size: 10px;
+      opacity: .85;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 5px;
+    }
+
+    .sb-amount {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .sb-sub {
+      font-size: 10px;
+      opacity: .75;
+      margin-top: 2px;
+    }
+
+    .sb-fund {
+      width: 100%;
+      margin-top: 10px;
+      padding: 7px;
+      border-radius: var(--r-pill);
+      border: 1.5px solid rgba(255, 255, 255, .5);
+      background: rgba(255, 255, 255, .18);
+      color: white;
+      font-size: 11px;
+      font-weight: 500;
+      font-family: var(--font);
+      transition: background .2s;
+    }
+
+    .sb-fund:hover {
+      background: rgba(255, 255, 255, .3);
+    }
+
+    .nav-sec {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: rgb(180, 180, 200);
+      padding: 0 18px;
+      margin: 14px 0 4px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 18px;
+      margin: 2px 8px;
+      border-radius: var(--r-sm);
+      font-size: 0.88rem;
+      color: var(--text);
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .nav-item svg {
+      flex-shrink: 0;
+    }
+
+    .nav-item:hover {
+      background: var(--blue-pill);
+      color: var(--blue);
+      box-shadow: var(--sh);
+    }
+
+    .nav-item.active {
+      background: var(--grad);
+      color: white;
+      box-shadow: var(--sh-lg);
+    }
+
+    .nav-item.active svg {
+      stroke: white;
+    }
+
+    /* ══ BOTTOM NAV (mobile) ════════════════════════════ */
+    .bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--white);
+      border-top: 1px solid var(--border);
+      box-shadow: 0 -4px 20px var(--blue-pill);
+      z-index: 200;
+      padding: 6px 0;
+    }
+
+    .bn-inner {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .bn-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 6px 12px;
+      border-radius: var(--r-sm);
+      border: none;
+      background: none;
+      color: rgb(160, 160, 190);
+      font-size: 10px;
+      font-weight: 500;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: color .2s;
+      flex: 1;
+    }
+
+    .bn-item.active {
+      color: var(--blue);
+    }
+
+    .bn-item.active svg {
+      stroke: var(--blue);
+    }
+
+    /* ══ MAIN ════════════════════════════════════════════ */
+    .main {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      min-width: 0;
+    }
+
+    /* ══ TOP ACTION ROW ═════════════════════════════════ */
+    .top-action-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* tabs */
+    .tabs-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      flex: 1;
+    }
+
+    .tab-pill {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 20px;
+      border-radius: var(--r-pill);
+      border: none;
+      background: var(--white);
+      box-shadow: var(--sh);
+      color: var(--text);
+      font-size: 0.88rem;
+      font-weight: 500;
+      transition: all .25s;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .tab-pill:hover {
+      box-shadow: var(--sh-lg);
+      transform: translateY(-2px);
+      color: var(--blue);
+    }
+
+    .tab-pill.active {
+      background: var(--grad);
+      color: white;
+      box-shadow: var(--sh-lg);
+      transform: translateY(-2px);
+    }
+
+    /* ══ ACTIVITY BUTTON ════════════════════════════════ */
+    .btn-activity {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 20px;
+      border-radius: var(--r-pill);
+      border: 2px solid var(--blue-pill);
+      background: var(--white);
+      color: var(--blue);
+      font-size: 0.88rem;
+      font-weight: 600;
+      box-shadow: var(--sh);
+      transition: all .25s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .btn-activity:hover {
+      background: var(--blue-pill);
+      box-shadow: var(--sh-lg);
+      transform: translateY(-2px);
+    }
+
+    .btn-activity.active {
+      background: var(--grad);
+      color: white;
+      border-color: transparent;
+      box-shadow: var(--sh-lg);
+      transform: translateY(-2px);
+    }
+
+    /* stats */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .stat-float {
+      background: var(--white);
+      border-radius: var(--r-md);
+      padding: 16px 18px;
+      box-shadow: var(--sh-md);
+      position: relative;
+      overflow: hidden;
+      transition: transform .3s, box-shadow .3s;
+      animation: floatStat 5s ease-in-out infinite;
+    }
+
+    .stat-float:nth-child(2) {
+      animation-delay: .4s;
+    }
+
+    .stat-float:nth-child(3) {
+      animation-delay: .8s;
+    }
+
+    .stat-float:nth-child(4) {
+      animation-delay: 1.2s;
+    }
+
+    @keyframes floatStat {
+
+      0%,
+      100% {
+        transform: translateY(0)
+      }
+
+      50% {
+        transform: translateY(-4px)
+      }
+    }
+
+    .stat-float:hover {
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: var(--sh-lg);
+    }
+
+    .stat-float::after {
+      content: '';
+      position: absolute;
+      top: -12px;
+      right: -12px;
+      width: 44px;
+      height: 44px;
+      background: var(--blue-pill);
+      border-radius: 50%;
+      opacity: .5;
+    }
+
+    .stat-ico {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--r-sm);
+      background: var(--blue-pill);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: rgb(160, 160, 180);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: 3px;
+    }
+
+    .stat-val {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--blue);
+    }
+
+    .stat-ch {
+      font-size: 10px;
+      margin-top: 3px;
+    }
+
+    .up {
+      color: rgb(22, 163, 74);
+    }
+
+    .down {
+      color: rgb(220, 38, 38);
+    }
+
+    .neutral {
+      color: rgb(160, 160, 180);
+    }
+
+    /* ══ CABLE STAT CARDS — vivid color themes ═══════════ */
+    /* Card 1 — This month: deep violet → indigo */
+    .stat-cable-1 {
+      background: linear-gradient(135deg, rgb(79, 70, 229), rgb(124, 58, 237), rgb(167, 139, 250));
+      color: white;
+      box-shadow: 0 8px 32px rgba(99, 60, 220, .45) !important;
+    }
+
+    .stat-cable-1::after {
+      background: rgba(255, 255, 255, .15) !important;
+    }
+
+    .stat-cable-1 .stat-ico {
+      background: rgba(255, 255, 255, .22);
+    }
+
+    .stat-cable-1 .stat-ico svg {
+      stroke: white !important;
+    }
+
+    .stat-cable-1 .stat-label {
+      color: rgba(255, 255, 255, .75);
+    }
+
+    .stat-cable-1 .stat-val {
+      color: white;
+      text-shadow: 0 1px 6px rgba(0, 0, 0, .15);
+    }
+
+    .stat-cable-1 .stat-ch {
+      color: rgba(255, 255, 255, .8);
+    }
+
+    .stat-cable-1::before {
+      content: '';
+      position: absolute;
+      bottom: -20px;
+      left: -20px;
+      width: 80px;
+      height: 80px;
+      background: rgba(255, 255, 255, .1);
+      border-radius: 50%;
+    }
+
+    /* Card 2 — Subscriptions: emerald → teal */
+    .stat-cable-2 {
+      background: linear-gradient(135deg, rgb(5, 150, 105), rgb(16, 185, 129), rgb(52, 211, 153));
+      color: white;
+      box-shadow: 0 8px 32px rgba(5, 150, 105, .4) !important;
+    }
+
+    .stat-cable-2::after {
+      background: rgba(255, 255, 255, .15) !important;
+    }
+
+    .stat-cable-2 .stat-ico {
+      background: rgba(255, 255, 255, .22);
+    }
+
+    .stat-cable-2 .stat-ico svg {
+      stroke: white !important;
+    }
+
+    .stat-cable-2 .stat-label {
+      color: rgba(255, 255, 255, .75);
+    }
+
+    .stat-cable-2 .stat-val {
+      color: white;
+      text-shadow: 0 1px 6px rgba(0, 0, 0, .15);
+    }
+
+    .stat-cable-2 .stat-ch {
+      color: rgba(255, 255, 255, .8);
+    }
+
+    .stat-cable-2::before {
+      content: '';
+      position: absolute;
+      bottom: -20px;
+      left: -20px;
+      width: 80px;
+      height: 80px;
+      background: rgba(255, 255, 255, .1);
+      border-radius: 50%;
+    }
+
+    /* Card 3 — Next renewal: sunset orange → rose */
+    .stat-cable-3 {
+      background: linear-gradient(135deg, rgb(234, 88, 12), rgb(249, 115, 22), rgb(251, 191, 36));
+      color: white;
+      box-shadow: 0 8px 32px rgba(234, 88, 12, .4) !important;
+    }
+
+    .stat-cable-3::after {
+      background: rgba(255, 255, 255, .15) !important;
+    }
+
+    .stat-cable-3 .stat-ico {
+      background: rgba(255, 255, 255, .22);
+    }
+
+    .stat-cable-3 .stat-ico svg {
+      stroke: white !important;
+    }
+
+    .stat-cable-3 .stat-label {
+      color: rgba(255, 255, 255, .75);
+    }
+
+    .stat-cable-3 .stat-val {
+      color: white !important;
+      text-shadow: 0 1px 6px rgba(0, 0, 0, .15);
+    }
+
+    .stat-cable-3 .stat-ch {
+      color: rgba(255, 255, 255, .85) !important;
+    }
+
+    .stat-cable-3::before {
+      content: '';
+      position: absolute;
+      bottom: -20px;
+      left: -20px;
+      width: 80px;
+      height: 80px;
+      background: rgba(255, 255, 255, .1);
+      border-radius: 50%;
+    }
+
+    /* Card 4 — Auto-renew: hot pink → fuchsia */
+    .stat-cable-4 {
+      background: linear-gradient(135deg, rgb(219, 39, 119), rgb(236, 72, 153), rgb(192, 132, 252));
+      color: white;
+      box-shadow: 0 8px 32px rgba(219, 39, 119, .4) !important;
+    }
+
+    .stat-cable-4::after {
+      background: rgba(255, 255, 255, .15) !important;
+    }
+
+    .stat-cable-4 .stat-ico {
+      background: rgba(255, 255, 255, .22);
+    }
+
+    .stat-cable-4 .stat-ico svg {
+      stroke: white !important;
+    }
+
+    .stat-cable-4 .stat-label {
+      color: rgba(255, 255, 255, .75);
+    }
+
+    .stat-cable-4 .stat-val {
+      color: white;
+      text-shadow: 0 1px 6px rgba(0, 0, 0, .15);
+    }
+
+    .stat-cable-4 .stat-ch {
+      color: rgba(255, 255, 255, .85);
+    }
+
+    .stat-cable-4::before {
+      content: '';
+      position: absolute;
+      bottom: -20px;
+      left: -20px;
+      width: 80px;
+      height: 80px;
+      background: rgba(255, 255, 255, .1);
+      border-radius: 50%;
+    }
+
+    /* Shared hover lift override for colored cards */
+    .stat-cable-1:hover,
+    .stat-cable-2:hover,
+    .stat-cable-3:hover,
+    .stat-cable-4:hover {
+      transform: translateY(-8px) scale(1.03);
+      filter: brightness(1.06);
+    }
+
+    /* ══ PANEL SYSTEM ════════════════════════════════════ */
+    /* panel = the whole section; hidden by default */
+    .panel {
+      display: none;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .panel.active {
+      display: flex;
+    }
+
+    /* activity-only: stats + txn hidden, only form visible */
+    /* when in "form-only" mode, these are hidden */
+    .panel.form-only .stats-row,
+    .panel.form-only .txn-card,
+    .panel.form-only .mini-float {
+      display: none;
+    }
+
+    /* in form-only the right side column (mini floats) is also hidden */
+    .panel.form-only .side-col {
+      display: none;
+    }
+
+    /* two-col */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 16px;
+      align-items: start;
+    }
+
+    /* form card */
+    .float-card {
+      background: var(--card-bg);
+      border-radius: var(--r-md);
+      padding: 22px 24px;
+      box-shadow: var(--sh-md);
+      border: 1px solid var(--border);
+      transition: box-shadow .3s;
+      min-width: 0;
+    }
+
+    .float-card:hover {
+      box-shadow: var(--sh-lg);
+    }
+
+    .card-title {
+      font-size: 0.96rem;
+      font-weight: 600;
+      color: var(--heading);
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .card-title-ico {
+      width: 30px;
+      height: 30px;
+      border-radius: var(--r-sm);
+      background: var(--blue-pill);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* chips */
+    .chip-row {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+      margin-bottom: 13px;
+    }
+
+    .net-chip {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 8px 13px;
+      border-radius: var(--r-pill);
+      border: none;
+      background: var(--white);
+      box-shadow: var(--sh);
+      color: rgb(160, 160, 190);
+      font-size: 0.81rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .25s;
+      font-family: var(--font);
+    }
+
+    .net-chip:hover {
+      background: linear-gradient(to right, rgb(88, 88, 255), white);
+      color: white;
+      box-shadow: var(--sh-lg);
+    }
+
+    .net-chip.sel {
+      background: var(--grad);
+      color: white;
+      box-shadow: var(--sh-lg);
+    }
+
+    /* form fields */
+    .f-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 11px;
+    }
+
+    .f-group label {
+      font-size: 10px;
+      color: rgb(140, 140, 160);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .f-group input,
+    .f-group select {
+      padding: 10px 13px;
+      border-radius: var(--r-sm);
+      border: 1.5px solid var(--border);
+      background: var(--input-bg);
+      color: var(--heading);
+      font-size: 0.9rem;
+      font-family: var(--font);
+      box-shadow: var(--sh);
+      transition: border-color .2s, box-shadow .2s;
+      outline: none;
+      width: 100%;
+    }
+
+    .f-group input:focus,
+    .f-group select:focus {
+      border-color: rgb(136, 136, 250);
+      box-shadow: 0 0 0 3px rgb(194, 194, 253);
+    }
+
+    /* amount chips */
+    .amt-chips {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .amt-chip {
+      padding: 6px 11px;
+      border-radius: var(--r-pill);
+      border: 1.5px solid rgb(207, 207, 255);
+      background: white;
+      color: var(--blue);
+      font-size: 0.79rem;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: var(--font);
+      box-shadow: var(--sh);
+      transition: all .2s;
+    }
+
+    .amt-chip:hover {
+      background: var(--grad);
+      color: white;
+      border-color: transparent;
+      box-shadow: var(--sh-lg);
+    }
+
+    /* submit */
+    .submit-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      width: 100%;
+      padding: 12px;
+      border-radius: var(--r-pill);
+      border: none;
+      background: var(--grad);
+      color: white;
+      font-size: 0.92rem;
+      font-weight: 600;
+      box-shadow: var(--sh-lg);
+      transition: opacity .2s, transform .2s;
+      font-family: var(--font);
+      margin-top: 4px;
+    }
+
+    .submit-btn:hover {
+      opacity: .88;
+      transform: translateY(-2px);
+    }
+
+    /* mini cards */
+    .mini-float {
+      background: var(--card-bg);
+      border-radius: var(--r-md);
+      padding: 15px;
+      box-shadow: var(--sh-md);
+      border: 1px solid var(--border);
+      margin-bottom: 12px;
+      animation: floatCard 6s ease-in-out infinite;
+    }
+
+    .mini-title {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--heading);
+      margin-bottom: 9px;
+    }
+
+    /* txn rows */
+    .txn-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .txn-row:last-child {
+      border-bottom: none;
+    }
+
+    .txn-ico {
+      width: 30px;
+      height: 30px;
+      border-radius: var(--r-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .txn-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .txn-name {
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: var(--heading);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .txn-time {
+      font-size: 0.64rem;
+      color: rgb(160, 160, 180);
+      margin-top: 1px;
+    }
+
+    .txn-amt {
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: rgb(220, 38, 38);
+      white-space: nowrap;
+    }
+
+    .txn-badge {
+      display: inline-block;
+      font-size: 0.59rem;
+      padding: 2px 7px;
+      border-radius: 30px;
+      background: var(--blue-pill);
+      color: var(--blue);
+      font-weight: 600;
+      margin-top: 1px;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .txn-badge.success {
+      background: rgba(22, 163, 74, 0.15);
+      color: rgb(22, 163, 74);
+    }
+
+    .txn-badge.failed {
+      background: rgba(220, 38, 38, 0.15);
+      color: rgb(220, 38, 38);
+    }
+
+    .txn-badge.pending {
+      background: rgba(217, 119, 6, 0.15);
+      color: rgb(217, 119, 6);
+    }
+
+    /* bar */
+    .bar-wrap {
+      margin-top: 4px;
+    }
+
+    .bar-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: rgb(160, 160, 180);
+      margin-bottom: 4px;
+    }
+
+    .bar-track {
+      height: 6px;
+      background: var(--blue-pill);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      background: var(--grad);
+      box-shadow: var(--sh);
+      transition: width .8s cubic-bezier(.22, 1, .36, 1);
+    }
+
+    /* bundle rows */
+    .bundle-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 4px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      border-radius: var(--r-sm);
+      transition: background .15s;
+    }
+
+    .bundle-row:last-child {
+      border-bottom: none;
+    }
+
+    .bundle-row:hover {
+      background: var(--blue-pill);
+    }
+
+    .bundle-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--blue);
+      flex-shrink: 0;
+    }
+
+    .bundle-name {
+      flex: 1;
+      font-size: 0.79rem;
+      color: var(--text);
+    }
+
+    .bundle-price {
+      font-size: 0.79rem;
+      font-weight: 600;
+      color: var(--blue);
+      white-space: nowrap;
+    }
+
+    /* txn card */
+    .txn-card {
+      background: var(--card-bg);
+      border-radius: var(--r-md);
+      padding: 18px 20px;
+      box-shadow: var(--sh-md);
+      border: 1px solid var(--border);
+    }
+
+    .txn-card-hdr {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 11px;
+    }
+
+    .txn-card-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--heading);
+    }
+
+    .txn-view {
+      font-size: 0.76rem;
+      color: var(--blue);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    /* cable pkg */
+    .pkg-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 11px;
+      margin: 11px 0;
+    }
+
+    .pkg-card {
+      background: var(--card-bg);
+      border-radius: var(--r-md);
+      padding: 14px 13px;
+      box-shadow: var(--sh);
+      border: 2px solid var(--border);
+      cursor: pointer;
+      transition: all .3s cubic-bezier(.22, 1, .36, 1);
+      position: relative;
+    }
+
+    .pkg-card:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: var(--sh-lg);
+      border-color: rgb(136, 136, 250);
+    }
+
+    .pkg-card.sel {
+      border-color: var(--blue);
+      box-shadow: var(--sh-lg);
+      background: linear-gradient(160deg, var(--card-bg) 60%, var(--blue-lt));
+    }
+
+    .pkg-pop {
+      position: absolute;
+      top: -9px;
+      right: 10px;
+      background: var(--grad);
+      color: white;
+      font-size: 9px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 30px;
+      box-shadow: var(--sh);
+    }
+
+    .pkg-name {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--heading);
+      margin-bottom: 3px;
+    }
+
+    .pkg-price {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--blue);
+      margin-bottom: 3px;
+    }
+
+    .pkg-ch {
+      font-size: 0.66rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .pkg-feat {
+      font-size: 0.66rem;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 2px;
+    }
+
+    .ck {
+      color: rgb(22, 163, 74);
+      font-size: 10px;
+    }
+
+    /* toast */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 16px;
+      background: var(--grad);
+      color: white;
+      padding: 10px 18px;
+      border-radius: var(--r-pill);
+      font-size: 0.84rem;
+      font-weight: 500;
+      box-shadow: var(--sh-lg);
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all .35s cubic-bezier(.22, 1, .36, 1);
+      z-index: 999;
+      pointer-events: none;
+      max-width: calc(100vw - 32px);
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* ══ RESPONSIVE ══════════════════════════════════════ */
+
+    /* Tablet ≤ 1100px */
+    @media (max-width: 1100px) {
+      .stats-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .pkg-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .two-col {
+        grid-template-columns: 1fr 240px;
+      }
+    }
+
+    /* Tablet ≤ 900px — hide sidebar, show wallet banner + bottom nav */
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      nav {
+        display: none;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .mob-nav {
+        display: flex;
+      }
+
+      .wallet-banner {
+        display: block;
+      }
+
+      .bottom-nav {
+        display: block;
+      }
+
+      .main {
+        padding: 16px 16px 80px;
+      }
+
+      .toast {
+        bottom: 74px;
+      }
+
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+
+      .side-col {
+        display: none;
+      }
+
+      .panel.form-only .side-col {
+        display: none;
+      }
+
+      .btn-login {
+        padding: 8px 14px;
+        font-size: 0.8rem;
+      }
+
+      .btn-login svg {
+        display: none;
+      }
+
+      .top-action-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .btn-activity {
+        justify-content: center;
+      }
+    }
+
+    /* Medium tablet ≤ 768px */
+    @media (max-width: 768px) {
+      .stats-row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+
+      .pkg-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .tab-pill {
+        padding: 8px 14px;
+        font-size: 0.83rem;
+      }
+
+      .btn-activity {
+        padding: 8px 16px;
+        font-size: 0.83rem;
+      }
+    }
+
+    /* Mobile ≤ 640px */
+    @media (max-width: 640px) {
+      header {
+        padding: 0 14px;
+      }
+
+      .logo {
+        font-size: 1.15rem;
+      }
+
+      .main {
+        padding: 12px 12px 78px;
+        gap: 14px;
+      }
+
+      .tabs-row {
+        gap: 5px;
+      }
+
+      .tab-pill {
+        padding: 7px 13px;
+        font-size: 0.79rem;
+        gap: 5px;
+      }
+
+      .btn-activity {
+        font-size: 0.79rem;
+        padding: 7px 13px;
+      }
+
+      .stats-row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 9px;
+      }
+
+      .stat-float {
+        padding: 12px 13px;
+      }
+
+      .stat-val {
+        font-size: 1.05rem;
+      }
+
+      .stat-ico {
+        width: 32px;
+        height: 32px;
+        margin-bottom: 8px;
+      }
+
+      .float-card {
+        padding: 15px 16px;
+      }
+
+      .pkg-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .two-col {
+        gap: 12px;
+      }
+
+      .wb-left .wb-amount {
+        font-size: 1.25rem;
+      }
+
+      .wallet-banner {
+        padding: 10px 16px;
+      }
+
+      .txn-card {
+        padding: 14px 16px;
+      }
+
+      .mini-float {
+        padding: 12px;
+      }
+    }
+
+    /* Small mobile ≤ 480px */
+    @media (max-width: 480px) {
+      .stats-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .tabs-row {
+        gap: 4px;
+      }
+
+      .tab-pill {
+        padding: 6px 10px;
+        font-size: 0.76rem;
+      }
+
+      .btn-activity {
+        font-size: 0.76rem;
+        padding: 6px 12px;
+      }
+    }
+
+    /* Small mobile ≤ 420px */
+    @media (max-width: 420px) {
+      .logo {
+        font-size: 1rem;
+      }
+
+      .stats-row {
+        gap: 8px;
+      }
+
+      .stat-float {
+        padding: 10px 11px;
+      }
+
+      .stat-label {
+        font-size: 9px;
+      }
+
+      .stat-val {
+        font-size: 1.3rem;
+      }
+
+      .tab-pill {
+        padding: 6px 9px;
+        font-size: 0.73rem;
+      }
+
+      .net-chip {
+        padding: 7px 10px;
+        font-size: 0.77rem;
+      }
+
+      .amt-chip {
+        padding: 5px 9px;
+        font-size: 0.74rem;
+      }
+
+      .pkg-name {
+        font-size: 0.75rem;
+      }
+
+      .pkg-price {
+        font-size: 1rem;
+      }
+
+      .wb-left .wb-amount {
+        font-size: 1.1rem;
+      }
+
+      .wb-fund {
+        padding: 6px 11px;
+        font-size: 0.75rem;
+      }
+    }
+
+    /* Very small ≤ 360px */
+    @media (max-width: 360px) {
+
+      .f-group input,
+      .f-group select {
+        padding: 18px 25px;
+      }
+
+      .stats-row {
+        grid-template-columns: 1fr;
+      }
+
+      .tab-pill {
+        padding: 6px 8px;
+        font-size: 0.7rem;
+      }
+
+      header {
+        padding: 0 11px;
+        gap: 8px;
+      }
+
+      .main {
+        padding: 10px 10px 76px;
+      }
+
+      .logo {
+        font-size: 0.95rem;
+      }
+    }
+
+    /* ══ MODAL OVERLAY ══════════════════════════════════ */
+    .modal-overlay {
+      position: fixed;
+      overflow: scroll;
+      inset: 0;
+      background: rgba(30, 20, 80, 0.45);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* ══ MODAL CARD ══════════════════════════════════════ */
+    .modal-card {
+      background: var(--card-bg);
+      border-radius: 24px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, .3), 0 4px 20px rgba(0, 0, 0, .12);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      transform: translateY(32px) scale(0.97);
+      transition: transform .35s cubic-bezier(.22, 1, .36, 1);
+      position: relative;
+    }
+
+    .modal-overlay.open .modal-card {
+      transform: translateY(0) scale(1);
+    }
+
+    /* Modal header band */
+    .modal-head {
+      background: var(--grad);
+      padding: 26px 24px 22px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .modal-head::before {
+      content: '';
+      position: absolute;
+      top: -30px;
+      right: -30px;
+      width: 110px;
+      height: 110px;
+      background: rgba(255, 255, 255, .12);
+      border-radius: 50%;
+    }
+
+    .modal-head::after {
+      content: '';
+      position: absolute;
+      bottom: -22px;
+      left: 30%;
+      width: 70px;
+      height: 70px;
+      background: rgba(255, 255, 255, .08);
+      border-radius: 50%;
+    }
+
+    .modal-head-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .modal-icon {
+      width: 46px;
+      height: 46px;
+      background: rgba(255, 255, 255, .22);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    .modal-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 3px;
+    }
+
+    .modal-subtitle {
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, .78);
+    }
+
+    /* Modal close button */
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255, 255, 255, .22);
+      color: white;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background .2s, transform .2s;
+      z-index: 2;
+    }
+
+    .modal-close:hover {
+      background: rgba(255, 255, 255, .38);
+      transform: rotate(90deg);
+    }
+
+    /* Modal body */
+    .modal-body {
+      padding: 24px;
+    }
+
+    /* ══ FUND WALLET MODAL — bank info rows ══════════════ */
+    .bank-card {
+      background: var(--bg);
+      border-radius: var(--r-md);
+      border: 1.5px solid var(--border);
+      padding: 18px 20px;
+      margin-bottom: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bank-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--grad);
+      border-radius: 4px 0 0 4px;
+    }
+
+    .bank-card-label {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: rgb(160, 160, 200);
+      margin-bottom: 12px;
+    }
+
+    .bank-info-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .bank-info-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .bk-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .bk-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: var(--blue-pill);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .bk-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .bk-key {
+      font-size: 9px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .bk-val {
+      font-size: 0.93rem;
+      font-weight: 700;
+      color: var(--heading);
+    }
+
+    .bk-copy {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 11px;
+      border-radius: var(--r-pill);
+      border: 1.5px solid var(--blue-pill);
+      background: var(--card-bg);
+      color: var(--blue);
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: all .2s;
+      flex-shrink: 0;
+    }
+
+    .bk-copy:hover {
+      background: var(--grad);
+      color: white;
+      border-color: transparent;
+    }
+
+    .fund-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      background: var(--blue-pill);
+      border-radius: var(--r-sm);
+      padding: 11px 13px;
+      margin-top: 4px;
+      border: 1px solid var(--border);
+    }
+
+    .fund-note svg {
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .fund-note-text {
+      font-size: 0.76rem;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    /* ══ REFERRAL MODAL ══════════════════════════════════ */
+    .ref-link-box {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      border: 1.5px solid var(--border);
+      border-radius: var(--r-md);
+      overflow: hidden;
+      margin-bottom: 18px;
+      box-shadow: var(--sh);
+    }
+
+    .ref-link-input {
+      flex: 1;
+      padding: 12px 14px;
+      border: none;
+      background: var(--input-bg);
+      font-size: 0.82rem;
+      font-family: var(--font);
+      color: var(--text);
+      outline: none;
+      min-width: 0;
+    }
+
+    .ref-copy-btn {
+      padding: 0 18px;
+      height: 46px;
+      border: none;
+      background: var(--grad);
+      color: white;
+      font-size: 0.8rem;
+      font-weight: 600;
+      font-family: var(--font);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity .2s;
+      flex-shrink: 0;
+    }
+
+    .ref-copy-btn:hover {
+      opacity: .88;
+    }
+
+    .ref-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .ref-stat {
+      background: var(--card-bg);
+      border-radius: var(--r-md);
+      padding: 14px;
+      text-align: center;
+      border: 1.5px solid var(--border);
+    }
+
+    .ref-stat-val {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--blue);
+    }
+
+    .ref-stat-key {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .ref-share-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .ref-share-btn {
+      flex: 1;
+      min-width: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 14px;
+      border-radius: var(--r-pill);
+      border: 1.5px solid rgb(207, 207, 255);
+      background: white;
+      color: var(--text);
+      font-size: 0.78rem;
+      font-weight: 600;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: all .2s;
+      box-shadow: var(--sh);
+    }
+
+    .ref-share-btn:hover {
+      background: var(--grad);
+      color: white;
+      border-color: transparent;
+      box-shadow: var(--sh-lg);
+    }
+
+    /* nav referral item highlight */
+    .nav-item.referral-item {
+      color: rgb(120, 80, 255);
+    }
+
+    .nav-item.referral-item svg {
+      stroke: rgb(120, 80, 255);
+    }
+
+    .nav-item.referral-item:hover {
+      background: rgb(235, 228, 255);
+      color: rgb(80, 40, 220);
+    }
+
+    /* Mobile modal adjustments */
+    @media (max-width: 480px) {
+      .modal-overlay {
+        padding: 10px;
+        align-items: flex-end;
+      }
+
+      .modal-card {
+        border-radius: 18px 18px 0 0;
+        max-width: 100%;
+        max-height: 92vh;
+        overflow-y: auto;
+      }
+
+      .modal-head {
+        padding: 18px 16px 14px;
+      }
+
+      .modal-title {
+        font-size: 1rem;
+      }
+
+      .modal-body {
+        padding: 16px;
+      }
+
+      /* Fund wallet responsive */
+      .bank-card {
+        padding: 14px 14px;
+      }
+
+      .bank-info-row {
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .bk-left {
+        flex: 1 1 60%;
+        min-width: 0;
+      }
+
+      .bk-val {
+        font-size: 0.85rem;
+      }
+
+      .bk-copy {
+        padding: 5px 9px;
+        font-size: 0.68rem;
+      }
+
+      .fund-note {
+        padding: 10px;
+        font-size: 0.72rem;
+      }
+
+      /* Referral responsive */
+      .ref-stats {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .ref-stat {
+        padding: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        text-align: left;
+        gap: 8px;
+      }
+
+      .ref-stat-val {
+        font-size: 1.1rem;
+      }
+
+      .ref-stat-key {
+        margin-top: 0;
+      }
+
+      .ref-link-box {
+        flex-direction: column;
+        gap: 0;
+      }
+
+      .ref-link-input {
+        border-radius: var(--r-md) var(--r-md) 0 0;
+        border-bottom: 1px solid rgb(207, 207, 255);
+        padding: 10px 12px;
+      }
+
+      .ref-copy-btn {
+        width: 100%;
+        border-radius: 0 0 var(--r-md) var(--r-md);
+        height: 42px;
+      }
+
+      .ref-share-row {
+        flex-direction: column;
+      }
+
+      .ref-share-btn {
+        width: 100%;
+        min-width: 0;
+      }
+
+      /* Settings responsive */
+      .settings-card {
+        border-radius: 18px 18px 0 0;
+      }
+
+      .stg-tabs {
+        padding: 0 12px;
+      }
+
+      .stg-tab {
+        padding: 10px 12px;
+        font-size: 0.75rem;
+      }
+
+      .stg-pane {
+        padding: 16px 14px 20px;
+      }
+
+      .stg-avatar-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .stg-avatar-btn {
+        width: 100%;
+        text-align: center;
+      }
+
+      .stg-row-2 {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+
+      .stg-toggle-row {
+        padding: 11px 12px;
+        gap: 8px;
+      }
+
+      .stg-toggle-title {
+        font-size: 0.78rem;
+      }
+
+      .stg-danger-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .stg-danger-btn {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .modal-overlay {
+        padding: 0;
+      }
+
+      .modal-card {
+        border-radius: 0;
+        max-height: 100vh;
+      }
+
+      .settings-card {
+        border-radius: 0;
+      }
+    }
+
+    /* ══ SETTINGS MODAL — wide card ═══════════════════════ */
+    .settings-card {
+      max-width: 560px;
+    }
+
+    /* Settings inner tabs */
+    .stg-tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 2px solid var(--border);
+      padding: 0 24px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .stg-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .stg-tab {
+      padding: 13px 18px;
+      border: none;
+      background: none;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: rgb(160, 160, 190);
+      cursor: pointer;
+      position: relative;
+      white-space: nowrap;
+      font-family: var(--font);
+      transition: color .2s;
+    }
+
+    .stg-tab::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--grad);
+      border-radius: 2px;
+      transform: scaleX(0);
+      transition: transform .22s;
+    }
+
+    .stg-tab.active {
+      color: var(--blue);
+    }
+
+    .stg-tab.active::after {
+      transform: scaleX(1);
+    }
+
+    /* PIN Code Input Grid */
+    .pin-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 25px 0;
+    }
+
+    .pin-digit {
+      width: 100%;
+      height: 60px;
+      border-radius: var(--r-md);
+      border: 2px solid var(--border);
+      background: var(--bg);
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--heading);
+      outline: none;
+      transition: all .2s;
+    }
+
+    .pin-digit:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 4px rgba(100, 100, 255, .15);
+      background: var(--card-bg);
+    }
+
+    /* Settings pane */
+    .stg-pane {
+      display: none;
+      padding: 22px 24px 26px;
+    }
+
+    .stg-pane.active {
+      display: block;
+    }
+
+    /* Section label inside settings */
+    .stg-section-label {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: rgb(170, 170, 200);
+      margin-bottom: 12px;
+      margin-top: 20px;
+    }
+
+    /* Modal Styling for PIN */
+    .pin-modal-card {
+      max-width: 400px;
+      padding: 30px 24px;
+      text-align: center;
+    }
+
+    .pin-icon {
+      width: 64px;
+      height: 64px;
+      background: var(--blue-pill);
+      color: var(--blue);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+
+    .modal-btn-confirm {
+      padding: 14px;
+      border-radius: var(--r-md);
+      border: none;
+      background: var(--grad);
+      color: white;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all .2s;
+      box-shadow: var(--sh-md);
+    }
+
+    .modal-btn-confirm:hover {
+      opacity: .9;
+      transform: translateY(-1px);
+      box-shadow: var(--sh-lg);
+    }
+
+    .modal-btn-cancel {
+      padding: 14px;
+      border-radius: var(--r-md);
+      border: 1.5px solid var(--border);
+      background: var(--white);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all .2s;
+    }
+
+    .modal-btn-cancel:hover {
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .stg-section-label:first-child {
+      margin-top: 0;
+    }
+
+    /* Profile avatar row */
+    .stg-avatar-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      background: var(--card-bg);
+      border-radius: var(--r-md);
+      border: 1.5px solid var(--border);
+      margin-bottom: 16px;
+    }
+
+    .stg-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--grad);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+      box-shadow: var(--sh-lg);
+      position: relative;
+    }
+
+
+
+
+    .stg-avatar-info {
+      flex: 1;
+    }
+
+    .stg-avatar-name {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--heading);
+    }
+
+    .stg-avatar-email {
+      font-size: 0.36rem;
+      color: rgb(160, 160, 190);
+      margin-top: 2px;
+    }
+
+    .stg-avatar-btn {
+      padding: 7px 15px;
+      border-radius: var(--r-pill);
+      border: 1.5px solid var(--blue-pill);
+      background: white;
+      color: var(--blue);
+      font-size: 0.75rem;
+      font-weight: 600;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: all .2s;
+      box-shadow: var(--sh);
+      flex-shrink: 0;
+    }
+
+    .stg-avatar-btn:hover {
+      background: var(--grad);
+      color: white;
+      border-color: transparent;
+    }
+
+    /* Settings form fields */
+    .stg-field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: 13px;
+    }
+
+    .stg-field label {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: rgb(140, 140, 180);
+    }
+
+    .stg-input {
+      padding: 10px 14px;
+      border-radius: var(--r-sm);
+      border: 1.5px solid var(--border);
+      background: var(--bg);
+      color: var(--heading);
+      font-size: 0.88rem;
+      font-family: var(--font);
+      outline: none;
+      width: 100%;
+      transition: border-color .2s, box-shadow .2s, background .2s;
+      box-shadow: var(--sh);
+    }
+
+    .stg-input:focus {
+      border-color: var(--blue);
+      background: var(--input-bg);
+      box-shadow: 0 0 0 3px rgba(100, 100, 255, .13);
+    }
+
+    .stg-row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    /* Toggle switch */
+    .stg-toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 16px;
+      border-radius: var(--r-sm);
+      border: 1.5px solid var(--border);
+      background: var(--card-bg);
+      margin-bottom: 10px;
+      gap: 12px;
+    }
+
+    .stg-toggle-left {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .stg-toggle-ico {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      background: var(--blue-pill);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .stg-toggle-text {
+      flex: 1;
+    }
+
+    .stg-toggle-title {
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--heading);
+    }
+
+    .stg-toggle-sub {
+      font-size: 0.7rem;
+      color: rgb(160, 160, 190);
+      margin-top: 1px;
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background: var(--blue-pill);
+      border-radius: 24px;
+      transition: .25s;
+    }
+
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      left: 3px;
+      bottom: 3px;
+      background: white;
+      border-radius: 50%;
+      transition: .25s;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, .18);
+    }
+
+    .toggle-switch input:checked+.toggle-slider {
+      background: var(--blue);
+    }
+
+    .toggle-switch input:checked+.toggle-slider::before {
+      transform: translateX(20px);
+    }
+
+    /* Danger zone */
+    .stg-danger-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 16px;
+      border-radius: var(--r-sm);
+      border: 1.5px solid rgba(220, 38, 38, .2);
+      background: rgba(220, 38, 38, .05);
+      margin-bottom: 10px;
+      gap: 12px;
+    }
+
+    .stg-danger-title {
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: rgb(180, 30, 30);
+    }
+
+    .stg-danger-sub {
+      font-size: 0.7rem;
+      color: rgb(200, 80, 80);
+      margin-top: 1px;
+    }
+
+    .stg-danger-btn {
+      padding: 7px 14px;
+      border-radius: var(--r-pill);
+      border: 1.5px solid rgba(220, 38, 38, .35);
+      background: var(--card-bg);
+      color: rgb(200, 40, 40);
+      font-size: 0.74rem;
+      font-weight: 600;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: all .2s;
+      flex-shrink: 0;
+    }
+
+    .stg-danger-btn:hover {
+      background: rgb(220, 38, 38);
+      color: white;
+      border-color: transparent;
+    }
+
+    /* Settings save button */
+    .stg-save-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 13px;
+      margin-top: 6px;
+      border-radius: var(--r-pill);
+      border: none;
+      background: var(--grad);
+      color: white;
+      font-size: 0.92rem;
+      font-weight: 700;
+      font-family: var(--font);
+      box-shadow: var(--sh-lg);
+      cursor: pointer;
+      transition: opacity .2s, transform .2s;
+    }
+
+    .stg-save-btn:hover {
+      opacity: .88;
+      transform: translateY(-1px);
+    }
+
+    /* Settings nav highlight */
+    .nav-item.settings-item {
+      color: rgb(52, 52, 255);
+    }
+
+    .nav-item.settings-item svg {
+      stroke: rgb(52, 52, 255);
+    }
+
+    .nav-item.settings-item:hover {
+      background: var(--blue-pill);
+      color: var(--blue);
+    }
+
+    @media (max-width: 580px) {
+      .settings-card {
+        max-width: 100%;
+      }
+
+      .stg-row-2 {
+        grid-template-columns: 1fr;
+      }
+
+      .stg-pane {
+        padding: 18px 16px 22px;
+      }
+
+      .stg-tabs {
+        padding: 0 16px;
+      }
+
+      .stg-tab {
+        padding: 11px 13px;
+        font-size: 0.78rem;
+      }
+    }
+
+    .theme-toggle {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border);
+      background: var(--white);
+      color: var(--blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all .25s;
+      box-shadow: var(--sh);
+      flex-shrink: 0;
+    }
+
+    .theme-toggle:hover {
+      background: var(--blue-pill);
+      transform: scale(1.05);
+    }
+
+    [data-theme="dark"] .theme-toggle svg {
+      fill: var(--blue);
+    }
+
+    [data-theme="dark"] .sun {
+      display: none;
+    }
+
+    .moon {
+      display: none;
+    }
+
+    [data-theme="dark"] .moon {
+      display: block;
+    }
+
+    .receipt-card {
+      max-width: 400px !important;
+    }
+
+    .receipt-header {
+      text-align: center;
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px dashed var(--border);
+    }
+
+    .receipt-logo {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--blue);
+      margin-bottom: 4px;
+    }
+
+    .receipt-title {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .receipt-body {
+      margin-bottom: 24px;
+    }
+
+    .receipt-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      font-size: 0.88rem;
+    }
+
+    .receipt-label {
+      color: var(--text-muted);
+    }
+
+    .receipt-val {
+      color: var(--text);
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .receipt-footer {
+      padding-top: 20px;
+      border-top: 1px dashed var(--border);
+      text-align: center;
+    }
+
+    .receipt-amount {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--text);
+      margin: 10px 0;
+    }
+
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+
+      #receiptModal,
+      #receiptModal * {
+        visibility: visible;
+      }
+
+      #receiptModal {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+      }
+
+      .modal-close,
+      .receipt-btns {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  {% include 'subcard_app/maintenance_overlay.html' %}
+
+  {% if messages %}
+  <div id="django-messages"
+    style="position:fixed;top:0;left:0;right:0;z-index:9999;display:flex;flex-direction:column;gap:8px;padding:12px 16px;pointer-events:none;">
+    {% for message in messages %}
+    <div class="django-msg"
+      style="background:{% if message.tags == 'success' %}linear-gradient(to right,rgb(22,163,74),rgb(52,211,153)){% else %}linear-gradient(to right,rgb(220,38,38),rgb(239,68,68)){% endif %};color:white;padding:10px 18px;border-radius:30px;font-size:0.85rem;font-weight:500;box-shadow:0 4px 20px rgba(0,0,0,.15);transform:translateY(-10px);opacity:0;animation:msgSlide .4s ease forwards;pointer-events:auto;">
+      {{ message }}</div>
+    {% endfor %}
+  </div>
+  <style>
+    @keyframes msgSlide {
+      to {
+        transform: translateY(0);
+        opacity: 1
+      }
+    }
+
+    .django-msg {
+      max-width: 480px;
+      margin: 0 auto;
+      width: 100%;
+      text-align: center;
+    }
+  </style>
+  <script>setTimeout(() => { const el = document.getElementById('django-messages'); if (el) el.style.display = 'none'; }, 4500);</script>
+  {% endif %}
+
+  <!-- ══ HEADER ═════════════════════════════════════════ -->
+  <header>
+    <div class="logo">subcard</div>
+    <nav>
+      <ul>
+        <li><a href="#">Business</a></li>
+        <li><a href="#" onclick="openReferral(event)"
+            style="color:rgb(110,60,255);font-weight:600;display:flex;align-items:center;gap:5px"><svg width="14"
+              height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" />
+              <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" />
+            </svg>Referral</a></li>
+        <li><a href="#" onclick="openSettings(event)"
+            style="color:rgb(52,52,255);font-weight:600;display:flex;align-items:center;gap:5px"><svg width="14"
+              height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3" />
+              <path
+                d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" />
+            </svg>Settings</a></li>
+        <li><a href="{% url 'logout' %}"
+            style="color:rgb(220,38,38);font-weight:600;display:flex;align-items:center;gap:5px"><svg width="14"
+              height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
+            </svg>Logout</a></li>
+      </ul>
+    </nav>
+    <div class="hdr-right">
+      <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+        <svg class="sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="5" />
+          <line x1="12" y1="1" x2="12" y2="3" />
+          <line x1="12" y1="21" x2="12" y2="23" />
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+          <line x1="1" y1="12" x2="3" y2="12" />
+          <line x1="21" y1="12" x2="23" y2="12" />
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+        </svg>
+      </button>
+      <button class="hamburger" id="ham" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+
+  <!-- ══ MOBILE NAV DRAWER ═══════════════════════════════ -->
+  <div class="mob-nav" id="mobNav">
+    <a href="#" onclick="closeMenu()"
+      style="color:rgb(110,60,255);font-weight:700;display:flex;align-items:center;gap:7px"><svg
+        xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#4B77D1">
+        <path
+          d="M160-120q-33 0-56.5-23.5T80-200v-440q0-33 23.5-56.5T160-720h160v-80q0-33 23.5-56.5T400-880h160q33 0 56.5 23.5T640-800v80h160q33 0 56.5 23.5T880-640v440q0 33-23.5 56.5T800-120H160Zm240-600h160v-80H400v80Zm400 360H600v80H360v-80H160v160h640v-160Zm-360 0h80v-80h-80v80Zm-280-80h200v-80h240v80h200v-200H160v200Zm320 40Z" />
+      </svg>Business</a>
+    <a href="#" onclick="closeMenu();openReferral(event)"
+      style="color:rgb(110,60,255);font-weight:700;display:flex;align-items:center;gap:7px"><svg width="18" height="18"
+        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" />
+        <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" />
+      </svg>Referral</a>
+    <a href="#" onclick="closeMenu();openSettings(event)"
+      style="color:rgb(52,52,255);font-weight:700;display:flex;align-items:center;gap:7px"><svg width="18" height="18"
+        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="3" />
+        <path
+          d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" />
+      </svg>Settings</a>
+    <a href="{% url 'logout' %}"
+      style="color:rgb(220,38,38);font-weight:700;display:flex;align-items:center;gap:7px"><svg width="18" height="18"
+        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
+      </svg>Logout</a>
+  </div>
+
+  <!-- ══ WALLET BANNER ════════════════════════════════════ -->
+  <div class="wallet-banner">
+    <div class="wb-inner">
+      <div class="wb-left">
+        <div class="wb-label">Wallet balance</div>
+        <div class="wb-amount">₦{{ wallet_balance|default:"0"|floatformat:2 }}</div>
+        <div class="wb-sub">Available to spend</div>
+      </div>
+      <button class="wb-fund" onclick="openFundWallet()">+ Fund wallet</button>
+    </div>
+  </div>
+
+  <div class="layout">
+
+    <!-- ══ SIDEBAR (desktop) ════════════════════════════ -->
+    <aside class="sidebar">
+      <div class="sb-wallet">
+        <div class="sb-label">Wallet balance</div>
+        <div class="sb-amount">₦{{ wallet_balance|default:"0"|floatformat:2 }}</div>
+        <div class="sb-sub">Available to spend</div>
+        <button class="sb-fund" onclick="openFundWallet()">+ Fund wallet</button>
+      </div>
+      <div class="nav-sec">Services</div>
+      <div class="nav-item active" id="snav-airtime" onclick="sideSwitch('airtime',this)">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <path d="M2 16.5A14.5 14.5 0 0016.5 2M2 11A9 9 0 0011 2M2 6a4 4 0 014-4M2 21l1-1" />
+        </svg> Airtime
+      </div>
+      <div class="nav-item" id="snav-data" onclick="sideSwitch('data',this)">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <path
+            d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856a10.5 10.5 0 0113.788 0M1.924 8.674a15.75 15.75 0 0120.152 0M12 19.5h.008v.008H12V19.5z" />
+        </svg> Data
+      </div>
+      <div class="nav-item" id="snav-cable" onclick="sideSwitch('cable',this)">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <path
+            d="M6 20.25h12m-7.5-3v3m-2.508-3H18a.75.75 0 00.75-.75V6a.75.75 0 00-.75-.75H6A.75.75 0 005.25 6v10.5c0 .414.336.75.75.75z" />
+        </svg> Cable TV
+      </div>
+      <div class="nav-sec">Account</div>
+      <div class="nav-item" onclick="openHistory()">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <path d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg> History
+      </div>
+      <div class="nav-item referral-item" onclick="openReferral(event)">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" />
+          <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" />
+        </svg> Referral
+      </div>
+      <div class="nav-item logout-item" onclick="location.href='{% url 'logout' %}'" style="color:rgb(220,38,38)">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
+        </svg> Logout
+      </div>
+    </aside>
+
+    <!-- ══ MAIN ═══════════════════════════════════════ -->
+    <main class="main">
+      {% if not user.is_email_verified %}
+      <div
+        style="background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%); border: 1px solid #ffeeba; border-radius: 15px; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 20px; box-shadow: var(--sh);">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div
+            style="width: 40px; height: 40px; background: rgba(255,193,7,0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#856404" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+              <polyline points="22,6 12,13 2,6" />
+            </svg>
+          </div>
+          <div>
+            <div style="font-weight: 700; color: #856404; font-size: 0.95rem;">Verify Your Email Address</div>
+            <div style="font-size: 0.82rem; color: #856404; opacity: 0.85;">Please confirm your email to access all
+              features.</div>
+          </div>
+        </div>
+        <a href="{% url 'resend_verification' %}"
+          style="background: #856404; color: white; padding: 8px 16px; border-radius: 30px; font-size: 0.8rem; font-weight: 600; white-space: nowrap; transition: transform 0.2s; text-decoration: none;"
+          onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">Resend Email</a>
+      </div>
+      {% endif %}
+
+      <!-- Top action row: tabs + Activity button -->
+      <div class="top-action-row">
+        <div class="tabs-row">
+          <button class="tab-pill active" id="tab-airtime" onclick="switchTab('airtime',this)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M2 16.5A14.5 14.5 0 0016.5 2M2 11A9 9 0 0011 2M2 6a4 4 0 014-4M2 21l1-1" />
+            </svg> Airtime
+          </button>
+          <button class="tab-pill" id="tab-data" onclick="switchTab('data',this)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path
+                d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856a10.5 10.5 0 0113.788 0M1.924 8.674a15.75 15.75 0 0120.152 0M12 19.5h.008v.008H12V19.5z" />
+            </svg> Data
+          </button>
+          <button class="tab-pill" id="tab-cable" onclick="switchTab('cable',this)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path
+                d="M6 20.25h12m-7.5-3v3m-2.508-3H18a.75.75 0 00.75-.75V6a.75.75 0 00-.75-.75H6A.75.75 0 005.25 6v10.5c0 .414.336.75.75.75z" />
+            </svg> Cable TV
+          </button>
+        </div>
+        <button class="btn-activity" id="btn-activity" onclick="toggleActivity()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+          </svg>
+          Activity
+        </button>
+      </div>
+
+      <!-- ══ AIRTIME PANEL ══════════════════════════════ -->
+      <div class="panel form-only active" id="panel-airtime">
+        <div class="stats-row">
+          <div class="stat-float">
+            <div class="stat-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--blue)"
+                stroke-width="1.8">
+                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
+              </svg></div>
+            <div class="stat-label">This month</div>
+            <div class="stat-val">₦{{ stats.airtime.spending|floatformat:2 }}</div>
+            <div class="stat-ch neutral">{{ stats.airtime.count }} transactions</div>
+          </div>
+          <div class="stat-float">
+            <div class="stat-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--blue)"
+                stroke-width="1.8">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+              </svg></div>
+            <div class="stat-label">Transactions</div>
+            <div class="stat-val">{{ stats.airtime.count }}</div>
+            <div class="stat-ch neutral">Successful attempts</div>
+          </div>
+          <div class="stat-float">
+            <div class="stat-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--blue)"
+                stroke-width="1.8">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 8v4l3 3" />
+              </svg></div>
+            <div class="stat-label">Most used</div>
+            <div class="stat-val">{{ most_used_network.name }}</div>
+            <div class="stat-ch neutral">{{ most_used_network.count }} of {{ total_success_txns }} txns</div>
+          </div>
+          <div class="stat-float">
+            <div class="stat-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--blue)"
+                stroke-width="1.8">
+                <rect x="2" y="5" width="20" height="14" rx="2" />
+                <path d="M2 10h20" />
+              </svg></div>
+            <div class="stat-label">Last top-up</div>
+            <div class="stat-val">{% if last_topup %}₦{{ last_topup.amount|floatformat:0 }}{% else %}N/A{% endif %}
+            </div>
+            <div class="stat-ch neutral">{% if last_topup %}{{ last_topup.time_str }}{% else %}No records{% endif %}
+            </div>
+          </div>
+        </div>
+        <div class="two-col">
+          <form method="post" action="{% url 'purchase_airtime' %}" class="float-card" style="margin:0;"
+            id="airtime-form">
+            {% csrf_token %}
+            <input type="hidden" name="network" id="air-net-val" value="1">
+            <div class="card-title">
+              <div class="card-title-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                  stroke="var(--blue)" stroke-width="1.8">
+                  <path d="M2 16.5A14.5 14.5 0 0016.5 2M2 11A9 9 0 0011 2M2 6a4 4 0 014-4M2 21l1-1" />
+                </svg></div>Buy Airtime
+            </div>
+            <label
+              style="font-size:10px;color:rgb(140,140,160);font-weight:500;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:7px">Network</label>
+            <div class="chip-row" id="air-nets">
+              <button type="button" class="net-chip sel" onclick="setAirNetwork(this,'mtn','1')">MTN</button>
+              <button type="button" class="net-chip" onclick="setAirNetwork(this,'airtel','2')">Airtel</button>
+              <button type="button" class="net-chip" onclick="setAirNetwork(this,'glo','3')">Glo</button>
+              <button type="button" class="net-chip" onclick="setAirNetwork(this,'9mobile','4')">9mobile</button>
+            </div>
+            <input type="hidden" id="air_network_id" name="network_id" value="1">
+            <div class="f-group"><label>Phone number</label><input type="tel" name="phone" id="air-phone"
+                placeholder="080XXXXXXXX" maxlength="11" required></div>
+            <div class="f-group"><label>Amount (₦)</label><input type="number" name="amount" id="air-amt"
+                placeholder="Enter amount" min="50" required></div>
+            <div class="amt-chips">
+              <button type="button" class="amt-chip" onclick="setAmt('air-amt',100)">₦100</button>
+              <button type="button" class="amt-chip" onclick="setAmt('air-amt',200)">₦200</button>
+              <button type="button" class="amt-chip" onclick="setAmt('air-amt',500)">₦500</button>
+              <button type="button" class="amt-chip" onclick="setAmt('air-amt',1000)">₦1,000</button>
+            </div>
+            <button type="submit" class="submit-btn">Buy Airtime →</button>
+          </form>
+          <div class="side-col">
+            <div class="mini-float">
+              <div class="mini-title">Recent airtime</div>
+              {% for txn in recent_transactions %}
+              {% if txn.service == 'airtime' %}
+              <div class="txn-row" style="cursor: pointer;"
+                onclick="showReceipt('{{ txn.service|title }}', '{{ txn.amount|floatformat:2 }}', '{{ txn.status|title }}', '{{ txn.created_at|date:'M d, Y · g:i A' }}', '{{ txn.reference }}', '{{ txn.phone|default:'' }}', '{% if txn.network_id == 1 %}MTN{% elif txn.network_id == 2 %}Airtel{% elif txn.network_id == 4 %}Glo{% elif txn.network_id == 3 %}9mobile{% else %}N/A{% endif %}')">
+                <div class="txn-ico"
+                  style="background:{% if txn.status == 'success' %}rgb(220,252,231){% else %}rgb(255,237,200){% endif %}">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                    stroke="{% if txn.status == 'success' %}rgb(22,163,74){% else %}rgb(217,119,6){% endif %}"
+                    stroke-width="2">
+                    <path d="M2 16.5A14.5 14.5 0 0016.5 2" />
+                  </svg>
+                </div>
+                <div class="txn-info">
+                  <div class="txn-name">{% if txn.network_id == 1 %}MTN{% elif txn.network_id == 2 %}Airtel{% elif txn.network_id == 4 %}Glo{% else %}9mobile{% endif %} · {{ txn.phone|default:"Unknown" }}</div>
+                  <div class="txn-time">{{ txn.created_at|date:"M d, g:i A" }}</div>
+                </div>
+                <div style="text-align:right;flex-shrink:0">
+                  <div class="txn-amt">-₦{{ txn.amount|floatformat:0 }}</div>
+                  <div class="txn-badge">{% if txn.status == 'success' %}Success{% else %}{{ txn.status|title }}{% endif %}</div>
+                </div>
+              </div>
+              {% endif %}
+              {% endfor %}
+              {% if not recent_transactions %}
+              <div style="font-size:0.8rem;color:rgb(160,160,180);padding:8px 0;">No airtime purchases yet.</div>
+              {% endif %}
+            </div>
+            <div class="mini-float" style="animation-delay:.5s">
+              <div class="mini-title">Monthly spending</div>
+              <div class="bar-wrap">
+                <div class="bar-labels"><span>₦{{ stats.airtime.spending|floatformat:0 }} used</span><span>₦{{ airtime_target }}</span></div>
+                <div class="bar-track">
+                  <div class="bar-fill" style="width:{{ airtime_pct }}%"></div>
+                </div>
+              </div>
+              <div style="font-size:10px;color:rgb(160,160,180);margin-top:5px">₦{{ airtime_rem|floatformat:0 }}
+                remaining</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ DATA PANEL ════════════════════════════════ -->
+      <div class="panel form-only" id="panel-data">
+        <div class="stats-row">
+          <div class="stat-float">
+            <div class="stat-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--blue)"
+                stroke-width="1.8">
+                <path
+                  d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856a10.5 10.5 0 0113.788 0M1.924 8.674a15.75 15.75 0 0120.152 0M12 19.5h.008v.008H12V19.5z" />
+              </svg></div>
+            <div class="stat-label">This month</div>
+            <div class="stat-val">₦{{ stats.data.spending|floatformat:2 }}</div>
+            <div class="stat-ch neutral">{{ stats.data.count }} transactions</div>
+          </div>
+          <div class="stat-float">
+            <div class="stat-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--blue)"
+                stroke-width="1.8">
+                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
+              </svg></div>
+            <div class="stat-label">Transactions</div>
+            <div class="stat-val">{{ stats.data.count }}</div>
+            <div class="stat-ch neutral">Successful attempts</div>
+          </div>
+          <div class="stat-float">
+            <div class="stat-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--blue)"
+                stroke-width="1.8">
+                <rect x="2" y="5" width="20" height="14" rx="2" />
+                <path d="M2 10h20" />
+              </svg></div>
+            <div class="stat-label">Active plan</div>
+            <div class="stat-val">10 GB</div>
+            <div class="stat-ch neutral">Expires Apr 22</div>
+          </div>
+          <div class="stat-float">
+            <div class="stat-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--blue)"
+                stroke-width="1.8">
+                <path d="M2 16.5A14.5 14.5 0 0016.5 2M2 11A9 9 0 0011 2" />
+              </svg></div>
+            <div class="stat-label">Most used</div>
+            <div class="stat-val" style="font-size:.95rem">MTN</div>
+            <div class="stat-ch neutral">5 of 9 txns</div>
+          </div>
+        </div>
+        <div class="two-col">
+          <form method="post" action="{% url 'purchase_data_view' %}" class="float-card" style="margin:0;"
+            id="data-form">
+            {% csrf_token %}
+            <input type="hidden" name="network" id="data-net-val" value="1">
+            <div class="card-title">
+              <div class="card-title-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                  stroke="var(--blue)" stroke-width="1.8">
+                  <path
+                    d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856a10.5 10.5 0 0113.788 0M1.924 8.674a15.75 15.75 0 0120.152 0M12 19.5h.008v.008H12V19.5z" />
+                </svg></div>Buy Data Bundle
+            </div>
+            <label
+              style="font-size:10px;color:rgb(140,140,160);font-weight:500;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:7px">Network</label>
+            <div class="chip-row" id="data-nets">
+              <button type="button" class="net-chip sel"
+                onclick="selChip(this,'data-nets','data-net-val','1');loadDataPlans('mtn')">MTN</button>
+              <button type="button" class="net-chip"
+                onclick="selChip(this,'data-nets','data-net-val','2');loadDataPlans('airtel')">Airtel</button>
+              <button type="button" class="net-chip"
+                onclick="selChip(this,'data-nets','data-net-val','3');loadDataPlans('glo')">Glo</button>
+              <button type="button" class="net-chip"
+                onclick="selChip(this,'data-nets','data-net-val','4');loadDataPlans('9mobile')">9mobile</button>
+            </div>
+            <input type="hidden" id="network_input" name="network_id" value="1">
+            <div class="f-group"><label>Phone number</label><input type="tel" name="phone" id="data-phone"
+                placeholder="080XXXXXXXX" maxlength="11" required></div>
+            <div class="f-group"><label>Select bundle</label>
+              <select name="plan_id" id="data-bundle" required>
+                <option id="data_opt_value" value="">Choose a bundle…</option>
+              </select>
+            </div>
+            <button type="submit" class="submit-btn">Buy Data →</button>
+          </form>
+          <div class="side-col">
+            <div class="mini-float">
+              <div class="mini-title">Popular bundles</div>
+              <div class="bundle-row" onclick="quickBundle('5GB · 30 days|1500')">
+                <div class="bundle-dot"></div><span class="bundle-name">5 GB · 30 days</span><span
+                  class="bundle-price">₦1,500</span>
+              </div>
+              <div class="bundle-row" onclick="quickBundle('10GB · 30 days|2500')">
+                <div class="bundle-dot" style="background:rgb(0,153,204)"></div><span class="bundle-name">10 GB · 30
+                  days</span><span class="bundle-price">₦2,500</span>
+              </div>
+              <div class="bundle-row" onclick="quickBundle('20GB · 30 days|4500')">
+                <div class="bundle-dot" style="background:rgb(217,119,6)"></div><span class="bundle-name">20 GB · 30
+                  days</span><span class="bundle-price">₦4,500</span>
+              </div>
+            </div>
+            <div class="mini-float" style="animation-delay:.7s">
+              <div class="mini-title">Active plan usage</div>
+              <div class="bar-wrap">
+                <div class="bar-labels"><span>₦{{ stats.data.spending|floatformat:0 }} used</span><span>₦{{ data_target
+                    }}</span></div>
+                <div class="bar-track">
+                  <div class="bar-fill" style="width:{{ data_pct }}%"></div>
+                </div>
+              </div>
+              <div style="font-size:10px;color:rgb(160,160,180);margin-top:5px">₦{{ data_rem|floatformat:0 }} remaining
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ CABLE PANEL ════════════════════════════════ -->
+      <div class="panel form-only" id="panel-cable">
+        <div class="stats-row">
+          <div class="stat-float stat-cable-1">
+            <div class="stat-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--blue)"
+                stroke-width="1.8">
+                <path
+                  d="M6 20.25h12m-7.5-3v3m-2.508-3H18a.75.75 0 00.75-.75V6a.75.75 0 00-.75-.75H6A.75.75 0 005.25 6v10.5c0 .414.336.75.75.75z" />
+              </svg></div>
+            <div class="stat-label">This month</div>
+            <div class="stat-val">₦{{ stats.cable.spending|floatformat:2 }}</div>
+            <div class="stat-ch neutral">{{ stats.cable.count }} transactions</div>
+          </div>
+          <div class="stat-float stat-cable-2">
+            <div class="stat-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--blue)"
+                stroke-width="1.8">
+                <rect x="2" y="3" width="20" height="14" rx="2" />
+                <path d="M8 21h8M12 17v4" />
+              </svg></div>
+            <div class="stat-label">Subscriptions</div>
+            <div class="stat-val">{{ cable_transactions|length }}</div>
+            <div class="stat-ch neutral">Records</div>
+          </div>
+          <div class="stat-float stat-cable-3">
+            <div class="stat-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--blue)"
+                stroke-width="1.8">
+                <rect x="3" y="4" width="18" height="18" rx="2" />
+                <path d="M16 2v4M8 2v4M3 10h18" />
+              </svg></div>
+            <div class="stat-label">Next renewal</div>
+            <div class="stat-val" style="font-size:.95rem">N/A</div>
+            <div class="stat-ch" style="color:rgb(217,119,6)">Set manual</div>
+          </div>
+          <div class="stat-float stat-cable-4">
+            <div class="stat-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--blue)"
+                stroke-width="1.8">
+                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg></div>
+            <div class="stat-label">Auto-renew</div>
+            <div class="stat-val" style="font-size:.95rem">Off</div>
+            <div class="stat-ch neutral">Inactive</div>
+          </div>
+        </div>
+        <div class="float-card">
+          <div class="card-title">
+            <div class="card-title-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--blue)"
+                stroke-width="1.8">
+                <path
+                  d="M6 20.25h12m-7.5-3v3m-2.508-3H18a.75.75 0 00.75-.75V6a.75.75 0 00-.75-.75H6A.75.75 0 005.25 6v10.5c0 .414.336.75.75.75z" />
+              </svg></div>Cable TV Subscription
+          </div>
+          <div style="text-align:center;padding:40px 20px">
+            <div style="font-size:48px;color:var(--blue);margin-bottom:20px">
+              <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="2" y="3" width="20" height="14" rx="2" />
+                <path d="M8 21h8M12 17v4" />
+              </svg>
+            </div>
+            <h3 style="margin-bottom:15px;color:var(--text)">Subscribe to Cable TV</h3>
+            <p style="color:var(--text-muted);margin-bottom:25px;line-height:1.6">
+              Access premium cable TV services including DSTV, GOTV, and StarTimes. Enjoy your favorite channels with
+              instant subscription activation.
+            </p>
+            <button class="submit-btn" style="padding:12px 30px;font-size:16px;background:var(--grad)"
+              onclick="window.location.href='{% url 'cable_tv' %}'">
+              Browse Cable Plans →
+            </button>
+          </div>
+        </div>
+        <div class="txn-card">
+          <div class="txn-card-hdr">
+            <div class="txn-card-title">Recent cable payments</div>
+            <div class="txn-view" onclick="openHistory()">View all →</div>
+          </div>
+          {% for txn in cable_transactions %}
+          <div class="txn-row" style="cursor: pointer;"
+            onclick="showReceipt('{{ txn.service|title }}', '{{ txn.amount|floatformat:2 }}', '{{ txn.status|title }}', '{{ txn.created_at|date:'M d, Y · g:i A' }}', '{{ txn.reference }}', '{{ txn.phone|default:'' }}', 'N/A')">
+            <div class="txn-ico" style="background:var(--blue-pill)"><svg width="13" height="13" viewBox="0 0 24 24"
+                fill="none" stroke="var(--blue)" stroke-width="2">
+                <path
+                  d="M6 20.25h12m-7.5-3v3m-2.508-3H18a.75.75 0 00.75-.75V6a.75.75 0 00-.75-.75H6A.75.75 0 005.25 6v10.5c0 .414.336.75.75.75z" />
+              </svg></div>
+            <div class="txn-info">
+              <div class="txn-name">{{ txn.description }}</div>
+              <div class="txn-time">{{ txn.created_at|date:"M d, g:i A" }}</div>
+            </div>
+            <div style="text-align:right;flex-shrink:0">
+              <div class="txn-amt">-₦{{ txn.amount|floatformat:0 }}</div>
+              <div
+                class="txn-badge {% if txn.status == 'success' %}success{% elif txn.status == 'failed' %}failed{% else %}pending{% endif %}">
+                {{ txn.status|title }}</div>
+            </div>
+          </div>
+          {% empty %}
+          <div style="text-align:center;padding:20px;color:var(--text-muted);font-size:0.8rem">
+            No recent cable payments found.
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ══ BOTTOM NAV (mobile/tablet) ════════════════════ -->
+  <nav class="bottom-nav">
+    <div class="bn-inner">
+      <button class="bn-item active" id="bn-airtime"
+        onclick="switchTab('airtime',document.getElementById('tab-airtime'));setBnActive(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M2 16.5A14.5 14.5 0 0016.5 2M2 11A9 9 0 0011 2M2 6a4 4 0 014-4M2 21l1-1" />
+        </svg>Airtime
+      </button>
+      <button class="bn-item" id="bn-data"
+        onclick="switchTab('data',document.getElementById('tab-data'));setBnActive(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path
+            d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856a10.5 10.5 0 0113.788 0M1.924 8.674a15.75 15.75 0 0120.152 0M12 19.5h.008v.008H12V19.5z" />
+        </svg>Data
+      </button>
+      <button class="bn-item" id="bn-cable"
+        onclick="switchTab('cable',document.getElementById('tab-cable'));setBnActive(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path
+            d="M6 20.25h12m-7.5-3v3m-2.508-3H18a.75.75 0 00.75-.75V6a.75.75 0 00-.75-.75H6A.75.75 0 005.25 6v10.5c0 .414.336.75.75.75z" />
+        </svg>Cable TV
+      </button>
+      <button class="bn-item" onclick="openHistory()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>History
+      </button>
+    </div>
+  </nav>
+
+  <!-- ══ FUND WALLET MODAL ════════════════════════════════ -->
+  <div class="modal-overlay" id="fundModal" onclick="closeFundWallet(event)">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div class="modal-head-inner">
+          <div class="modal-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8">
+              <rect x="2" y="5" width="20" height="14" rx="2" />
+              <path d="M2 10h20M7 15h2M13 15h4" />
+            </svg>
+          </div>
+          <div class="modal-title">Fund Your Wallet</div>
+          <div class="modal-subtitle">Transfer to the account below — ₦5 charge applies per funding.</div>
+        </div>
+        <button class="modal-close" onclick="closeFundWalletBtn()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        {% if enable_static_va and enable_dynamic_va %}
+        <div class="fund-tabs"
+          style="display:flex;gap:4px;background:var(--bg);padding:4px;border-radius:var(--r-pill);margin-bottom:18px;border:1.5px solid rgb(230,230,250);">
+          <button class="tab-pill active" id="btn-fund-static" style="flex:1;font-size:11px;padding:8px;"
+            onclick="switchFundTab('static')">Static Account</button>
+          <button class="tab-pill" id="btn-fund-dynamic" style="flex:1;font-size:11px;padding:8px;"
+            onclick="switchFundTab('dynamic')">Dynamic Account</button>
+        </div>
+        {% endif %}
+
+        <div id="pane-fund-static" style="display:{% if enable_static_va %}block{% else %}none{% endif %};">
+          {% if virtual_account.has_account %}
+          <!-- Bank card -->
+          <div class="bank-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+              <div class="bank-card-label" style="margin-bottom:0;">Your Static Virtual Account</div>
+              <div
+                style="font-size:10px;background:rgba(255,255,255,0.2);padding:2px 8px;border-radius:10px;font-weight:600;">
+                ₦5 Charge</div>
+            </div>
+
+            <!-- Account Number -->
+            <div class="bank-info-row">
+              <div class="bk-left">
+                <div class="bk-icon">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8">
+                    <rect x="2" y="5" width="20" height="14" rx="2" />
+                    <path d="M2 10h20" />
+                  </svg>
+                </div>
+                <div class="bk-meta">
+                  <span class="bk-key">Account Number</span>
+                  <span class="bk-val" id="va-acct-num">{{ virtual_account.account_number }}</span>
+                </div>
+              </div>
+              <button class="bk-copy" onclick="copyText('{{ virtual_account.account_number }}','va-acct-btn')"
+                id="va-acct-btn">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" />
+                  <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+                </svg>
+                Copy
+              </button>
+            </div>
+
+            <!-- Bank Name -->
+            <div class="bank-info-row">
+              <div class="bk-left">
+                <div class="bk-icon">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8">
+                    <path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 10v11M12 10v11M16 10v11" />
+                  </svg>
+                </div>
+                <div class="bk-meta">
+                  <span class="bk-key">Bank Name</span>
+                  <span class="bk-val">{{ virtual_account.bank_name }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="bank-info-row">
+              <div class="bk-left">
+                <div class="bk-icon">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                </div>
+                <div class="bk-meta">
+                  <span class="bk-key">Account Name</span>
+                  <span class="bk-val">{{ request.user.get_full_name|default:request.user.username }} - SubCard</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="fund-note">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgb(20,120,60)" stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 8v4m0 4h.01" />
+            </svg>
+            <div class="fund-note-text">
+              This is your permanent virtual account. Transfer any amount — your wallet is credited automatically.
+            </div>
+          </div>
+          {% else %}
+          <div class="bank-card" style="text-align:center; padding: 30px 20px;">
+            <div
+              style="color:{% if virtual_account.error %}rgb(220,50,50){% else %}var(--blue){% endif %}; margin-bottom:15px;">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                {% if virtual_account.error %}
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 8v4m0 4h.01" />
+                {% else %}
+                <path d="M21 12V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h7" />
+                <path d="M16 19h6M19 16l3 3-3 3" />
+                {% endif %}
+              </svg>
+            </div>
+            <h4 style="margin-bottom:10px; color:var(--text);">{% if virtual_account.error %}Generation Failed{% else
+              %}Account Not Ready{% endif %}</h4>
+            <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.5;">
+              {% if virtual_account.error %}
+              Failed to generate account. Please try again later.
+              {% else %}
+              We're currently setting up your personal funding account. Please refresh in a moment or contact support if
+              this persists.
+              {% endif %}
+            </p>
+            <button class="btn-activity" style="margin-top:20px; width:100%;" onclick="location.reload()">
+              Try Again →
+            </button>
+          </div>
+          {% endif %}
+        </div>
+
+        <div id="pane-fund-dynamic"
+          style="display:{% if not enable_static_va and enable_dynamic_va %}block{% else %}none{% endif %};">
+          {% if active_dynamic %}
+          <div id="dyn-result">
+            <div class="bank-card">
+              <div class="bank-card-label" style="color:rgb(217,119,6)">Active One-Time Account</div>
+
+              <div class="bank-info-row">
+                <div class="bk-left">
+                  <div class="bk-icon" style="background:rgba(217,119,6,0.1)">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgb(217,119,6)"
+                      stroke-width="1.8">
+                      <rect x="2" y="5" width="20" height="14" rx="2" />
+                      <path d="M2 10h20" />
+                    </svg>
+                  </div>
+                  <div class="bk-meta">
+                    <span class="bk-key">Amount to Transfer</span>
+                    <span class="bk-val" style="color:rgb(217,119,6)">₦{{ active_dynamic.amount|floatformat:2 }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bank-info-row">
+                <div class="bk-left">
+                  <div class="bk-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--blue)"
+                      stroke-width="1.8">
+                      <rect x="2" y="5" width="20" height="14" rx="2" />
+                      <path d="M2 10h20" />
+                    </svg></div>
+                  <div class="bk-meta">
+                    <span class="bk-key">Account Number</span>
+                    <span class="bk-val" id="dyn-res-acct-active">{{ active_dynamic.account_number }}</span>
+                  </div>
+                </div>
+                <button class="bk-copy" onclick="copyText('{{ active_dynamic.account_number }}','dyn-copy-btn-active')"
+                  id="dyn-copy-btn-active">Copy</button>
+              </div>
+
+              <div class="bank-info-row">
+                <div class="bk-left">
+                  <div class="bk-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--blue)"
+                      stroke-width="1.8">
+                      <path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 10v11M12 10v11M16 10v11" />
+                    </svg></div>
+                  <div class="bk-meta">
+                    <span class="bk-key">Bank Name</span>
+                    <span class="bk-val">{{ active_dynamic.bank_name }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="fund-note" style="background:rgb(255,248,240);border-color:rgb(255,230,200);">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgb(217,119,6)" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 8v4m0 4h.01" />
+              </svg>
+              <div class="fund-note-text" style="color:rgb(180,90,10)">
+                Expires in <span id="dyn-timer">{{ active_dynamic.expiry_at|timeuntil }}</span>. One-time use only.
+              </div>
+            </div>
+            <button class="submit-btn" style="width:100%;background:rgb(160,160,180);margin-top:12px;"
+              onclick="location.reload()">Generate New →</button>
+          </div>
+          {% else %}
+          <div id="dyn-form">
+            <div class="bank-card" style="background:rgb(255,250,245);border-color:rgb(255,230,200);">
+              <div class="bank-card-label">Request Dynamic Account</div>
+              <p style="font-size:0.78rem;color:rgb(120,90,60);margin-bottom:14px;">
+                Temporary accounts expire after 1 hour. Enter the exact amount you want to pay.
+              </p>
+              <div class="f-group" style="margin-bottom:16px;">
+                <label
+                  style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:rgb(140,140,180);">Amount to
+                  Pay (₦)</label>
+                <input type="number" id="dyn-amt" placeholder="e.g. 5000" min="100">
+              </div>
+              <button class="submit-btn" id="btn-request-dyn" style="width:100%;" onclick="requestDynamicVA()">Generate
+                Account →</button>
+            </div>
+          </div>
+
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <!-- ══ HISTORY MODAL ══════════════════════════════════ -->
+  <div class="modal-overlay" id="historyModal" onclick="closeHistory(event)">
+    <div class="modal-card" style="max-width: 500px; height: 80vh; display: flex; flex-direction: column;">
+      <div class="modal-head">
+        <div class="modal-head-inner">
+          <div class="modal-icon" style="background: var(--blue)">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8">
+              <path d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div class="modal-title">Transaction History</div>
+          <div class="modal-subtitle">View all your past activities</div>
+        </div>
+        <button class="modal-close" onclick="closeHistoryBtn()">✕</button>
+      </div>
+
+      <div class="modal-body" style="flex: 1; overflow-y: auto; padding-top: 10px;">
+        {% for txn in all_transactions %}
+        <div class="txn-row" style="padding: 12px 14px; border-bottom: 1px solid rgb(240, 240, 255); cursor: pointer;"
+          onclick="showReceipt('{{ txn.service|title }}', '{{ txn.amount|floatformat:2 }}', '{{ txn.status|title }}', '{{ txn.created_at|date:'M d, Y · g:i A' }}', '{{ txn.reference }}', '{{ txn.phone|default:'' }}', '{% if txn.network_id == 1 %}MTN{% elif txn.network_id == 2 %}Airtel{% elif txn.network_id == 4 %}Glo{% elif txn.network_id == 3 %}9mobile{% else %}N/A{% endif %}')">
+          <div class="txn-ico"
+            style="background: {% if txn.status == 'success' %}rgb(220, 252, 231){% else %}rgb(255, 237, 200){% endif %}; width: 34px; height: 34px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+              stroke="{% if txn.status == 'success' %}rgb(22, 163, 74){% else %}rgb(217, 119, 6){% endif %}"
+              stroke-width="2">
+              {% if txn.service == 'airtime' %}
+              <path d="M2 16.5A14.5 14.5 0 0016.5 2" />
+              {% elif txn.service == 'data' %}
+              <path
+                d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856a10.5 10.5 0 0113.788 0M1.924 8.674a15.75 15.75 0 0120.152 0M12 19.5h.008v.008H12V19.5z" />
+              {% else %}
+              <rect x="3" y="4" width="18" height="18" rx="2" />
+              <path d="M16 2v4M8 2v4M3 10h18" />
+              {% endif %}
+            </svg>
+          </div>
+          <div class="txn-info">
+            <div class="txn-name" style="font-size: 0.82rem;">
+              {{ txn.service|title }} ·
+              {% if txn.service == 'airtime' or txn.service == 'data' %}
+              {% if txn.network_id == 1 %}MTN{% elif txn.network_id == 2 %}Airtel{% elif txn.network_id == 4 %}Glo{%
+              else %}9mobile{% endif %}
+              {% endif %}
+              · {{ txn.phone|default:"" }}
+            </div>
+            <div class="txn-time" style="font-size: 0.72rem;">{{ txn.created_at|date:"M d, Y · g:i A" }}</div>
+          </div>
+          <div style="text-align: right; flex-shrink: 0;">
+            <div class="txn-amt" style="font-size: 0.88rem; font-weight: 700;">-₦{{ txn.amount|floatformat:0 }}</div>
+            <div class="txn-badge" style="font-size: 10px;">{{ txn.status|title }}</div>
+          </div>
+        </div>
+        {% empty %}
+        <div style="text-align: center; padding: 40px 20px; color: rgb(160, 160, 180);">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"
+            style="margin-bottom: 12px; opacity: 0.5;">
+            <path d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p>No transactions yet.</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ REFERRAL MODAL ════════════════════════════════════ -->
+  <div class="modal-overlay" id="referralModal" onclick="closeReferralOverlay(event)">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div class="modal-head-inner">
+          <div class="modal-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8">
+              <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" />
+              <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" />
+            </svg>
+          </div>
+          <div class="modal-title">Refer & Earn</div>
+          <div class="modal-subtitle">Earn 15% from direct referrals + 5% from their referrals</div>
+        </div>
+        <button class="modal-close" onclick="closeReferralBtn()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Stats -->
+        <div class="ref-stats">
+          <div class="ref-stat">
+            <div class="ref-stat-val">{{ referral_count|default:"0" }}</div>
+            <div class="ref-stat-key">Friends Referred</div>
+          </div>
+          <div class="ref-stat">
+            <div class="ref-stat-val" style="color:rgb(22,163,74)">₦{{ total_referral_earnings|default:"0"|floatformat:2 }}</div>
+            <div class="ref-stat-key">Total Earned</div>
+          </div>
+          <div class="ref-stat">
+            <div class="ref-stat-val" style="color:rgb(52,52,255)">₦{{ level2_earnings|default:"0"|floatformat:2 }}
+            </div>
+            <div class="ref-stat-key">Community Network</div>
+          </div>
+        </div>
+
+        <!-- Referral link box -->
+        <div
+          style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgb(160,160,190);margin-bottom:8px">
+          Your Referral Link</div>
+        <div class="ref-link-box">
+          <input class="ref-link-input" id="ref-link-val" type="text"
+            value="https://subcard.app/ref/{{ referral_code }}" readonly>
+          <button class="ref-copy-btn" onclick="copyRefLink()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              style="display:inline;vertical-align:middle;margin-right:4px">
+              <rect x="9" y="9" width="13" height="13" rx="2" />
+              <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+            </svg>
+            Copy Link
+          </button>
+        </div>
+
+        <!-- Share buttons -->
+        <div
+          style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgb(160,160,190);margin-bottom:10px">
+          Share via</div>
+        <div class="ref-share-row">
+          <button class="ref-share-btn" onclick="shareRef('whatsapp')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgb(37,211,102)" stroke-width="1.8">
+              <path
+                d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" />
+            </svg>
+            WhatsApp
+          </button>
+          <button class="ref-share-btn" onclick="shareRef('twitter')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgb(29,155,240)" stroke-width="1.8">
+              <path
+                d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z" />
+            </svg>
+            Twitter
+          </button>
+          <button class="ref-share-btn" onclick="shareRef('telegram')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgb(38,140,221)" stroke-width="1.8">
+              <path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" />
+            </svg>
+            Telegram
+          </button>
+        </div>
+
+        <!-- Withdrawal button -->
+        <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--border);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <div>
+              <div
+                style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted);">
+                Available for Withdrawal</div>
+              <div style="font-size: 1.4rem; font-weight: 700; color: var(--heading);">₦<span id="ref-balance-val">{{ referral_wallet|default:"0.00"|floatformat:2 }}</span></div>
+            </div>
+            <button class="btn-activity" onclick="window.location.href='{% url 'referral_dashboard' %}'" id="withdraw-btn">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M7 7l5 5-5 5M13 7l5 5-5 5" />
+              </svg>
+              Withdraw to Wallet
+            </button>
+          </div>
+          <p style="font-size: 0.75rem; color: var(--text-muted);">Minimum withdrawal amount is ₦100.00</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- ══ RECEIPT MODAL ════════════════════════════════════ -->
+  <div class="modal-overlay" id="receiptModal" onclick="closeReceipt(event)">
+    <div class="modal-card receipt-card">
+      <button class="modal-close" onclick="document.getElementById('receiptModal').classList.remove('open')">✕</button>
+
+      <div class="receipt-header">
+        <div class="receipt-logo">SUBCARD</div>
+        <div class="receipt-title">Transaction Receipt</div>
+        <div id="r-status-badge" class="receipt-status status-success"
+          style="margin-top:10px; display:inline-block; padding:4px 12px; border-radius:20px; font-size:10px; font-weight:700; text-transform:uppercase;">
+          Success</div>
+      </div>
+
+      <div class="receipt-body">
+        <div class="receipt-item">
+          <span class="receipt-label">Service</span>
+          <span class="receipt-val" id="r-service">Data Bundle</span>
+        </div>
+        <div class="receipt-item">
+          <span class="receipt-label">Network</span>
+          <span class="receipt-val" id="r-network">MTN</span>
+        </div>
+        <div class="receipt-item">
+          <span class="receipt-label">Recipient</span>
+          <span class="receipt-val" id="r-phone">08012345678</span>
+        </div>
+        <div class="receipt-item">
+          <span class="receipt-label">Date & Time</span>
+          <span class="receipt-val" id="r-date">May 12, 2024 · 10:30 AM</span>
+        </div>
+        <div class="receipt-item">
+          <span class="receipt-label">Reference</span>
+          <span class="receipt-val" id="r-ref" style="font-family:monospace; font-size:0.75rem;">REF-123456789</span>
+        </div>
+
+        <div class="receipt-footer">
+          <div class="receipt-label">Amount Paid</div>
+          <div class="receipt-amount" id="r-amount">₦1,500</div>
+        </div>
+      </div>
+
+      <div class="receipt-btns" style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+        <button class="btn-activity" style="width:100%; justify-content:center;" onclick="window.print()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            style="margin-right:6px;">
+            <path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6v-8z" />
+          </svg>
+          Print
+        </button>
+        <button class="btn-activity"
+          style="width:100%; justify-content:center; background:var(--blue); color:white; border:none;"
+          onclick="shareReceipt()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            style="margin-right:6px;">
+            <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13" />
+          </svg>
+          Share
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="modal-overlay" id="settingsModal" onclick="closeSettingsOverlay(event)">
+    <div class="modal-card settings-card">
+
+      <!-- Header -->
+      <div class="modal-head">
+        <div class="modal-head-inner">
+          <div class="modal-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8">
+              <circle cx="12" cy="12" r="3" />
+              <path
+                d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" />
+            </svg>
+          </div>
+          <div class="modal-title">Account Settings</div>
+          <div class="modal-subtitle">Manage your profile, security and preferences</div>
+        </div>
+        <button class="modal-close" onclick="closeSettingsBtn()">✕</button>
+      </div>
+
+      <!-- Inner tabs -->
+      <div class="stg-tabs">
+        <button class="stg-tab active" onclick="switchStgTab('profile',this)">Profile</button>
+        <button class="stg-tab" onclick="switchStgTab('security',this)">Security</button>
+        <button class="stg-tab" onclick="switchStgTab('pin',this)">Transaction PIN</button>
+        <button class="stg-tab" onclick="switchStgTab('danger',this)">Danger Zone</button>
+      </div>
+
+      <!-- ── PROFILE TAB ─────────────────────────────────── -->
+      <form method="POST" action="{% url 'update_profile' %}" class="stg-pane active" id="stg-profile">
+        {% csrf_token %}
+        <!-- Avatar row -->
+        <div class="stg-avatar-row">
+          <div class="stg-avatar">
+            {{ request.user.username|slice:":2"|upper }}
+          </div>
+          <div class="stg-avatar-info">
+            <div class="stg-avatar-name">
+              {{ request.user.get_full_name|default:request.user.username }}
+            </div>
+            <div class="stg-avatar-email">
+              {{ request.user.email }}
+            </div>
+          </div>
+        </div>
+
+        <div class="stg-section-label">Personal Information</div>
+        <div class="stg-row-2">
+          <div class="stg-field">
+            <label>First Name</label>
+            <input class="stg-input" type="text" name="first_name" value="{{ request.user.first_name }}"
+              placeholder="First name">
+          </div>
+          <div class="stg-field">
+            <label>Last Name</label>
+            <input class="stg-input" type="text" name="last_name" value="{{ request.user.last_name }}"
+              placeholder="Last name">
+          </div>
+        </div>
+        <div class="stg-field">
+          <label>Email Address</label>
+          <input class="stg-input" type="email" name="email" value="{{ request.user.email }}"
+            placeholder="your@email.com">
+        </div>
+        <div class="stg-field">
+          <label>Phone Number</label>
+          <input class="stg-input" type="tel" name="phone" value="{{ profile.phone }}" placeholder="080XXXXXXXX"
+            maxlength="11">
+        </div>
+
+        <div class="stg-section-label">Address</div>
+        <div class="stg-field">
+          <label>Street Address</label>
+          <input class="stg-input" type="text" name="address" value="{{ data.address }}"
+            placeholder="e.g. 12 Broad Street, Victoria Island">
+        </div>
+        <div class="stg-row-2">
+          <div class="stg-field">
+            <label>State</label>
+            <input class="stg-input" type="text" name="state" value="{{ data.state }}" placeholder="e.g. Lagos">
+          </div>
+          <div class="stg-field">
+            <label>City</label>
+            <input class="stg-input" type="text" name="city" value="{{ data.city }}" placeholder="e.g. Ikeja">
+          </div>
+        </div>
+
+        <button type="submit" class="stg-save-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" />
+            <polyline points="17 21 17 13 7 13 7 21" />
+            <polyline points="7 3 7 8 15 8" />
+          </svg>
+          Save Changes
+        </button>
+      </form>
+
+      <!-- ── SECURITY TAB ────────────────────────────────── -->
+      <form method="POST" action="{% url 'update_password' %}" class="stg-pane" id="stg-security">
+        {% csrf_token %}
+        <div class="stg-section-label">Change Password</div>
+        <div class="stg-field">
+          <label>Current Password</label>
+          <input class="stg-input" type="password" name="current_password" placeholder="Enter current password"
+            required>
+        </div>
+        <div class="stg-field">
+          <label>New Password</label>
+          <input class="stg-input" type="password" name="new_password" placeholder="Minimum 8 characters" required>
+        </div>
+        <div class="stg-field">
+          <label>Confirm New Password</label>
+          <input class="stg-input" type="password" name="confirm_password" placeholder="Re-enter new password" required>
+        </div>
+
+        <button type="submit" class="stg-save-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" />
+            <polyline points="17 21 17 13 7 13 7 21" />
+            <polyline points="7 3 7 8 15 8" />
+          </svg>
+          Update Password
+        </button>
+      </form>
+
+      <!-- ── TRANSACTION PIN TAB ────────────────────────── -->
+      <form method="POST" action="{% url 'update_transaction_pin' %}" class="stg-pane" id="stg-pin">
+        {% csrf_token %}
+        <div class="stg-section-label">{% if request.user.transaction_pin %}Change{% else %}Set{% endif %} Transaction PIN
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px;">
+          Your Transaction PIN is required for all purchases to keep your wallet safe.
+        </p>
+
+        {% if request.user.transaction_pin %}
+        <div class="stg-field">
+          <label>Current PIN</label>
+          <input class="stg-input" type="password" name="current_pin" placeholder="Enter current 4-digit PIN"
+            maxlength="4" inputmode="numeric">
+        </div>
+        {% endif %}
+
+        <div class="stg-field">
+          <label>New PIN</label>
+          <input class="stg-input" type="password" name="new_pin" placeholder="Enter new 4-digit PIN" maxlength="4"
+            inputmode="numeric" required>
+        </div>
+        <div class="stg-field">
+          <label>Confirm New PIN</label>
+          <input class="stg-input" type="password" name="confirm_pin" placeholder="Re-enter new PIN" maxlength="4"
+            inputmode="numeric" required>
+        </div>
+
+        <button type="submit" class="stg-save-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          </svg>
+          {% if request.user.transaction_pin %}Update PIN{% else %}Set PIN{% endif %}
+        </button>
+      </form>
+
+
+
+      <!-- ── DANGER ZONE TAB ─────────────────────────────── -->
+      <div class="stg-pane" id="stg-danger">
+        <div class="stg-section-label" style="margin-top:0">Account Actions</div>
+        <div class="stg-danger-row">
+          <div>
+            <div class="stg-danger-title">Sign Out</div>
+            <div class="stg-danger-sub">Log out of your account on this device.</div>
+          </div>
+          <a href="{% url 'logout' %}" class="stg-danger-btn"
+            style="text-decoration:none; display:flex; align-items:center; justify-content:center;">Log Out</a>
+        </div>
+      </div>
+
+    </div><!-- /modal-card -->
+  </div><!-- /settingsModal -->
+
+
+
+  <!-- ══ TRANSACTION PIN MODAL ══════════════════════════ -->
+  <div id="pinModal" class="modal-overlay" onclick="closePinOverlay(event)">
+    <div class="modal-card pin-modal-card">
+      <div class="pin-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+          <path d="M7 11V7a5 5 0 0110 0v4" />
+        </svg>
+      </div>
+      <h2 style="font-size: 1.4rem; font-weight: 700; color: var(--heading); margin-bottom: 8px;">Enter PIN</h2>
+      <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 5px;">Security Check</p>
+      <p style="font-size: 0.82rem; color: var(--blue); font-weight: 600; margin-bottom: 20px;" id="pin-service-name">
+        Confirm Purchase</p>
+
+      <div class="pin-grid">
+        <input type="password" class="pin-digit" maxlength="1" inputmode="numeric" id="pin1" autocomplete="off">
+        <input type="password" class="pin-digit" maxlength="1" inputmode="numeric" id="pin2" autocomplete="off">
+        <input type="password" class="pin-digit" maxlength="1" inputmode="numeric" id="pin3" autocomplete="off">
+        <input type="password" class="pin-digit" maxlength="1" inputmode="numeric" id="pin4" autocomplete="off">
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px;">
+        <button class="modal-btn-cancel" onclick="closePinBtn()" style="width: 100%;">Cancel</button>
+        <button class="modal-btn-confirm" onclick="confirmPin()" style="width: 100%;" id="pin-confirm-btn">Verify</button>
+      </div>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 20px;">
+        Forgot PIN? Contact support.
+      </p>
+    </div>
+  </div>
+
+  <!-- ══ PIN SETUP MODAL ════════════════════════════════ -->
+  <div id="pinSetupModal" class="modal-overlay">
+    <div class="modal-card pin-modal-card">
+      <div class="pin-icon" style="background: rgba(245, 158, 11, 0.1); color: rgb(245, 158, 11);">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        </svg>
+      </div>
+      <h2 style="font-size: 1.3rem; font-weight: 700; color: var(--heading); margin-bottom: 12px;">Set Transaction PIN
+      </h2>
+      <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 25px; line-height: 1.5;">
+        You haven't set a Transaction PIN yet. You need this to authorize purchases and withdrawals.
+      </p>
+
+      <button class="modal-btn-confirm" onclick="goToPinSetup()" style="width: 100%; padding: 14px;">
+        Setup PIN Now
+      </button>
+    </div>
+  </div>
+
+  <script>
+    /* ── State ─────────────────────────────────────────── */
+    let currentTab = 'airtime';
+    let activityOn = false;
+    let pendingPurchaseForm = null;
+    const hasPin = {% if request.user.transaction_pin %}true{% else %}false{% endif %};
+
+    /* ── Transaction PIN Logic ──────────────────────────── */
+    const pinDigits = [
+      document.getElementById('pin1'),
+      document.getElementById('pin2'),
+      document.getElementById('pin3'),
+      document.getElementById('pin4')
+    ];
+
+    pinDigits.forEach((el, idx) => {
+      el.addEventListener('input', (e) => {
+        if (el.value.length === 1 && idx < 3) pinDigits[idx + 1].focus();
+        if (idx === 3 && el.value.length === 1) confirmPin();
+      });
+      el.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !el.value && idx > 0) pinDigits[idx - 1].focus();
+      });
+    });
+
+    function openPinModal(serviceName, form) {
+      if (!hasPin) {
+        document.getElementById('pinSetupModal').classList.add('open');
+        return;
+      }
+      pendingPurchaseForm = form;
+      document.getElementById('pin-service-name').innerText = serviceName;
+      document.getElementById('pinModal').classList.add('open');
+      pinDigits.forEach(el => el.value = '');
+      setTimeout(() => pinDigits[0].focus(), 300);
+    }
+
+    function closePinBtn() {
+      document.getElementById('pinModal').classList.remove('open');
+      pendingPurchaseForm = null;
+    }
+
+    function closePinOverlay(e) {
+      if (e.target.id === 'pinModal') closePinBtn();
+    }
+
+    function confirmPin() {
+      const pin = pinDigits.map(el => el.value).join('');
+      if (pin.length < 4) return;
+
+      const btn = document.getElementById('pin-confirm-btn');
+      btn.disabled = true;
+      btn.innerText = 'Verifying...';
+
+      // Add PIN to the form and submit
+      if (pendingPurchaseForm) {
+        const pinInput = document.createElement('input');
+        pinInput.type = 'hidden';
+        pinInput.name = 'transaction_pin';
+        pinInput.value = pin;
+        pendingPurchaseForm.appendChild(pinInput);
+        pendingPurchaseForm.submit();
+      }
+    }
+
+    function goToPinSetup() {
+      document.getElementById('pinSetupModal').classList.remove('open');
+      openSettings();
+      switchStgTab('pin', document.querySelector('.stg-tab[onclick*="pin"]'));
+    }
+
+    // Intercept purchase forms
+    document.addEventListener('DOMContentLoaded', () => {
+      const airtimeForm = document.getElementById('airtime-form');
+      const dataForm = document.getElementById('data-form');
+
+      if (airtimeForm) {
+        airtimeForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const network = document.querySelector('#air-nets .net-chip.sel').innerText;
+          const phone = document.getElementById('air-phone').value;
+          const amt = document.getElementById('air-amt').value;
+          openPinModal(`Airtime: ${network} ${phone} (₦${amt})`, airtimeForm);
+        });
+      }
+
+      if (dataForm) {
+        dataForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const network = document.querySelector('#data-nets .net-chip.sel').innerText;
+          const phone = document.getElementById('data-phone').value;
+          const bundle = document.getElementById('data-bundle').options[document.getElementById('data-bundle').selectedIndex].text;
+          openPinModal(`Data: ${network} ${phone} - ${bundle.split('—')[0]}`, dataForm);
+        });
+      }
+    });
+
+    /* ── Settings Modal ─────────────────────────────────── */
+    function openSettings(e) {
+      if (e) e.preventDefault();
+      document.getElementById('settingsModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeSettingsOverlay(e) {
+      if (e.target === document.getElementById('settingsModal')) closeSettingsBtn();
+    }
+    function closeSettingsBtn() {
+      document.getElementById('settingsModal').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    function switchStgTab(name, btn) {
+      document.querySelectorAll('.stg-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.stg-pane').forEach(p => p.classList.remove('active'));
+      document.getElementById('stg-' + name).classList.add('active');
+    }
+    function saveSettings() {
+      closeSettingsBtn();
+      toast('✓ Settings saved successfully!');
+    }
+
+    /* ── Fund Wallet Modal ──────────────────────────────── */
+    function openFundWallet() {
+      document.getElementById('fundModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeFundWallet(e) {
+      if (e.target === document.getElementById('fundModal')) closeFundWalletBtn();
+    }
+    function closeFundWalletBtn() {
+      document.getElementById('fundModal').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    /* ── Referral Modal ─────────────────────────────────── */
+    function openReferral(e) {
+      if (e) e.preventDefault();
+      document.getElementById('referralModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeReferralOverlay(e) {
+      if (e.target === document.getElementById('referralModal')) closeReferralBtn();
+    }
+    function closeReferralBtn() {
+      document.getElementById('referralModal').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    /* ── Referral Withdrawal ───────────────────────────── */
+    function openReferralWithdraw() {
+      document.getElementById('refWithdrawModal').classList.add('open');
+    }
+    function closeRefWithdrawBtn() {
+      document.getElementById('refWithdrawModal').classList.remove('open');
+    }
+    function closeRefWithdrawOverlay(e) {
+      if (e.target === document.getElementById('refWithdrawModal')) closeRefWithdrawBtn();
+    }
+    async function doWithdrawReferral() {
+      const amt = document.getElementById('withdraw-amt').value;
+      if (!amt || parseFloat(amt) < 100) { toast('Minimum withdrawal is ₦100'); return; }
+
+      const btn = document.getElementById('btn-withdraw-ref');
+      btn.disabled = true;
+      btn.textContent = 'Processing...';
+
+      try {
+        const resp = await fetch('{% url "withdraw_referral" %}', {
+          method: 'POST',
+          headers: { 'X-CSRFToken': CSRF, 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({ amount: amt })
+        });
+        const d = await resp.json();
+        if (d.success) {
+          toast('✓ ' + d.message);
+          setTimeout(() => location.reload(), 1500);
+        } else {
+          toast('Error: ' + d.error);
+        }
+      } catch (e) {
+        toast('Failed to process withdrawal');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Confirm Withdrawal';
+      }
+    }
+
+    /* ── History Modal ──────────────────────────────────── */
+    function openHistory() {
+      document.getElementById('historyModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeHistory(e) {
+      if (e.target === document.getElementById('historyModal')) closeHistoryBtn();
+    }
+    function closeHistoryBtn() {
+      document.getElementById('historyModal').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    /* ── Data Plans by Network (from database) ────────── */
+    const dataPlans = {{ data_plans_json| safe }};
+
+    const popularBundles = {
+      mtn: [
+        { name: '5GB · 30 days', price: '₦1,500' },
+        { name: '10GB · 30 days', price: '₦2,500' },
+        { name: '20GB · 30 days', price: '₦4,500' }
+      ],
+      airtel: [
+        { name: '5GB · 30 days', price: '₦1,500' },
+        { name: '10GB · 30 days', price: '₦2,500' },
+        { name: '15GB · 30 days', price: '₦3,500' }
+      ],
+
+      glo: [
+        { name: '2GB · 30 days', price: '₦500' },
+        { name: '5GB · 30 days', price: '₦1,200' },
+        { name: '10GB · 30 days', price: '₦2,200' }
+      ],
+      '9mobile': [
+
+        { name: '3GB · 30 days', price: '₦850' },
+        { name: '5GB · 30 days', price: '₦1,400' },
+        { name: '10GB · 30 days', price: '₦2,400' }
+      ]
+    };
+
+    const NETWORK_IDS = { mtn: 1, airtel: 2, glo: 3, '9mobile': 4 };
+
+    function loadDataPlans(network) {
+      const bundleSelect = document.getElementById('data-bundle');
+      const networkInput = document.getElementById('network_input');
+      if (networkInput) networkInput.value = NETWORK_IDS[network] || 0;
+      console.log(network);
+      console.log(networkInput.value)
+      const plans = dataPlans[network] || [id];
+
+      bundleSelect.innerHTML = '<option value="">Choose a bundle…</option>' +
+        plans.map(plan => `<option value="${plan.networkid}">${plan.networkid} ${plan.name} — ₦${plan.price.toLocaleString()}</option>`).join('');
+
+      // Update popular bundles section
+      const popularContainer = document.querySelector('#panel-data .mini-float .mini-title')?.parentElement;
+      if (popularContainer) {
+        const bundles = popularBundles[network] || popularBundles.mtn;
+        const colors = ['var(--blue)', 'rgb(0,153,204)', 'rgb(217,119,6)'];
+        popularContainer.innerHTML = '<div class="mini-title">Popular bundles</div>' +
+          bundles.map((bundle, i) => `
+            <div class="bundle-row" onclick="quickBundle('${bundle.name}|${bundle.price.replace('₦', '').replace(',', '')}')">
+              <div class="bundle-dot" style="background:${colors[i] || 'var(--blue)'}"></div>
+              <span class="bundle-name">${bundle.name}</span>
+              <span class="bundle-price">${bundle.price}</span>
+            </div>
+          `).join('');
+      }
+
+      toast(network.toUpperCase() + ' data bundles loaded');
+    }
+
+    const CSRF = document.cookie.match(/csrftoken=([^;]+)/)?.[1] || '';
+
+    function switchFundTab(type) {
+      const paneStatic = document.getElementById('pane-fund-static');
+      const paneDynamic = document.getElementById('pane-fund-dynamic');
+      if (paneStatic) paneStatic.style.display = (type === 'static' ? 'block' : 'none');
+      if (paneDynamic) paneDynamic.style.display = (type === 'dynamic' ? 'block' : 'none');
+
+      const btnS = document.getElementById('btn-fund-static');
+      const btnD = document.getElementById('btn-fund-dynamic');
+      if (btnS) btnS.classList.toggle('active', type === 'static');
+      if (btnD) btnD.classList.toggle('active', type === 'dynamic');
+    }
+
+    async function requestDynamicVA() {
+      const amtInput = document.getElementById('dyn-amt');
+      const amt = amtInput.value;
+      if (!amt || parseFloat(amt) < 100) { toast('Please enter amount (min ₦100)'); return; }
+
+      const btn = document.getElementById('btn-request-dyn');
+      const originalText = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'Generating...';
+
+      try {
+        const resp = await fetch('/payment/dynamic-va/create/', {
+          method: 'POST',
+          headers: { 'X-CSRFToken': CSRF, 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({ amount: amt })
+        });
+        const d = await resp.json();
+        if (d.success) {
+          document.getElementById('dyn-form').style.display = 'none';
+          document.getElementById('dyn-result').style.display = 'block';
+          document.getElementById('dyn-res-bank').textContent = d.bank_name;
+          document.getElementById('dyn-res-acct').textContent = d.account_number;
+          document.getElementById('dyn-res-amt').textContent = '₦' + parseFloat(d.amount).toLocaleString();
+          toast('Account generated! Transfer exactly the amount.');
+        } else {
+          toast('Error: ' + d.error);
+        }
+      } catch (e) {
+        toast('Failed to generate account');
+        console.error(e);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = originalText;
+      }
+    }
+
+    // Initialize with MTN plans on page load
+    document.addEventListener('DOMContentLoaded', function () {
+      loadDataPlans('mtn');
+    });
+
+    /* ── Copy helpers ───────────────────────────────────── */
+    function copyText(text, btnId) {
+      navigator.clipboard.writeText(text).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta);
+        ta.select(); document.execCommand('copy');
+        document.body.removeChild(ta);
+      });
+      const btn = document.getElementById(btnId);
+      const orig = btn.innerHTML;
+      btn.innerHTML = '✓ Copied!';
+      btn.style.background = 'linear-gradient(to right,rgb(22,163,74),rgb(52,211,153))';
+      btn.style.color = 'white';
+      btn.style.borderColor = 'transparent';
+      setTimeout(() => { btn.innerHTML = orig; btn.style = ''; }, 1800);
+    }
+
+    function copyRefLink() {
+      const val = document.getElementById('ref-link-val').value;
+      navigator.clipboard.writeText(val).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = val; document.body.appendChild(ta);
+        ta.select(); document.execCommand('copy');
+        document.body.removeChild(ta);
+      });
+      toast('✓ Referral link copied!');
+    }
+
+    function shareRef(platform) {
+      const link = encodeURIComponent(document.getElementById('ref-link-val').value);
+      const msg = encodeURIComponent('Join Subcard and buy airtime, data & cable TV at the best rates! Use my link: ');
+      const urls = {
+        whatsapp: `https://wa.me/?text=${msg}${link}`,
+        twitter: `https://twitter.com/intent/tweet?text=${msg}${link}`,
+        telegram: `https://t.me/share/url?url=${link}&text=${msg}`
+      };
+      window.open(urls[platform], '_blank');
+    }
+
+    /* Escape key closes any open modal */
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        closeFundWalletBtn();
+        closeReferralBtn();
+        closeSettingsBtn();
+      }
+    });
+
+    /* ── Cable packages ────────────────────────────────── */
+    const pkgs = {
+      dstv: [
+        { name: 'DStv Access', price: '₦2,500', ch: '45+ channels', feats: ['Basic entertainment', 'Kids channels'] },
+        { name: 'DStv Compact', price: '₦9,000', ch: '130+ channels', feats: ['Sports & movies', 'News channels', 'HD quality'], pop: true },
+        { name: 'DStv Premium', price: '₦29,500', ch: '200+ channels', feats: ['All sports (EPL, UCL)', 'Premium movies', 'Catch-up TV'] }
+      ],
+      gotv: [
+        { name: 'GOTV Smallie', price: '₦1,575', ch: '30+ channels', feats: ['Basic channels', 'News'] },
+        { name: 'GOTV Jolli', price: '₦6,800', ch: '70+ channels', feats: ['Sports', 'Movies', 'Kids'], pop: true },
+        { name: 'GOTV Max', price: '₦9,600', ch: '80+ channels', feats: ['All sports', 'HBO', 'SuperSport'] }
+      ],
+      startimes: [
+        { name: 'Nova', price: '₦900', ch: '25 channels', feats: ['Basic entertainment'] },
+        { name: 'Basic', price: '₦1,700', ch: '50 channels', feats: ['Movies', 'Kids'], pop: true },
+        { name: 'Classic', price: '₦2,500', ch: '70 channels', feats: ['Sports', 'Movies', 'Music'] }
+      ]
+    };
+
+    function updatePkgs() {
+      const p = document.getElementById('cable-prov').value;
+      document.getElementById('pkg-grid').innerHTML = pkgs[p].map((pkg, i) => `
+    <div class="pkg-card${i === 0 ? ' sel' : ''}" onclick="selPkg(this)">
+      ${pkg.pop ? '<div class="pkg-pop">Popular</div>' : ''}
+      <div class="pkg-name">${pkg.name}</div>
+      <div class="pkg-price">${pkg.price}</div>
+      <div class="pkg-ch">${pkg.ch}</div>
+      ${pkg.feats.map(f => `<div class="pkg-feat"><span class="ck">✓</span>${f}</div>`).join('')}
+    </div>`).join('');
+    }
+    updatePkgs();
+
+    function selPkg(el) {
+      el.closest('.pkg-grid').querySelectorAll('.pkg-card').forEach(c => c.classList.remove('sel'));
+      el.classList.add('sel');
+    }
+
+    function applyPanelMode(panelEl) {
+      if (activityOn) {
+        panelEl.classList.remove('form-only');
+      } else {
+        panelEl.classList.add('form-only');
+      }
+    }
+
+    function toggleActivity() {
+      activityOn = !activityOn;
+      const btn = document.getElementById('btn-activity');
+      btn.classList.toggle('active', activityOn);
+      btn.innerHTML = activityOn
+        ? `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Activity ✓`
+        : `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Activity`;
+      const activePanel = document.getElementById('panel-' + currentTab);
+      applyPanelMode(activePanel);
+    }
+
+    function switchTab(name, btn) {
+      currentTab = name;
+      document.querySelectorAll('.tab-pill').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.panel').forEach(p => {
+        p.classList.remove('active');
+        p.classList.add('form-only');
+      });
+      const panel = document.getElementById('panel-' + name);
+      panel.classList.add('active');
+      applyPanelMode(panel);
+      ['airtime', 'data', 'cable'].forEach(n => {
+        const s = document.getElementById('snav-' + n);
+        if (s) s.classList.toggle('active', n === name);
+      });
+    }
+
+    function sideSwitch(name, el) {
+      document.querySelectorAll('.nav-item[id^="snav-"]').forEach(n => n.classList.remove('active'));
+      el.classList.add('active');
+      currentTab = name;
+      document.querySelectorAll('.panel').forEach(p => {
+        p.classList.remove('active');
+        p.classList.add('form-only');
+      });
+      const panel = document.getElementById('panel-' + name);
+      panel.classList.add('active');
+      applyPanelMode(panel);
+      document.querySelectorAll('.tab-pill').forEach(t => t.classList.toggle('active', t.id === 'tab-' + name));
+      document.querySelectorAll('.bn-item[id^="bn-"]').forEach(b => b.classList.toggle('active', b.id === 'bn-' + name));
+    }
+
+    function setBnActive(el) {
+      document.querySelectorAll('.bn-item').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    function selChip(el, gid, inputId, value) {
+      document.getElementById(gid).querySelectorAll('.net-chip').forEach(c => c.classList.remove('sel'));
+      el.classList.add('sel');
+      if (inputId && value) {
+        document.getElementById(inputId).value = value;
+      }
+    }
+
+    function setAirNetwork(el, network, networkId) {
+      selChip(el, 'air-nets', 'air-net-val', networkId);
+      const idInput = document.getElementById('air_network_id');
+      if (idInput) idInput.value = networkId;
+      console.log(idInput.value)
+    }
+
+    function setAmt(id, val) { document.getElementById(id).value = val; }
+
+    function quickBundle(val) {
+      document.getElementById('data-bundle').value = val;
+      toast('Bundle selected!');
+    }
+
+
+
+    let toastTimer;
+    function toast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg; el.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.remove('show'), 3200);
+    }
+
+    function toggleMenu() {
+      const ham = document.getElementById('ham');
+      const nav = document.getElementById('mobNav');
+      const open = nav.classList.toggle('open');
+      ham.classList.toggle('open', open);
+      document.body.style.overflow = open ? 'hidden' : '';
+    }
+    function closeMenu() {
+      document.getElementById('ham').classList.remove('open');
+      document.getElementById('mobNav').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    window.addEventListener('resize', () => { if (window.innerWidth > 900) closeMenu(); });
+
+    function showReceipt(service, amount, status, date, ref, phone, network) {
+      document.getElementById('r-service').innerText = service;
+      document.getElementById('r-amount').innerText = '₦' + amount;
+      document.getElementById('r-status-badge').innerText = status;
+      document.getElementById('r-status-badge').className = 'receipt-status ' + (status.toLowerCase() === 'success' ? 'status-success' : 'status-failed');
+      document.getElementById('r-date').innerText = date;
+      document.getElementById('r-ref').innerText = ref;
+      document.getElementById('r-phone').innerText = phone || 'N/A';
+      document.getElementById('r-network').innerText = network || 'N/A';
+
+      document.getElementById('receiptModal').classList.add('open');
+    }
+
+    function closeReceipt(e) {
+      if (e.target.id === 'receiptModal') e.target.classList.remove('open');
+    }
+
+    function shareReceipt() {
+      if (navigator.share) {
+        navigator.share({
+          title: 'SubCard Receipt',
+          text: `Transaction Receipt for ${document.getElementById('r-service').innerText} - ₦${document.getElementById('r-amount').innerText}`,
+          url: window.location.href
+        }).catch(console.error);
+      } else {
+        alert('Sharing is not supported on this browser. Use the Print button to save as PDF.');
+      }
+    }
+
+    // Auto-show receipt if a new transaction was just made
+    {% if new_transaction %}
+    window.addEventListener('DOMContentLoaded', () => {
+      showReceipt(
+        '{{ new_transaction.service|title }}',
+        '{{ new_transaction.amount|floatformat:2 }}',
+        '{{ new_transaction.status|title }}',
+        '{{ new_transaction.created_at|date:"M d, Y · g:i A" }}',
+        '{{ new_transaction.reference }}',
+        '{{ new_transaction.phone|default:"" }}',
+        '{% if new_transaction.network_id == 1 %}MTN{% elif new_transaction.network_id == 2 %}Airtel{% elif new_transaction.network_id == 4 %}Glo{% elif new_transaction.network_id == 3 %}9mobile{% else %}N/A{% endif %}'
+      );
+    });
+    {% endif %}
+
+    // --- Tab Switching ---
+    const themeToggle = document.getElementById('themeToggle');
+    const moonIcon = `<svg class="moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
+    const sunIcon = `<svg class="sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
+
+    function setTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('theme', theme);
+      themeToggle.innerHTML = theme === 'dark' ? sunIcon : moonIcon;
+    }
+
+    const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    setTheme(savedTheme);
+
+    themeToggle.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+    });
+  </script>
+</body>
+
+</html>

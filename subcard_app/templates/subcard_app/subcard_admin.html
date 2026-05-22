@@ -1,0 +1,3575 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subcard — Admin</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Pacifico&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&display=swap"
+    rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --blue: rgb(52, 52, 255);
+      --blue-pill: rgb(207, 207, 255);
+      --blue-lt: rgb(194, 194, 253);
+      --grad: linear-gradient(to right, blue, rgb(136, 136, 250), rgb(168, 168, 255));
+      --grad-gr: linear-gradient(to right, rgb(22, 163, 74), rgb(74, 222, 128));
+      --grad-am: linear-gradient(to right, rgb(217, 119, 6), rgb(251, 191, 36));
+      --grad-rd: linear-gradient(to right, rgb(220, 38, 38), rgb(248, 113, 113));
+
+      /* Theme variables */
+      --bg: #f7f7ff;
+      --card-bg: #ffffff;
+      --text: rgb(83, 82, 82);
+      --text-dim: rgb(160, 160, 180);
+      --border: rgb(225, 225, 245);
+      --sh: 2px 2px 10px rgb(215, 215, 255);
+      --sh-md: 5px 5px 40px rgb(206, 205, 205);
+      --sh-lg: 10px 10px 39px rgb(194, 194, 253);
+      --white: #ffffff;
+      --input-bg: #fafaff;
+
+      --r-sm: 9px;
+      --r-md: 16px;
+      --r-pill: 30px;
+      --font: 'DM Sans', sans-serif;
+      --header-h: 62px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --text: #cbd5e1;
+      --text-dim: #94a3b8;
+      --border: rgba(255, 255, 255, 0.08);
+      --sh: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+      --sh-md: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+      --sh-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+      --white: #1e293b;
+      --blue-pill: rgba(52, 52, 255, 0.15);
+      --input-bg: #0f172a;
+      --blue: rgb(110, 110, 255);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    li {
+      list-style: none;
+    }
+
+    button {
+      cursor: pointer;
+      font-family: var(--font);
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    /* ══ HEADER ═════════════════════════════════════════ */
+    header {
+      height: var(--header-h);
+      display: flex;
+      align-items: center;
+      padding: 0 28px;
+      gap: 16px;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--sh);
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+
+    .logo {
+      font-family: 'Pacifico', cursive;
+      font-size: 1.4rem;
+      color: var(--blue);
+      flex-shrink: 0;
+    }
+
+    .logo-badge {
+      display: inline-block;
+      font-family: var(--font);
+      font-size: 9px;
+      font-weight: 600;
+      background: var(--grad-rd);
+      color: white;
+      padding: 2px 7px;
+      border-radius: 30px;
+      margin-left: 6px;
+      vertical-align: middle;
+      letter-spacing: .04em;
+    }
+
+    .hdr-center {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    .search-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg);
+      border-radius: var(--r-pill);
+      padding: 7px 16px;
+      box-shadow: var(--sh);
+      width: 320px;
+      border: 1px solid var(--border);
+    }
+
+    .search-wrap input {
+      border: none;
+      background: transparent;
+      outline: none;
+      font-family: var(--font);
+      font-size: 0.86rem;
+      color: var(--text);
+      width: 100%;
+    }
+
+    .search-wrap input::placeholder {
+      color: var(--text-dim);
+    }
+
+    .hdr-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .notif-btn {
+      position: relative;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--blue-pill);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--sh);
+      transition: box-shadow .2s;
+    }
+
+    .notif-btn:hover {
+      box-shadow: var(--sh-lg);
+    }
+
+    .notif-dot {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--grad-rd);
+      border: 2px solid var(--white);
+    }
+
+    .admin-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--grad);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: var(--sh-lg);
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      padding: 5px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--blue);
+      border-radius: 2px;
+      transition: transform .3s, opacity .3s;
+    }
+
+    .hamburger.open span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+
+    .hamburger.open span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.open span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    /* ══ MOBILE NAV DRAWER ══════════════════════════════ */
+    .mob-nav {
+      display: none;
+      position: fixed;
+      top: var(--header-h);
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--card-bg);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      z-index: 190;
+      transform: translateX(100%);
+      transition: transform .35s cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .mob-nav.open {
+      transform: translateX(0);
+    }
+
+    .mob-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      transition: color .2s;
+    }
+
+    .mob-nav-item:hover,
+    .mob-nav-item.active {
+      color: var(--blue);
+    }
+
+    /* ══ LAYOUT ══════════════════════════════════════════ */
+    .layout {
+      display: grid;
+      grid-template-columns: 230px 1fr;
+      min-height: calc(100vh - var(--header-h));
+    }
+
+    /* ══ SIDEBAR ════════════════════════════════════════ */
+    .sidebar {
+      background: var(--white);
+      border-right: 1px solid var(--border);
+      padding: 20px 0;
+      box-shadow: var(--sh);
+      position: sticky;
+      top: var(--header-h);
+      height: calc(100vh - var(--header-h));
+      overflow-y: auto;
+    }
+
+    /* admin profile card in sidebar */
+    .sb-profile {
+      margin: 0 14px 18px;
+      padding: 16px;
+      border-radius: var(--r-md);
+      background: var(--grad);
+      box-shadow: var(--sh-lg);
+      color: white;
+      position: relative;
+      overflow: hidden;
+      animation: floatCard 4s ease-in-out infinite;
+    }
+
+    .sb-profile::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      width: 80px;
+      height: 80px;
+      background: rgba(255, 255, 255, .12);
+      border-radius: 50%;
+    }
+
+    .sb-profile::after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: -15px;
+      width: 60px;
+      height: 60px;
+      background: rgba(255, 255, 255, .08);
+      border-radius: 50%;
+    }
+
+    .sb-profile>* {
+      position: relative;
+      z-index: 1;
+    }
+
+    .sb-av {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .sb-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .sb-role {
+      font-size: 10px;
+      opacity: .8;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-top: 2px;
+    }
+
+    .sb-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      opacity: .85;
+      margin-top: 6px;
+    }
+
+    .sb-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgb(74, 222, 128);
+    }
+
+    .nav-sec {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--text-dim);
+      padding: 0 18px;
+      margin: 14px 0 4px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 18px;
+      margin: 2px 8px;
+      border-radius: var(--r-sm);
+      font-size: 0.88rem;
+      color: var(--text);
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .nav-item svg {
+      flex-shrink: 0;
+    }
+
+    .nav-item:hover {
+      background: var(--blue-pill);
+      color: var(--blue);
+      box-shadow: var(--sh);
+    }
+
+    .nav-item.active {
+      background: var(--grad);
+      color: white;
+      box-shadow: var(--sh-lg);
+    }
+
+    .nav-item.active svg {
+      stroke: white;
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      font-size: 9px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 30px;
+      background: var(--grad-rd);
+      color: white;
+    }
+
+    /* ══ BOTTOM NAV ════════════════════════════════════ */
+    .bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--card-bg);
+      border-top: 1px solid var(--border);
+      box-shadow: var(--sh-md);
+      z-index: 200;
+      padding: 6px 0;
+    }
+
+    .bn-inner {
+      display: flex;
+      justify-content: space-around;
+    }
+
+    .bn-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 6px 10px;
+      border-radius: var(--r-sm);
+      border: none;
+      background: none;
+      color: var(--text-dim);
+      font-size: 9px;
+      font-weight: 500;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: color .2s;
+      flex: 1;
+    }
+
+    .bn-item.active {
+      color: var(--blue);
+    }
+
+    .bn-item.active svg {
+      stroke: var(--blue);
+    }
+
+    /* ══ MAIN ════════════════════════════════════════════ */
+    .main {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      min-width: 0;
+    }
+
+    /* panels */
+    .panel {
+      display: none;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .panel.active {
+      display: flex;
+    }
+
+    @keyframes floatCard {
+
+      0%,
+      100% {
+        transform: translateY(0)
+      }
+
+      50% {
+        transform: translateY(-4px)
+      }
+    }
+
+    @keyframes floatStat {
+
+      0%,
+      100% {
+        transform: translateY(0)
+      }
+
+      50% {
+        transform: translateY(-4px)
+      }
+    }
+
+    /* ══ STATS ROW ══════════════════════════════════════ */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .stat-float {
+      background: var(--card-bg);
+      border-radius: var(--r-md);
+      padding: 16px 18px;
+      box-shadow: var(--sh-md);
+      border: 1px solid var(--border);
+      transition: transform .3s, box-shadow .3s;
+      animation: floatStat 5s ease-in-out infinite;
+    }
+
+    .stat-float:nth-child(2) {
+      animation-delay: .4s
+    }
+
+    .stat-float:nth-child(3) {
+      animation-delay: .8s
+    }
+
+    .stat-float:nth-child(4) {
+      animation-delay: 1.2s
+    }
+
+    .stat-float:hover {
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: var(--sh-lg);
+    }
+
+    .stat-float::after {
+      content: '';
+      position: absolute;
+      top: -12px;
+      right: -12px;
+      width: 44px;
+      height: 44px;
+      background: var(--blue-pill);
+      border-radius: 50%;
+      opacity: .5;
+    }
+
+    .stat-ico {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--r-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    .stat-ico.blue {
+      background: var(--blue-pill);
+    }
+
+    .stat-ico.green {
+      background: var(--blue-pill);
+    }
+
+    .stat-ico.amber {
+      background: var(--blue-pill);
+    }
+
+    .stat-ico.red {
+      background: var(--blue-pill);
+    }
+
+    .stat-label {
+      font-size: 10px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: 3px;
+    }
+
+    .stat-val {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--blue);
+    }
+
+    .stat-ch {
+      font-size: 10px;
+      margin-top: 3px;
+    }
+
+    .up {
+      color: rgb(22, 163, 74);
+    }
+
+    .down {
+      color: rgb(220, 38, 38);
+    }
+
+    .neutral {
+      color: rgb(160, 160, 180);
+    }
+
+    /* ══ FLOAT CARD ═════════════════════════════════════ */
+    .float-card {
+      background: var(--card-bg);
+      border-radius: var(--r-md);
+      padding: 22px 24px;
+      box-shadow: var(--sh-md);
+      transition: box-shadow .3s;
+      min-width: 0;
+      border: 1px solid var(--border);
+    }
+
+    .float-card:hover {
+      box-shadow: var(--sh-lg);
+    }
+
+    .card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 0.96rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .card-title-ico {
+      width: 30px;
+      height: 30px;
+      border-radius: var(--r-sm);
+      background: var(--blue-pill);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* ══ TABLE ═══════════════════════════════════════════ */
+    .tbl-wrap {
+      overflow-x: auto;
+      border-radius: var(--r-sm);
+    }
+
+    table th,
+    table td {
+      padding: 11px 14px;
+      text-align: left;
+      font-size: 0.82rem;
+      white-space: nowrap;
+    }
+
+    table th {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--text-dim);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+
+    table td {
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    table tr:last-child td {
+      border-bottom: none;
+    }
+
+    table tr:hover td {
+      background: var(--bg);
+    }
+
+    .td-user {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .u-av {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: white;
+    }
+
+    .u-name {
+      font-weight: 500;
+      color: var(--text);
+      font-size: 0.82rem;
+    }
+
+    .u-email {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 30px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .badge-ok {
+      background: var(--blue-pill);
+      color: rgb(22, 163, 74);
+    }
+
+    .badge-pend {
+      background: var(--blue-pill);
+      color: rgb(217, 119, 6);
+    }
+
+    .badge-fail {
+      background: var(--blue-pill);
+      color: rgb(220, 38, 38);
+    }
+
+    .badge-active {
+      background: var(--blue-pill);
+      color: var(--blue);
+    }
+
+    .badge-suspend {
+      background: var(--blue-pill);
+      color: rgb(220, 38, 38);
+    }
+
+    .action-btn {
+      padding: 5px 12px;
+      border-radius: var(--r-pill);
+      border: 1.5px solid var(--border);
+      background: var(--card-bg);
+      color: var(--blue);
+      font-size: 10px;
+      font-weight: 500;
+      font-family: var(--font);
+      box-shadow: var(--sh);
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .action-btn:hover {
+      background: var(--grad);
+      color: white;
+      border-color: transparent;
+      box-shadow: var(--sh-lg);
+    }
+
+    /* ══ TWO-COL ═════════════════════════════════════════ */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .three-col {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    /* ══ MINI CARDS ═════════════════════════════════════ */
+    .mini-float {
+      background: var(--white);
+      border-radius: var(--r-md);
+      padding: 16px;
+      box-shadow: var(--sh-md);
+      margin-bottom: 14px;
+      animation: floatCard 6s ease-in-out infinite;
+    }
+
+    .mini-title {
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: #222;
+      margin-bottom: 10px;
+    }
+
+    /* bar */
+    .bar-wrap {
+      margin: 6px 0;
+    }
+
+    .bar-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: rgb(160, 160, 180);
+      margin-bottom: 4px;
+    }
+
+    .bar-track {
+      height: 6px;
+      background: rgb(230, 230, 250);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width .8s cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .bar-blue {
+      background: var(--grad);
+    }
+
+    .bar-green {
+      background: var(--grad-gr);
+    }
+
+    .bar-amber {
+      background: var(--grad-am);
+    }
+
+    /* activity feed */
+    .activity-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgb(240, 240, 252);
+    }
+
+    .activity-row:last-child {
+      border-bottom: none;
+    }
+
+    .act-ico {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--r-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .act-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .act-text {
+      font-size: 0.78rem;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .act-time {
+      font-size: 0.66rem;
+      color: rgb(160, 160, 180);
+      margin-top: 2px;
+    }
+
+    /* pill tab row */
+    .tabs-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tab-pill {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 20px;
+      border-radius: var(--r-pill);
+      border: none;
+      background: var(--white);
+      box-shadow: var(--sh);
+      color: var(--text);
+      font-size: 0.88rem;
+      font-weight: 500;
+      transition: all .25s;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .tab-pill:hover {
+      box-shadow: var(--sh-lg);
+      transform: translateY(-2px);
+      color: var(--blue);
+    }
+
+    .tab-pill.active {
+      background: var(--grad);
+      color: white;
+      box-shadow: var(--sh-lg);
+      transform: translateY(-2px);
+    }
+
+    /* form elements */
+    .f-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .f-group label {
+      font-size: 10px;
+      color: rgb(140, 140, 160);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .f-group input,
+    .f-group select,
+    .f-group textarea {
+      padding: 10px 13px;
+      border-radius: var(--r-sm);
+      border: 1.5px solid rgb(225, 225, 245);
+      background: #fafaff;
+      color: #222;
+      font-size: 0.88rem;
+      font-family: var(--font);
+      box-shadow: var(--sh);
+      transition: border-color .2s, box-shadow .2s;
+      outline: none;
+      width: 100%;
+    }
+
+    .f-group input:focus,
+    .f-group select:focus,
+    .f-group textarea:focus {
+      border-color: rgb(136, 136, 250);
+      box-shadow: 0 0 0 3px rgb(194, 194, 253);
+    }
+
+    .f-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .submit-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 12px 24px;
+      border-radius: var(--r-pill);
+      border: none;
+      background: var(--grad);
+      color: white;
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: var(--sh-lg);
+      transition: opacity .2s, transform .2s;
+      font-family: var(--font);
+    }
+
+    .submit-btn:hover {
+      opacity: .88;
+      transform: translateY(-2px);
+    }
+
+    .submit-btn.danger {
+      background: var(--grad-rd);
+    }
+
+    .submit-btn.success {
+      background: var(--grad-gr);
+    }
+
+    /* toggle switch */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .toggle-row:last-child {
+      border-bottom: none;
+    }
+
+    .toggle-label {
+      font-size: 0.84rem;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .toggle-desc {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+
+    .toggle {
+      position: relative;
+      width: 40px;
+      height: 22px;
+      background: var(--border);
+      border-radius: 11px;
+      cursor: pointer;
+      transition: background .25s;
+      flex-shrink: 0;
+      border: none;
+    }
+
+    .toggle.on {
+      background: var(--blue);
+      box-shadow: var(--sh);
+    }
+
+    .toggle::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: white;
+      transition: left .25s;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, .15);
+    }
+
+    .toggle.on::after {
+      left: 21px;
+    }
+
+    /* revenue card */
+    .rev-card {
+      border-radius: var(--r-md);
+      padding: 20px;
+      color: white;
+      position: relative;
+      overflow: hidden;
+      animation: floatCard 5s ease-in-out infinite;
+    }
+
+    .rev-card::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      width: 90px;
+      height: 90px;
+      background: rgba(255, 255, 255, .12);
+      border-radius: 50%;
+    }
+
+    .rev-card::after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 20px;
+      width: 60px;
+      height: 60px;
+      background: rgba(255, 255, 255, .08);
+      border-radius: 50%;
+    }
+
+    .rev-card>* {
+      position: relative;
+      z-index: 1;
+    }
+
+    .rev-label {
+      font-size: 11px;
+      opacity: .8;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 6px;
+    }
+
+    .rev-val {
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+
+    .rev-ch {
+      font-size: 11px;
+      opacity: .85;
+      margin-top: 3px;
+    }
+
+    /* chart bars (CSS only) */
+    .chart-wrap {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      height: 100px;
+      padding-top: 8px;
+    }
+
+    .chart-bar-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      flex: 1;
+    }
+
+    .chart-bar {
+      width: 100%;
+      border-radius: 4px 4px 0 0;
+      background: var(--grad);
+      opacity: .7;
+      transition: opacity .2s, height .8s cubic-bezier(.22, 1, .36, 1);
+      cursor: pointer;
+    }
+
+    .chart-bar:hover {
+      opacity: 1;
+    }
+
+    .chart-label {
+      font-size: 9px;
+      color: var(--text-dim);
+    }
+
+    /* donut (CSS) */
+    .donut-wrap {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .donut {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      flex-shrink: 0;
+    }
+
+    .donut svg {
+      transform: rotate(-90deg);
+    }
+
+    .donut-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .donut-pct {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--blue);
+    }
+
+    .donut-sub {
+      font-size: 8px;
+      color: var(--text-dim);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+      font-size: 11px;
+      color: var(--text);
+    }
+
+    .legend-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* user detail modal overlay */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 500;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--white);
+      border-radius: var(--r-md);
+      padding: 24px;
+      box-shadow: var(--sh-lg);
+      max-width: 480px;
+      width: 100%;
+      animation: floatCard .3s ease;
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .modal-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      color: var(--text-dim);
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .modal-close:hover {
+      color: var(--text);
+    }
+
+    /* toast */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 16px;
+      background: var(--grad);
+      color: white;
+      padding: 10px 18px;
+      border-radius: var(--r-pill);
+      font-size: 0.84rem;
+      font-weight: 500;
+      box-shadow: var(--sh-lg);
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all .35s cubic-bezier(.22, 1, .36, 1);
+      z-index: 999;
+      pointer-events: none;
+      max-width: calc(100vw - 32px);
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* ══ RESPONSIVE ══════════════════════════════════════ */
+    @media (max-width:1100px) {
+      .stats-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .three-col {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width:900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .mob-nav {
+        display: flex;
+      }
+
+      .bottom-nav {
+        display: block;
+      }
+
+      .main {
+        padding: 14px 14px 80px;
+        gap: 14px;
+      }
+
+      .toast {
+        bottom: 74px;
+      }
+
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+
+      .hdr-center {
+        display: none;
+      }
+    }
+
+    @media (max-width:640px) {
+      header {
+        padding: 0 14px;
+      }
+
+      .logo {
+        font-size: 1.15rem;
+      }
+
+      .stats-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 9px;
+      }
+
+      .stat-float {
+        padding: 12px 13px;
+      }
+
+      .stat-val {
+        font-size: 1.05rem;
+      }
+
+      .float-card {
+        padding: 15px 16px;
+      }
+
+      .three-col {
+        grid-template-columns: 1fr;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width:420px) {
+      .stats-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .tab-pill {
+        padding: 7px 12px;
+        font-size: 0.8rem;
+      }
+    }
+
+    @media (max-width:360px) {
+      .stats-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ══ HEADER ═════════════════════════════════════════ -->
+  <header>
+    <div class="logo">subcard <span class="logo-badge">ADMIN</span></div>
+    <div class="hdr-center">
+      <div class="search-wrap">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="2">
+          <circle cx="11" cy="11" r="8" />
+          <path d="m21 21-4.35-4.35" />
+        </svg>
+        <input type="text" placeholder="Search users, transactions…" oninput="adminSearch(this.value)">
+      </div>
+    </div>
+    <div class="hdr-right">
+      <button class="notif-btn" id="theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+        <svg id="sun-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          style="display:none">
+          <circle cx="12" cy="12" r="5" />
+          <line x1="12" y1="1" x2="12" y2="3" />
+          <line x1="12" y1="21" x2="12" y2="23" />
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+          <line x1="1" y1="12" x2="3" y2="12" />
+          <line x1="21" y1="12" x2="23" y2="12" />
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+        </svg>
+        <svg id="moon-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+      </button>
+      <button class="notif-btn" onclick="toast('3 new alerts')">
+        <div class="notif-dot"></div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0" />
+        </svg>
+      </button>
+      <div class="admin-avatar" title="{{ admin_username }}">{{ admin_initials }}</div>
+      <button class="hamburger" id="ham" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+
+  <!-- ══ MOBILE NAV DRAWER ═══════════════════════════════ -->
+  <div class="mob-nav" id="mobNav">
+    <div class="mob-nav-item active" onclick="switchPanel('overview');closeMenu()"><svg width="18" height="18"
+        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <rect x="3" y="3" width="7" height="7" rx="1" />
+        <rect x="14" y="3" width="7" height="7" rx="1" />
+        <rect x="3" y="14" width="7" height="7" rx="1" />
+        <rect x="14" y="14" width="7" height="7" rx="1" />
+      </svg>Overview</div>
+    <div class="mob-nav-item" onclick="switchPanel('users');closeMenu()"><svg width="18" height="18" viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+      </svg>Users</div>
+    <div class="mob-nav-item" onclick="switchPanel('transactions');closeMenu()"><svg width="18" height="18"
+        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+      </svg>Transactions</div>
+    <div class="mob-nav-item" onclick="switchPanel('settings');closeMenu()"><svg width="18" height="18"
+        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <circle cx="12" cy="12" r="3" />
+        <path
+          d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+      </svg>Settings</div>
+    <div class="mob-nav-item" style="color:rgb(220,38,38)"
+      onclick="if(confirm('Are you sure you want to log out?')) window.location.href='{% url 'admin_logout' %}'">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+        <polyline points="16 17 21 12 16 7" />
+        <line x1="21" y1="12" x2="9" y2="12" />
+      </svg>Log out
+    </div>
+  </div>
+
+  <div class="layout">
+
+    <!-- ══ SIDEBAR ════════════════════════════════════ -->
+    <aside class="sidebar">
+      <div class="sb-profile">
+        <div class="sb-av">{{ admin_initials }}</div>
+        <div class="sb-name">{{ admin_username }}</div>
+        <div class="sb-role">Administrator</div>
+        <div class="sb-status">
+          <div class="sb-dot"></div>Online
+        </div>
+      </div>
+
+      <div class="nav-sec">Main</div>
+      <div class="nav-item active" id="snav-overview" onclick="switchPanel('overview',this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <rect x="3" y="3" width="7" height="7" rx="1" />
+          <rect x="14" y="3" width="7" height="7" rx="1" />
+          <rect x="3" y="14" width="7" height="7" rx="1" />
+          <rect x="14" y="14" width="7" height="7" rx="1" />
+        </svg>
+        Overview
+      </div>
+      <div class="nav-item" id="snav-users" onclick="switchPanel('users',this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+        Users
+        <span class="nav-badge">{{ total_users }}</span>
+      </div>
+      <div class="nav-item" id="snav-transactions" onclick="switchPanel('transactions',this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+        </svg>
+        Transactions
+        <span class="nav-badge">{{ successful_txns }}</span>
+      </div>
+      <div class="nav-item" id="snav-reports" onclick="switchPanel('reports',this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+          <line x1="16" y1="13" x2="8" y2="13" />
+          <line x1="16" y1="17" x2="8" y2="17" />
+        </svg>
+        Reports
+      </div>
+      <div class="nav-item" id="snav-dataPlans" onclick="switchPanel('dataPlans',this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <path
+            d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856a10.5 10.5 0 0113.788 0M1.924 8.674a15.75 15.75 0 0120.152 0M12 19.5h.008v.008H12V19.5z" />
+        </svg>
+        Data Plans
+        <span class="nav-badge" id="plansCount">0</span>
+      </div>
+      <div class="nav-item" id="snav-referrals" onclick="switchPanel('referrals',this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+        Referrals
+      </div>
+      <div class="nav-item" id="snav-withdrawals" onclick="switchPanel('withdrawals',this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+        </svg>
+        Withdrawals
+      </div>
+      <div class="nav-item" id="snav-broadcast" onclick="switchPanel('broadcast',this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+        </svg>
+        Broadcast
+      </div>
+
+      <div class="nav-sec">System</div>
+      <div class="nav-item" id="snav-apiSettings" onclick="switchPanel('apiSettings',this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/>
+          <rect x="2" y="14" width="20" height="8" rx="2" ry="2"/>
+          <line x1="6" y1="6" x2="6.01" y2="6"/>
+          <line x1="6" y1="18" x2="6.01" y2="18"/>
+        </svg>
+        API Settings
+      </div>
+      <div class="nav-item" id="snav-settings" onclick="switchPanel('settings',this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <circle cx="12" cy="12" r="3" />
+          <path
+            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+        </svg>
+        Settings
+      </div>
+      <div class="nav-item"
+        onclick="if(confirm('Are you sure you want to log out?')) window.location.href='{% url 'admin_logout' %}'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgb(220,38,38)" stroke-width="1.7">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+          <polyline points="16 17 21 12 16 7" />
+          <line x1="21" y1="12" x2="9" y2="12" />
+        </svg>
+        <span style="color:rgb(220,38,38)">Log out</span>
+      </div>
+    </aside>
+
+    <!-- ══ MAIN ════════════════════════════════════════ -->
+    <main class="main">
+
+      <!-- ════ OVERVIEW PANEL ════════════════════════════ -->
+      <div class="panel active" id="panel-overview">
+
+        <!-- Revenue cards -->
+        <div class="three-col">
+          <div class="rev-card" style="background:var(--grad);box-shadow:var(--sh-lg)">
+            <div class="rev-label">Total Revenue</div>
+            <div class="rev-val">₦{{ total_revenue|floatformat:0 }}</div>
+            <div class="rev-ch">{{ total_txns }} total transactions</div>
+          </div>
+          <div class="rev-card" style="background:var(--grad-gr);box-shadow:5px 5px 30px rgba(22,163,74,.3)">
+            <div class="rev-label">Successful Txns</div>
+            <div class="rev-val">{{ successful_txns }}</div>
+            <div class="rev-ch">{{ failed_txns }} failed · {{ pending_txns }} pending</div>
+          </div>
+          <div class="rev-card" style="background:var(--grad-am);box-shadow:5px 5px 30px rgba(217,119,6,.3)">
+            <div class="rev-label">Active Users</div>
+            <div class="rev-val">{{ active_users }}</div>
+            <div class="rev-ch">{{ total_users }} total · {{ staff_users }} staff</div>
+          </div>
+        </div>
+
+        <!-- Stats row -->
+        <div class="stats-row">
+          <div class="stat-float">
+            <div class="stat-ico blue"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--blue)"
+                stroke-width="1.8">
+                <path d="M2 16.5A14.5 14.5 0 0016.5 2M2 11A9 9 0 0011 2M2 6a4 4 0 014-4M2 21l1-1" />
+              </svg></div>
+            <div class="stat-label">Airtime Sales</div>
+            <div class="stat-val">₦{{airtime_sale}}</div>
+            <div class="stat-ch {{airtime_pct_cls}}">{{airtime_pct_str}}</div>
+          </div>
+          <div class="stat-float">
+            <div class="stat-ico green"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                stroke="rgb(22,163,74)" stroke-width="1.8">
+                <path
+                  d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856a10.5 10.5 0 0113.788 0M1.924 8.674a15.75 15.75 0 0120.152 0M12 19.5h.008v.008H12V19.5z" />
+              </svg></div>
+            <div class="stat-label">Data Sales</div>
+            <div class="stat-val">₦{{data_sale}}</div>
+            <div class="stat-ch {{data_pct_cls}}">{{data_pct_str}}</div>
+          </div>
+          <div class="stat-float">
+            <div class="stat-ico amber"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                stroke="rgb(217,119,6)" stroke-width="1.8">
+                <path
+                  d="M6 20.25h12m-7.5-3v3m-2.508-3H18a.75.75 0 00.75-.75V6a.75.75 0 00-.75-.75H6A.75.75 0 005.25 6v10.5c0 .414.336.75.75.75z" />
+              </svg></div>
+            <div class="stat-label">Cable Sales</div>
+            <div class="stat-val">₦{{cable_sale}}</div>
+            <div class="stat-ch {{cable_pct_cls}}">{{cable_pct_str}}</div>
+          </div>
+          <div class="stat-float">
+            <div class="stat-ico red"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                stroke="rgb(220,38,38)" stroke-width="1.8">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg></div>
+            <div class="stat-label">Failed Txns</div>
+            <div class="stat-val">{{failed}}</div>
+            <div class="stat-ch {{failed_cls}}">{{failed_str}}</div>
+          </div>
+        </div>
+
+        <!-- Chart + activity -->
+        <div class="two-col">
+          <div class="float-card">
+            <div class="card-head">
+              <div class="card-title">
+                <div class="card-title-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                    stroke="var(--blue)" stroke-width="1.8">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                  </svg></div>
+                Revenue — Last 7 Days
+              </div>
+            </div>
+            <div class="chart-wrap" id="chartWrap"></div>
+            <div style="display:flex;justify-content:space-between;margin-top:6px" id="chartLabels"></div>
+          </div>
+
+          <div>
+            <!-- donut -->
+            <div class="mini-float">
+              <div class="mini-title">Service breakdown</div>
+              <div class="donut-wrap">
+                <div class="donut">
+                  <svg width="80" height="80" viewBox="0 0 80 80">
+                    <circle cx="40" cy="40" r="30" fill="none" stroke="var(--border)" stroke-width="12" />
+                    <circle cx="40" cy="40" r="30" fill="none" stroke="url(#gBlue)" stroke-width="12"
+                      stroke-dasharray="{{ donut_data.a_dash }}" stroke-dashoffset="{{ donut_data.a_off }}"
+                      stroke-linecap="round" />
+                    <circle cx="40" cy="40" r="30" fill="none" stroke="url(#gGreen)" stroke-width="12"
+                      stroke-dasharray="{{ donut_data.d_dash }}" stroke-dashoffset="{{ donut_data.d_off }}"
+                      stroke-linecap="round" />
+                    <circle cx="40" cy="40" r="30" fill="none" stroke="url(#gAmber)" stroke-width="12"
+                      stroke-dasharray="{{ donut_data.c_dash }}" stroke-dashoffset="{{ donut_data.c_off }}"
+                      stroke-linecap="round" />
+                    <defs>
+                      <linearGradient id="gBlue" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="var(--blue)" />
+                        <stop offset="100%" stop-color="rgb(168,168,255)" />
+                      </linearGradient>
+                      <linearGradient id="gGreen" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="rgb(22,163,74)" />
+                        <stop offset="100%" stop-color="rgb(74,222,128)" />
+                      </linearGradient>
+                      <linearGradient id="gAmber" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="rgb(217,119,6)" />
+                        <stop offset="100%" stop-color="rgb(251,191,36)" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                  <div class="donut-center">
+                    <div class="donut-pct">100%</div>
+                    <div class="donut-sub">total</div>
+                  </div>
+                </div>
+                <div>
+                  <div class="legend-item">
+                    <div class="legend-dot" style="background:var(--blue)"></div>Airtime — {{airtime_pecentage}}%
+                  </div>
+                  <div class="legend-item">
+                    <div class="legend-dot" style="background:rgb(22,163,74)"></div>Data — {{data_pecentage}}%
+                  </div>
+                  <div class="legend-item">
+                    <div class="legend-dot" style="background:rgb(217,119,6)"></div>Cable — {{cable_pecentage}}%
+                  </div>
+                  <div class="legend-item">
+                    <div class="legend-dot" style="background:rgb(220,38,38)"></div>Other — 0%
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- activity feed -->
+            <div class="mini-float" style="animation-delay:.6s; cursor:pointer;" onclick="openAllActivity()">
+              <div class="mini-title">Recent activity (Last 6h) <span
+                  style="float:right;font-size:10px;color:var(--blue)">View All &rarr;</span></div>
+              <div id="activityFeed"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- service bars -->
+        <div class="float-card">
+          <div class="card-head">
+            <div class="card-title">
+              <div class="card-title-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                  stroke="var(--blue)" stroke-width="1.8">
+                  <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                  <polyline points="17 6 23 6 23 12" />
+                </svg></div>Service Performance
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div>
+              <div class="bar-labels"><span>Airtime</span><span>₦{{a_tot}} / ₦{{a_target}} target</span></div>
+              <div class="bar-wrap">
+                <div class="bar-track">
+                  <div class="bar-fill bar-blue" style="width:{{a_bar}}%"></div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="bar-labels"><span>Data</span><span>₦{{d_tot}} / ₦{{d_target}} target</span></div>
+              <div class="bar-wrap">
+                <div class="bar-track">
+                  <div class="bar-fill bar-green" style="width:{{d_bar}}%"></div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="bar-labels"><span>Cable TV</span><span>₦{{c_tot}} / ₦{{c_target}} target</span></div>
+              <div class="bar-wrap">
+                <div class="bar-track">
+                  <div class="bar-fill bar-amber" style="width:{{c_bar}}%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════ USERS PANEL ════════════════════════════════ -->
+      <div class="panel" id="panel-users">
+        <div class="stats-row">
+          <div class="stat-float">
+            <div class="stat-ico blue"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--blue)"
+                stroke-width="1.8">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+              </svg></div>
+            <div class="stat-label">Total Users</div>
+            <div class="stat-val">{{total_users}}</div>
+            <div class="stat-ch up">▲ {{users_this_week}} this week</div>
+          </div>
+          <div class="stat-float">
+            <div class="stat-ico green"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                stroke="rgb(22,163,74)" stroke-width="1.8">
+                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg></div>
+            <div class="stat-label">Verified</div>
+            <div class="stat-val">{{active_users}}</div>
+            <div class="stat-ch up">{{verified_pct}}%</div>
+          </div>
+          <div class="stat-float">
+            <div class="stat-ico amber"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                stroke="rgb(217,119,6)" stroke-width="1.8">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg></div>
+            <div class="stat-label">Pending KYC</div>
+            <div class="stat-val">0</div>
+            <div class="stat-ch neutral">Needs review</div>
+          </div>
+          <div class="stat-float">
+            <div class="stat-ico red"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                stroke="rgb(220,38,38)" stroke-width="1.8">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+              </svg></div>
+            <div class="stat-label">Suspended</div>
+            <div class="stat-val">{{suspended_users}}</div>
+            <div class="stat-ch down">Action required</div>
+          </div>
+        </div>
+
+        <div class="float-card">
+          <div class="card-head">
+            <div class="card-title">
+              <div class="card-title-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                  stroke="var(--blue)" stroke-width="1.8">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                </svg></div>All Users
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <select
+                style="padding:7px 12px;border-radius:var(--r-pill);border:1.5px solid var(--border);background:var(--card-bg);color:var(--blue);font-size:11px;font-family:var(--font);box-shadow:var(--sh);outline:none"
+                onchange="filterUsers(this.value)">
+                <option value="all">All users</option>
+                <option value="active">Active</option>
+                <option value="suspended">Suspended</option>
+                <option value="pending">Pending KYC</option>
+              </select>
+              <button class="submit-btn" style="padding:8px 16px;font-size:11px" onclick="openAddUser()">+ Add
+                user</button>
+            </div>
+          </div>
+          <div class="tbl-wrap">
+            <table id="usersTable">
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Phone</th>
+                  <th>Wallet</th>
+                  <th>Txns</th>
+                  <th>Status</th>
+                  <th>Joined</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="usersTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════ TRANSACTIONS PANEL ════════════════════════ -->
+      <div class="panel" id="panel-transactions">
+        <div class="stats-row">
+          <div class="stat-float">
+            <div class="stat-ico blue"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--blue)"
+                stroke-width="1.8">
+                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+              </svg></div>
+            <div class="stat-label">Total Today</div>
+            <div class="stat-val">₦{{tot_today_amt}}</div>
+            <div class="stat-ch {{tot_today_cls}}">{{tot_today_str}}</div>
+          </div>
+          <div class="stat-float">
+            <div class="stat-ico green"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                stroke="rgb(22,163,74)" stroke-width="1.8">
+                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg></div>
+            <div class="stat-label">Successful</div>
+            <div class="stat-val">{{success_today}}</div>
+            <div class="stat-ch up">{{success_rate}}%</div>
+          </div>
+          <div class="stat-float">
+            <div class="stat-ico amber"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                stroke="rgb(217,119,6)" stroke-width="1.8">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg></div>
+            <div class="stat-label">Pending</div>
+            <div class="stat-val">{{pending_today}}</div>
+            <div class="stat-ch neutral">Processing</div>
+          </div>
+          <div class="stat-float">
+            <div class="stat-ico red"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                stroke="rgb(220,38,38)" stroke-width="1.8">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="15" y1="9" x2="9" y2="15" />
+                <line x1="9" y1="9" x2="15" y2="15" />
+              </svg></div>
+            <div class="stat-label">Failed</div>
+            <div class="stat-val">{{failed_today}}</div>
+            <div class="stat-ch down">{{fail_rate}}% failure rate</div>
+          </div>
+        </div>
+
+        <div class="float-card">
+          <div class="card-head">
+            <div class="card-title">
+              <div class="card-title-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                  stroke="var(--blue)" stroke-width="1.8">
+                  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                </svg></div>All Transactions
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <select id="txnTypeFilter"
+                style="padding:7px 12px;border-radius:var(--r-pill);border:1.5px solid var(--border);background:var(--card-bg);color:var(--blue);font-size:11px;font-family:var(--font);box-shadow:var(--sh);outline:none"
+                onchange="filterTxns()">
+                <option value="all">All types</option>
+                <option value="airtime">Airtime</option>
+                <option value="data">Data</option>
+                <option value="cable">Cable</option>
+              </select>
+              <select id="txnStatusFilter"
+                style="padding:7px 12px;border-radius:var(--r-pill);border:1.5px solid var(--border);background:var(--card-bg);color:var(--blue);font-size:11px;font-family:var(--font);box-shadow:var(--sh);outline:none"
+                onchange="filterTxns()">
+                <option value="all">All status</option>
+                <option value="success">Success</option>
+                <option value="pending">Pending</option>
+                <option value="failed">Failed</option>
+              </select>
+            </div>
+          </div>
+          <div class="tbl-wrap">
+            <table id="txnsTable">
+              <thead>
+                <tr>
+                  <th>Ref</th>
+                  <th>User</th>
+                  <th>Type</th>
+                  <th>Amount</th>
+                  <th>Network</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="txnsTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════ REPORTS PANEL ══════════════════════════════ -->
+      <div class="panel" id="panel-reports">
+        <div class="float-card">
+          <div class="card-head">
+            <div class="card-title">
+              <div class="card-title-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                  stroke="var(--blue)" stroke-width="1.8">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                </svg></div>Generate Report
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="f-group"><label>Report Type</label>
+              <select>
+                <option>Revenue Report</option>
+                <option>Transaction Report</option>
+                <option>User Report</option>
+                <option>Service Performance</option>
+              </select>
+            </div>
+            <div class="f-group"><label>Date Range</label>
+              <select>
+                <option>Today</option>
+                <option>This Week</option>
+                <option>This Month</option>
+                <option>Custom Range</option>
+              </select>
+            </div>
+            <div class="f-group"><label>From Date</label><input type="date"></div>
+            <div class="f-group"><label>To Date</label><input type="date"></div>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="submit-btn" onclick="toast('PDF generation is coming soon.')">Export PDF →</button>
+            <button class="submit-btn success" onclick="exportCSV()">Export CSV →</button>
+          </div>
+        </div>
+
+        <div class="three-col">
+          <div class="mini-float">
+            <div class="mini-title">Monthly Revenue</div>
+            <div style="font-size:1.4rem;font-weight:700;color:var(--blue)">{{rep_rev_this}}</div>
+            <div style="font-size:10px;color:rgb(160,160,180);margin:4px 0 10px">{{rep_month_name}}</div>
+            <div class="bar-wrap">
+              <div class="bar-labels"><span>vs {{rep_rev_last}} last month</span><span>{{rep_rev_str}}</span></div>
+              <div class="bar-track">
+                <div class="bar-fill bar-blue" style="width:{{rep_rev_bar}}%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="mini-float" style="animation-delay:.3s">
+            <div class="mini-title">User Growth</div>
+            <div style="font-size:1.4rem;font-weight:700;color:rgb(22,163,74)">+{{rep_users_this}}</div>
+            <div style="font-size:10px;color:rgb(160,160,180);margin:4px 0 10px">New users this month</div>
+            <div class="bar-wrap">
+              <div class="bar-labels"><span>vs {{rep_users_last}} last month</span><span>{{rep_users_str}}</span></div>
+              <div class="bar-track">
+                <div class="bar-fill bar-green" style="width:{{rep_users_bar}}%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="mini-float" style="animation-delay:.6s">
+            <div class="mini-title">Success Rate</div>
+            <div style="font-size:1.4rem;font-weight:700;color:rgb(217,119,6)">{{rep_sr_this}}%</div>
+            <div style="font-size:10px;color:rgb(160,160,180);margin:4px 0 10px">Transaction success rate</div>
+            <div class="bar-wrap">
+              <div class="bar-labels"><span>vs {{rep_sr_last}}% last month</span><span>{{rep_sr_str}}</span></div>
+              <div class="bar-track">
+                <div class="bar-fill bar-amber" style="width:{{rep_sr_this}}%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════ DATA PLANS PANEL ════════════════════════════ -->
+      <div class="panel" id="panel-dataPlans">
+        <div class="float-card">
+          <div class="card-head">
+            <div class="card-title">
+              <div class="card-title-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                  stroke="var(--blue)" stroke-width="1.8">
+                  <path
+                    d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856a10.5 10.5 0 0113.788 0M1.924 8.674a15.75 15.75 0 0120.152 0" />
+                </svg></div>Data Plans
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="submit-btn" style="padding:8px 16px;font-size:11px;background:var(--grad-am)"
+                onclick="openApiPlanModal()">Fetch from API</button>
+              <button class="submit-btn" style="padding:8px 16px;font-size:11px" onclick="openAddPlan()">+ Add
+                Plan</button>
+            </div>
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Network</th>
+                  <th>Size</th>
+                  <th>Duration</th>
+                  <th>Price (&#8358;)</th>
+                  <th>Ref (%)</th>
+                  <th>Network ID</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="plansTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════ REFERRALS PANEL ════════════════════════════ -->
+      <div class="panel" id="panel-referrals">
+        <div class="stats-row">
+          <div class="stat-float">
+            <div class="stat-ico blue"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--blue)"
+                stroke-width="1.8">
+                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+              </svg></div>
+            <div class="stat-label">Total Referrals</div>
+            <div class="stat-val" id="refCount">0</div>
+            <div class="stat-ch neutral">Bonus records</div>
+          </div>
+          <div class="stat-float">
+            <div class="stat-ico green"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                stroke="rgb(22,163,74)" stroke-width="1.8">
+                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg></div>
+            <div class="stat-label">Level 1</div>
+            <div class="stat-val" id="refL1">0</div>
+            <div class="stat-ch up">Direct (15%)</div>
+          </div>
+          <div class="stat-float">
+            <div class="stat-ico amber"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                stroke="rgb(217,119,6)" stroke-width="1.8">
+                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg></div>
+            <div class="stat-label">Level 2</div>
+            <div class="stat-val" id="refL2">0</div>
+            <div class="stat-ch neutral">Indirect (5%)</div>
+          </div>
+          <div class="stat-float">
+            <div class="stat-ico blue"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--blue)"
+                stroke-width="1.8">
+                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+              </svg></div>
+            <div class="stat-label">Total Paid</div>
+            <div class="stat-val" id="refTotal">&#8358;0</div>
+            <div class="stat-ch up">Bonus amounts</div>
+          </div>
+        </div>
+        <div class="float-card">
+          <div class="card-head">
+            <div class="card-title">
+              <div class="card-title-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                  stroke="var(--blue)" stroke-width="1.8">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                </svg></div>Referral Bonuses
+            </div>
+            <select
+              style="padding:7px 12px;border-radius:var(--r-pill);border:1.5px solid var(--border);background:var(--card-bg);color:var(--blue);font-size:11px;font-family:var(--font);outline:none"
+              onchange="filterRefs(this.value)">
+              <option value="all">All Levels</option>
+              <option value="1">Level 1</option>
+              <option value="2">Level 2</option>
+            </select>
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Beneficiary</th>
+                  <th>Source</th>
+                  <th>Level</th>
+                  <th>%</th>
+                  <th>Amount</th>
+                  <th>Txn ID</th>
+                  <th>Date</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="refsTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════ WITHDRAWALS PANEL ════════════════════════════ -->
+      <div class="panel" id="panel-withdrawals">
+        <div class="float-card">
+          <div class="card-head">
+            <div class="card-title">
+              <div class="card-title-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8">
+                  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                </svg></div>Withdrawal Requests
+            </div>
+            <select style="padding:7px 12px;border-radius:var(--r-pill);border:1.5px solid var(--border);background:var(--card-bg);color:var(--blue);font-size:11px;font-family:var(--font);outline:none">
+              <option value="all">All Status</option>
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Amount</th>
+                  <th>Method</th>
+                  <th>Bank / Account / Phone</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for w in withdrawals %}
+                <tr>
+                  <td>{{ w.user.username }}</td>
+                  <td style="font-weight:600;color:var(--blue)">₦{{ w.amount|floatformat:0 }}</td>
+                  <td><span style="text-transform:uppercase;font-size:10px">{{ w.payout_method }}</span></td>
+                  <td>
+                    {% if w.payout_method == 'bank' %}
+                      {{ w.bank_name|upper }}<br><span style="font-size:10px;color:var(--text-dim)">{{ w.account_number }} - {{ w.account_name }}</span>
+                    {% elif w.payout_method == 'wallet' %}
+                      Wallet: {{ w.phone_number }}
+                    {% elif w.payout_method == 'airtime' %}
+                      Airtime: {{ w.phone_number }} ({{ w.network }})
+                    {% endif %}
+                  </td>
+                  <td><span class="badge badge-{{ w.status }}">{{ w.status|title }}</span></td>
+                  <td style="font-size:0.85rem;color:var(--text-dim)">{{ w.created_at|date:"M d, Y H:i" }}</td>
+                  <td>
+                    {% if w.status == 'pending' %}
+                    <form method="POST" action="{% url 'admin_handle_withdrawal' w.id %}" style="display:inline">
+                      {% csrf_token %}
+                      <input type="hidden" name="action" value="approve">
+                      <button type="submit" class="action-btn" style="color:rgb(22,163,74);border-color:rgba(22,163,74,0.2)">Approve</button>
+                    </form>
+                    <form method="POST" action="{% url 'admin_handle_withdrawal' w.id %}" style="display:inline">
+                      {% csrf_token %}
+                      <input type="hidden" name="action" value="reject">
+                      <button type="submit" class="action-btn" style="color:rgb(220,38,38);border-color:rgba(220,38,38,0.2)">Reject</button>
+                    </form>
+                    {% else %}
+                    <span style="font-size:10px;color:var(--text-dim)">Processed</span>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="7" style="text-align:center;padding:20px;color:var(--text-dim)">No withdrawal requests found.</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════ SETTINGS PANEL ═════════════════════════════ -->
+      <div class="panel" id="panel-settings">
+        <div class="two-col">
+          <div class="float-card">
+            <div class="card-title" style="margin-bottom:16px">
+              <div class="card-title-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                  stroke="var(--blue)" stroke-width="1.8">
+                  <circle cx="12" cy="12" r="3" />
+                  <path
+                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                </svg></div>Platform Settings
+            </div>
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-label">Maintenance Mode</div>
+                <div class="toggle-desc">Disable all user transactions</div>
+              </div>
+              <button class="toggle" id="tgl-maintenance" onclick="toggleSwitch(this,'tgl-maintenance')"></button>
+            </div>
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-label">Email Notifications</div>
+                <div class="toggle-desc">Send transaction alerts to users</div>
+              </div>
+              <button class="toggle on" id="tgl-email" onclick="toggleSwitch(this,'tgl-email')"></button>
+            </div>
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-label">SMS Notifications</div>
+                <div class="toggle-desc">Send SMS on every transaction</div>
+              </div>
+              <button class="toggle on" id="tgl-sms" onclick="toggleSwitch(this,'tgl-sms')"></button>
+            </div>
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-label">Auto KYC Verification</div>
+                <div class="toggle-desc">Automatically verify new users</div>
+              </div>
+              <button class="toggle" id="tgl-kyc" onclick="toggleSwitch(this,'tgl-kyc')"></button>
+            </div>
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-label">Fraud Detection</div>
+                <div class="toggle-desc">Flag suspicious transactions</div>
+              </div>
+              <button class="toggle on" id="tgl-fraud" onclick="toggleSwitch(this,'tgl-fraud')"></button>
+            </div>
+
+            <div class="card-title" style="margin-top:24px;margin-bottom:16px">
+              <div class="card-title-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                  stroke="var(--blue)" stroke-width="1.8">
+                  <path d="M21 4H3a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z" />
+                  <rect x="1" y="10" width="22" height="4" />
+                  <path d="M7 10V6" />
+                  <path d="M11 10V6" />
+                  <path d="M15 10V6" />
+                </svg></div>Payment Methods
+            </div>
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-label">Static Virtual Accounts</div>
+                <div class="toggle-desc">Permanent accounts for recurring funding</div>
+              </div>
+              <button class="toggle {% if settings.enable_static_va %}on{% endif %}" id="tgl-static-va"
+                onclick="toggleSwitch(this)"></button>
+            </div>
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-label">Dynamic Virtual Accounts</div>
+                <div class="toggle-desc">One-time temporary accounts per payment</div>
+              </div>
+              <button class="toggle {% if settings.enable_dynamic_va %}on{% endif %}" id="tgl-dynamic-va"
+                onclick="toggleSwitch(this)"></button>
+            </div>
+            <button class="submit-btn" style="margin-top:16px" onclick="updateSettings()">Save Settings →</button>
+          </div>
+
+          <div>
+            <div class="float-card" style="margin-bottom:16px">
+              <div class="card-title" style="margin-bottom:14px">
+                <div class="card-title-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                    stroke="var(--blue)" stroke-width="1.8">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                  </svg></div>Transaction Limits
+              </div>
+              <div class="f-group"><label>Min Airtime (₦)</label><input type="number" id="s-min-airtime" value="50">
+              </div>
+              <div class="f-group"><label>Max Airtime (₦)</label><input type="number" id="s-max-airtime" value="50000">
+              </div>
+              <div class="f-group"><label>Daily Wallet Limit (₦)</label><input type="number" id="s-daily-limit"
+                  value="500000"></div>
+              <button class="submit-btn" onclick="updateSettings()">Update Limits →</button>
+            </div>
+            <div class="float-card">
+              <div class="card-title" style="margin-bottom:14px">
+                <div class="card-title-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                    stroke="var(--blue)" stroke-width="1.8">
+                    <rect x="3" y="11" width="18" height="11" rx="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                  </svg></div>Admin Account
+              </div>
+              <div class="f-group"><label>Admin Name</label><input type="text" id="a-name" value="{{ admin_username }}">
+              </div>
+              <div class="f-group"><label>Email</label><input type="email" id="a-email" placeholder="admin@example.com">
+              </div>
+              <div class="f-group"><label>New Password</label><input type="password" id="a-pwd"
+                  placeholder="Leave blank to keep current"></div>
+            </div>
+          </div>
+        </div>
+      </div> <!-- End of panel-settings -->
+
+      <!-- ════ API SETTINGS PANEL ═════════════════════════ -->
+      <div class="panel" id="panel-apiSettings">
+        <div class="two-col">
+          
+          <!-- LEFT COLUMN: Network Routing -->
+          <div class="float-card">
+            <div class="card-title" style="margin-bottom:16px">
+              <div class="card-title-ico">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8">
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+              </div>
+              Network API Routing
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-dim); margin-bottom: 20px;">
+              Route Data and Airtime requests to different API providers per Network.
+            </p>
+            <form method="POST" action="{% url 'admin_save_network_routing' %}">
+              {% csrf_token %}
+              
+              <div class="tbl-wrap" style="margin-bottom: 20px;">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Network</th>
+                      <th>Data API Provider</th>
+                      <th>Airtime API Provider</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for net in networks %}
+                    <tr>
+                      <td style="font-weight: 600; color: var(--text);">{{ net.name }}</td>
+                      <td>
+                        <select name="data_api_{{ net.id }}" style="padding: 6px 10px; border-radius: 6px; border: 1.5px solid var(--border); background: var(--input-bg); color: var(--text); font-size: 0.82rem; outline: none; width: 100%;">
+                          <option value="">Default (SMEPlug)</option>
+                          {% for provider in api_providers %}
+                          <option value="{{ provider.id }}" {% if net.data_api.id == provider.id %}selected{% endif %}>{{ provider.name }}</option>
+                          {% endfor %}
+                        </select>
+                      </td>
+                      <td>
+                        <select name="airtime_api_{{ net.id }}" style="padding: 6px 10px; border-radius: 6px; border: 1.5px solid var(--border); background: var(--input-bg); color: var(--text); font-size: 0.82rem; outline: none; width: 100%;">
+                          <option value="">Default (SMEPlug)</option>
+                          {% for provider in api_providers %}
+                          <option value="{{ provider.id }}" {% if net.airtime_api.id == provider.id %}selected{% endif %}>{{ provider.name }}</option>
+                          {% endfor %}
+                        </select>
+                      </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                      <td colspan="3" style="text-align: center; color: var(--text-dim);">No networks initialized yet.</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              
+              <button type="submit" class="submit-btn">Save Routing Settings →</button>
+            </form>
+          </div>
+
+          <!-- RIGHT COLUMN: API Providers management -->
+          <div>
+            
+            <!-- Add / Edit API Provider Form -->
+            <div class="float-card" style="margin-bottom: 16px;">
+              <div class="card-title" style="margin-bottom: 14px">
+                <div class="card-title-ico">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8">
+                    <path d="M12 5v14M5 12h14"/>
+                  </svg>
+                </div>
+                <span id="api-form-title">Add API Provider</span>
+              </div>
+              
+              <form id="api-provider-form" onsubmit="saveApiProvider(event)">
+                {% csrf_token %}
+                <input type="hidden" name="provider_id" id="p-id">
+                
+                <div class="f-group">
+                  <label>Provider Name</label>
+                  <input type="text" name="name" id="p-name" placeholder="e.g. SMEPlug, SMECloud" required>
+                </div>
+                
+                <div class="f-group">
+                  <label>API Endpoint (Base URL)</label>
+                  <input type="url" name="base_url" id="p-url" placeholder="https://api.example.com/v1" required>
+                </div>
+                
+                <div class="f-group">
+                  <label>Auth Header Key</label>
+                  <input type="text" name="auth_header_key" id="p-auth-key" value="Authorization" placeholder="e.g. Authorization or api-key" required>
+                </div>
+                
+                <div class="f-group">
+                  <label>Auth Header Value</label>
+                  <input type="text" name="auth_header_value" id="p-auth-val" placeholder="Bearer Token..." required>
+                </div>
+                
+                <div class="f-group">
+                  <label>Additional Headers (JSON format)</label>
+                  <textarea name="additional_headers" id="p-headers" placeholder="{}"></textarea>
+                </div>
+
+                <div class="f-group">
+                  <label>Plans Endpoint (optional)</label>
+                  <input type="text" name="plans_endpoint" id="p-plans-end" value="/plans" placeholder="e.g. /plans or /data/plans" required>
+                </div>
+                
+                <div style="display: flex; gap: 8px; margin-top: 12px;">
+                  <button type="submit" class="submit-btn" style="flex: 1;">Save Provider</button>
+                  <button type="button" class="submit-btn danger" id="btn-cancel-edit" style="display: none;" onclick="cancelApiEdit()">Cancel</button>
+                </div>
+              </form>
+            </div>
+            
+            <!-- List of existing providers -->
+            <div class="float-card">
+              <div class="card-title" style="margin-bottom: 14px">
+                <div class="card-title-ico">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    <line x1="9" y1="9" x2="15" y2="9"/>
+                    <line x1="9" y1="13" x2="15" y2="13"/>
+                    <line x1="9" y1="17" x2="15" y2="17"/>
+                  </svg>
+                </div>
+                Active Providers
+              </div>
+              
+              <div style="max-height: 300px; overflow-y: auto;">
+                {% for provider in api_providers %}
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border);">
+                  <div style="min-width: 0; flex: 1; padding-right: 8px;">
+                    <div style="font-size: 0.88rem; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ provider.name }}</div>
+                    <div style="font-size: 0.72rem; color: var(--text-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ provider.base_url }}</div>
+                  </div>
+                  <div style="display: flex; gap: 4px;">
+                    <button class="action-btn" onclick="editApiProvider('{{ provider.id }}', '{{ provider.name|escapejs }}', '{{ provider.base_url|escapejs }}', '{{ provider.auth_header_key|escapejs }}', '{{ provider.auth_header_value|escapejs }}', '{{ provider.additional_headers|escapejs }}', '{{ provider.plans_endpoint|escapejs }}')">Edit</button>
+                    <button class="action-btn" style="color: rgb(220, 38, 38); border-color: rgba(220, 38, 38, 0.2);" onclick="deleteApiProvider('{{ provider.id }}')">Delete</button>
+                  </div>
+                </div>
+                {% empty %}
+                <div style="text-align: center; color: var(--text-dim); padding: 20px 0; font-size: 0.82rem;">No custom API providers configured.</div>
+                {% endfor %}
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div> <!-- End of panel-apiSettings -->
+
+      <!-- ════ BROADCAST PANEL ══════════════════════════════ -->
+      <div class="panel" id="panel-broadcast">
+        <div style="max-width:820px; margin: 0 auto;">
+
+          <!-- Tab header -->
+          <div style="display:flex; gap:0; margin-bottom:24px; border-radius:14px; overflow:hidden; border:1.5px solid var(--border);">
+            <button id="bc-tab-all" onclick="switchBcTab('all')"
+              style="flex:1; padding:14px 20px; background:var(--blue); color:#fff; border:none; cursor:pointer; font-size:0.9rem; font-weight:700; display:flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+              Broadcast to All Users
+            </button>
+            <button id="bc-tab-single" onclick="switchBcTab('single')"
+              style="flex:1; padding:14px 20px; background:var(--bg); color:var(--text-dim); border:none; border-left:1.5px solid var(--border); cursor:pointer; font-size:0.9rem; font-weight:700; display:flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+              </svg>
+              Send to Single User
+            </button>
+          </div>
+
+          <!-- ── Section A: All Users ── -->
+          <div id="bc-section-all">
+            <div class="float-card">
+              <div class="card-head">
+                <div class="card-title">
+                  <div class="card-title-ico">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8">
+                      <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                    </svg>
+                  </div>
+                  Bulk Email Broadcast
+                </div>
+              </div>
+              <p style="font-size:0.85rem; color:var(--text-dim); margin-bottom:22px;">
+                Send a message to all <b>{{ total_users }}</b> registered users at once.
+              </p>
+
+              <div class="f-group" style="margin-bottom:18px;">
+                <label style="font-weight:700; color:var(--blue); font-size:11px; text-transform:uppercase;">Subject</label>
+                <input type="text" id="bc-subject" placeholder="Enter email subject...">
+              </div>
+
+              <div class="f-group">
+                <label style="font-weight:700; color:var(--blue); font-size:11px; text-transform:uppercase;">Message Content</label>
+                <textarea id="bc-message" placeholder="Type your broadcast message here..." 
+                  style="min-height:180px; width:100%; padding:15px; border:1.5px solid var(--border); border-radius:12px; background:var(--bg); color:var(--text); font-family:inherit; font-size:0.95rem; line-height:1.6; outline:none; resize:vertical;"></textarea>
+                <div style="font-size:10px; color:var(--text-dim); margin-top:5px;">HTML tags supported for rich formatting.</div>
+              </div>
+
+              <div style="display:flex; gap:12px; margin-top:20px;">
+                <button class="submit-btn" id="btn-send-bc" onclick="sendBroadcast()" style="flex:1; background:var(--grad)">
+                  📣 Send to All {{ total_users }} Users →
+                </button>
+                <button class="submit-btn" onclick="previewBroadcast()" style="flex:0 0 130px; background:var(--white); border:1.5px solid var(--border); color:var(--text)">
+                  Preview
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Section B: Single User ── -->
+          <div id="bc-section-single" style="display:none;">
+            <div class="float-card">
+              <div class="card-head">
+                <div class="card-title">
+                  <div class="card-title-ico">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                    </svg>
+                  </div>
+                  Send to Single User
+                </div>
+              </div>
+              <p style="font-size:0.85rem; color:var(--text-dim); margin-bottom:22px;">
+                Search and select a specific user from your database, then compose a message for them.
+              </p>
+
+              <!-- User Search -->
+              <div class="f-group" style="margin-bottom:18px;">
+                <label style="font-weight:700; color:var(--blue); font-size:11px; text-transform:uppercase;">Select Recipient</label>
+                <select id="bc-selected-email" style="width:100%; padding:14px 18px; border:1.5px solid var(--border); border-radius:12px; background:var(--bg); color:var(--text); font-family:inherit; font-size:0.95rem;">
+                  <option value="">-- Loading users... --</option>
+                </select>
+              </div>
+
+              <div class="f-group" style="margin-bottom:18px;">
+                <label style="font-weight:700; color:var(--blue); font-size:11px; text-transform:uppercase;">Subject</label>
+                <input type="text" id="bc-single-subject" placeholder="Enter email subject...">
+              </div>
+
+              <div class="f-group">
+                <label style="font-weight:700; color:var(--blue); font-size:11px; text-transform:uppercase;">Message Content</label>
+                <textarea id="bc-single-message" placeholder="Type your message here..."
+                  style="min-height:180px; width:100%; padding:15px; border:1.5px solid var(--border); border-radius:12px; background:var(--bg); color:var(--text); font-family:inherit; font-size:0.95rem; line-height:1.6; outline:none; resize:vertical;"></textarea>
+                <div style="font-size:10px; color:var(--text-dim); margin-top:5px;">HTML tags supported for rich formatting.</div>
+              </div>
+
+              <div style="display:flex; gap:12px; margin-top:20px;">
+                <button class="submit-btn" id="btn-send-single" onclick="sendSingleBroadcast()" style="flex:1; background:var(--grad)">
+                  ✉️ Send to Selected User →
+                </button>
+                <button class="submit-btn" onclick="previewSingleBroadcast()" style="flex:0 0 130px; background:var(--white); border:1.5px solid var(--border); color:var(--text)">
+                  Preview
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ══ BOTTOM NAV ════════════════════════════════════ -->
+  <nav class="bottom-nav">
+    <div class="bn-inner">
+      <button class="bn-item active" id="bn-overview" onclick="switchPanel('overview');setBnActive(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <rect x="3" y="3" width="7" height="7" rx="1" />
+          <rect x="14" y="3" width="7" height="7" rx="1" />
+          <rect x="3" y="14" width="7" height="7" rx="1" />
+          <rect x="14" y="14" width="7" height="7" rx="1" />
+        </svg>Overview
+      </button>
+      <button class="bn-item" id="bn-users" onclick="switchPanel('users');setBnActive(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+        </svg>Users
+      </button>
+      <button class="bn-item" id="bn-transactions" onclick="switchPanel('transactions');setBnActive(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+        </svg>Txns
+      </button>
+      <button class="bn-item" id="bn-settings" onclick="switchPanel('settings');setBnActive(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="12" cy="12" r="3" />
+          <path
+            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+        </svg>Settings
+      </button>
+    </div>
+  </nav>
+
+  <!-- ══ USER MODAL ════════════════════════════════════ -->
+  <div class="modal-overlay" id="userModal" onclick="closeModal(event)">
+    <div class="modal">
+      <div class="modal-head">
+        <div class="modal-title" id="modalTitle">Add New User</div>
+        <button class="modal-close" onclick="document.getElementById('userModal').classList.remove('open')">×</button>
+      </div>
+      <div class="form-row">
+        <div class="f-group"><label>Username</label><input type="text" id="m-name" placeholder="username"></div>
+        <div class="f-group"><label>Phone</label><input type="tel" id="m-phone" placeholder="080XXXXXXXX"
+            maxlength="11"></div>
+      </div>
+      <div class="form-row">
+        <div class="f-group"><label>Email</label><input type="email" id="m-email" placeholder="user@example.com"></div>
+        <div class="f-group"><label>Status</label><select id="m-status">
+            <option value="active">Active</option>
+            <option value="suspended">Suspended</option>
+          </select></div>
+      </div>
+      <div class="form-row">
+        <div class="f-group"><label>Password (new users)</label><input type="password" id="m-pwd"
+            placeholder="Leave blank when editing"></div>
+        <div class="f-group"><label>Wallet Balance (&#8358;)</label><input type="number" id="m-wallet" value="0"
+            min="0"></div>
+      </div>
+      <div class="form-row">
+        <div class="f-group"><label>Email Verified</label><select id="m-verified">
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+          </select></div>
+        <div class="f-group"></div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:4px;flex-wrap:wrap;">
+        <button class="submit-btn" style="flex:1" onclick="saveUser()">Save User →</button>
+        <button class="submit-btn danger" style="flex:1"
+          onclick="document.getElementById('userModal').classList.remove('open')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Plan Modal -->
+  <div class="modal-overlay" id="addPlanModal" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="modal">
+      <div class="modal-head">
+        <div class="modal-title">Add Data Plan</div>
+        <button class="modal-close"
+          onclick="document.getElementById('addPlanModal').classList.remove('open')">×</button>
+      </div>
+      <div class="form-row">
+        <div class="f-group"><label>Network</label><select id="ap-network">
+            <option>MTN</option>
+            <option>Airtel</option>
+            <option>GLO</option>
+            <option>9mobile</option>
+          </select></div>
+        <div class="f-group"><label>Size</label><input type="text" id="ap-size" placeholder="e.g. 1GB"></div>
+      </div>
+      <div class="form-row">
+        <div class="f-group"><label>Duration</label><input type="text" id="ap-duration" placeholder="e.g. 30 days">
+        </div>
+        <div class="f-group"><label>Price (&#8358;)</label><input type="number" id="ap-price" placeholder="e.g. 500">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="f-group"><label>Network ID (API)</label><input type="number" id="ap-netid" placeholder="e.g. 101">
+        </div>
+        <div class="f-group"><label>Referral %</label><input type="number" id="ap-referral" placeholder="e.g. 5"
+            step="0.01" value="0"></div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:4px;flex-wrap:wrap;">
+        <button class="submit-btn" style="flex:1" onclick="submitAddPlan()">Add Plan →</button>
+        <button class="submit-btn danger" style="flex:1"
+          onclick="document.getElementById('addPlanModal').classList.remove('open')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- All Activity Modal -->
+  <div class="modal-overlay" id="activityModal" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="modal" style="max-width:550px; max-height:80vh; overflow-y:auto; padding:0;">
+      <div class="modal-head"
+        style="padding:20px; position:sticky; top:0; background:white; z-index:2; border-bottom:1px solid #eee;">
+        <div class="modal-title">All Recent Activity</div>
+        <button class="modal-close"
+          onclick="document.getElementById('activityModal').classList.remove('open')">×</button>
+      </div>
+      <div style="padding:20px;" id="allActivityFeed">
+      </div>
+    </div>
+  </div>
+
+  <!-- API Plan Modal -->
+  <div class="modal-overlay" id="apiPlanModal" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="modal">
+      <div class="modal-head">
+        <div class="modal-title">Add Plan from API</div>
+        <button class="modal-close"
+          onclick="document.getElementById('apiPlanModal').classList.remove('open')">×</button>
+      </div>
+      <div class="f-group">
+        <label>Select API Provider</label>
+        <select id="api-provider-select" onchange="fetchPlansForSelectedProvider()">
+          <option value="">Default (SMEPlug)</option>
+          {% for provider in api_providers %}
+          <option value="{{ provider.id }}">{{ provider.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="f-group">
+        <label>Select Plan (ID - Duration)</label>
+        <select id="api-plan-select" onchange="updateApiPreview()">
+          <option value="">-- Select Provider First --</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="f-group">
+          <label>Price Add %</label>
+          <input type="number" id="api-price-percent" placeholder="e.g. 10" value="0" oninput="updateApiPreview()">
+        </div>
+        <div class="f-group">
+          <label>Referral %</label>
+          <input type="number" id="api-referral-percent" placeholder="e.g. 5" value="0" oninput="updateApiPreview()">
+        </div>
+      </div>
+      <div id="api-price-preview" style="font-size: 11px; color: var(--blue); margin-bottom: 12px; font-weight: 500;">
+      </div>
+      <div style="display:flex;gap:10px;margin-top:4px;flex-wrap:wrap;">
+        <button class="submit-btn" style="flex:1" onclick="submitApiPlan()">Add Plan →</button>
+        <button class="submit-btn danger" style="flex:1"
+          onclick="document.getElementById('apiPlanModal').classList.remove('open')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+
+  <script>
+    /* ══ REAL DATA FROM DJANGO ══════════════════════════ */
+    const avatarColors = ['rgb(52,52,255)', 'rgb(22,163,74)', 'rgb(217,119,6)', 'rgb(220,38,38)', 'rgb(136,136,250)', 'rgb(0,153,204)'];
+    const CSRF = document.cookie.match(/csrftoken=([^;]+)/)?.[1] || '';
+
+    let allUsers = {{ users_json| safe }};
+    let allTxns = {{ txns_json| safe }};
+    let allPlans = {{ data_prices_json| safe }};
+    let allRefs = {{ referrals_json| safe }};
+    let recentActivity = {{ recent_activity_json| safe }};
+
+    function post(url, data) {
+      return fetch(url, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': CSRF, 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(data)
+      }).then(r => r.json());
+    }
+
+    /* ══ RENDER ACTIVITY ═════════════════════════════════ */
+    const activityIcons = {
+      'user': `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgb(22,163,74)" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+      'star': `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`,
+      'alert': `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgb(220,38,38)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+      'check': `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgb(22,163,74)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>`,
+      'clock': `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgb(217,119,6)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`
+    };
+    const activityBgs = {
+      'green': 'rgb(220,252,231)',
+      'blue': 'rgb(207,207,255)',
+      'red': 'rgb(254,226,226)',
+      'amber': 'rgb(254,243,199)'
+    };
+
+    function renderActivity(data) {
+      const feed = document.getElementById('activityFeed');
+      if (!feed) return;
+
+      const recent6h = data.filter(a => a.hours_ago <= 6).slice(0, 5);
+
+      if (recent6h.length === 0) {
+        feed.innerHTML = '<div style="padding:15px;text-align:center;color:#888;font-size:12px">No activity in the last 6 hours</div>';
+      } else {
+        feed.innerHTML = recent6h.map(a => `
+          <div class="activity-row">
+            <div class="act-ico" style="background:${activityBgs[a.color] || '#eee'}">${activityIcons[a.icon] || ''}</div>
+            <div class="act-info">
+              <div class="act-text">${a.text}</div>
+              <div class="act-time">${a.time_str}</div>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    function openAllActivity() {
+      const allFeed = document.getElementById('allActivityFeed');
+      allFeed.innerHTML = recentActivity.map(a => `
+        <div class="activity-row" style="margin-bottom:12px; padding-bottom:12px; border-bottom:1px solid #f0f0f0;">
+          <div class="act-ico" style="background:${activityBgs[a.color] || '#eee'}; min-width:32px;">${activityIcons[a.icon] || ''}</div>
+          <div class="act-info">
+            <div class="act-text" style="font-size:13px">${a.text}</div>
+            <div class="act-time" style="font-size:11px">${a.time_str}</div>
+          </div>
+        </div>
+      `).join('');
+      document.getElementById('activityModal').classList.add('open');
+    }
+
+    /* ══ RENDER USERS ════════════════════════════════════ */
+    function renderUsers(data) {
+      document.getElementById('usersTbody').innerHTML = data.map((u, i) => `
+        <tr>
+          <td><div class="td-user">
+            <div class="u-av" style="background:${avatarColors[i % avatarColors.length]}">${(u.username || u.name).slice(0, 2).toUpperCase()}</div>
+            <div><div class="u-name">${u.username}</div><div class="u-email">${u.email}</div></div>
+          </div></td>
+          <td>${u.phone}</td>
+          <td style="font-weight:600;color:var(--blue)">${u.wallet_display}</td>
+          <td>${u.txns}</td>
+          <td><span class="badge ${u.is_active ? 'badge-active' : 'badge-suspend'}">${u.status}</span><span class="badge ${u.is_email_verified ? 'badge-ok' : 'badge-fail'}" style="margin-left:3px">${u.is_email_verified ? 'Verified' : 'Unverified'}</span>${u.is_staff ? '<span class="badge badge-pend" style="margin-left:3px">staff</span>' : ''}</td>
+          <td>${u.joined}</td>
+          <td style="display:flex;gap:4px;flex-wrap:wrap">
+            <button class="action-btn" onclick="openEditUser(${u.id})">Edit</button>
+            <button class="action-btn" onclick="fundWallet(${u.id},'${u.username}')">Fund</button>
+            <button class="action-btn" style="border-color:rgb(254,226,226);color:rgb(220,38,38)" onclick="toggleUser(${u.id})">${u.is_active ? 'Suspend' : 'Restore'}</button>
+            ${!u.is_email_verified ? `<button class="action-btn" style="border-color:rgb(220,252,231);color:rgb(22,163,74)" onclick="manualVerify(${u.id})">Verify</button>` : ''}
+          </td>
+        </tr>`).join('');
+    }
+
+    /* ══ RENDER TRANSACTIONS ════════════════════════════ */
+    function renderTxns(data) {
+      const tc = { airtime: 'rgb(207,207,255)', data: 'rgb(220,252,231)', cable: 'rgb(254,243,199)' };
+      const tt = { airtime: 'rgb(52,52,255)', data: 'rgb(22,163,74)', cable: 'rgb(217,119,6)' };
+      document.getElementById('txnsTbody').innerHTML = data.map(t => `
+        <tr>
+          <td style="font-weight:600;color:var(--blue);font-size:11px">${t.ref}</td>
+          <td>${t.user}</td>
+          <td><span class="badge" style="background:${tc[t.type] || '#eee'};color:${tt[t.type] || '#333'}">${t.type}</span></td>
+          <td style="font-weight:600">${t.amount_display}</td>
+          <td>${t.network}</td>
+          <td><span class="badge ${t.status === 'success' ? 'badge-ok' : t.status === 'pending' ? 'badge-pend' : 'badge-fail'}">${t.status}</span></td>
+          <td style="font-size:11px;color:rgb(160,160,180)">${t.date}</td>
+          <td style="display:flex;gap:4px">
+            <button class="action-btn" onclick="viewTxn(${t.id})">View</button>
+            <button class="action-btn" style="color:rgb(220,38,38)" onclick="deleteTxn(${t.id})">Del</button>
+          </td>
+        </tr>`).join('');
+    }
+
+    renderUsers(allUsers);
+    renderTxns(allTxns);
+    renderActivity(recentActivity);
+
+    /* ══ FILTERS ════════════════════════════════════════ */
+    function filterUsers(val) {
+      renderUsers(val === 'all' ? allUsers : allUsers.filter(u => u.status === val));
+    }
+    function filterTxns(val) {
+      renderTxns(val === 'all' ? allTxns : allTxns.filter(t => t.type === val));
+    }
+    function filterRefs(val) {
+      renderRefs(val === 'all' ? allRefs : allRefs.filter(r => String(r.level) === val));
+    }
+
+    /* ══ RENDER DATA PLANS ═════════════════════════════ */
+    function renderPlans(data) {
+      const nc = { mtn: '#FFCC02', airtel: '#E30613', glo: '#009A44', '9mobile': '#006600' };
+      document.getElementById('plansTbody').innerHTML = data.map(p => `
+        <tr>
+          <td><span class="badge" style="background:${nc[p.network] || '#eee'};color:#fff">${p.network.toUpperCase()}</span></td>
+          <td style="font-weight:600">${p.size}</td>
+          <td>${p.duration}</td>
+          <td style="font-weight:600;color:var(--blue)">₦${Number(p.price).toLocaleString()}</td>
+          <td>${p.referral_percentage || 0}%</td>
+          <td style="font-size:11px;color:rgb(160,160,180)">${p.networkid}</td>
+          <td style="display:flex;gap:4px">
+            <button class="action-btn" onclick="editPlan(${p.id})">Edit</button>
+            <button class="action-btn" style="color:rgb(220,38,38)" onclick="deletePlan(${p.id})">Del</button>
+          </td>
+        </tr>`).join('');
+      const el = document.getElementById('plansCount'); if (el) el.textContent = data.length;
+    }
+    function editPlan(id) {
+      const p = allPlans.find(x => x.id === id);
+      const price = prompt('Edit price for ' + p.size + ' (' + p.network + '):', p.price);
+      if (!price) return;
+      const ref_pct = prompt('Edit referral percentage for ' + p.size + ' (' + p.network + '):', p.referral_percentage || 0);
+      post('/admin-api/data-price/update/', { plan_id: id, price, referral_percentage: ref_pct })
+        .then(r => { toast(r.success ? '✓ ' + r.message : '✗ ' + r.error); if (r.success) { p.price = parseInt(price); p.referral_percentage = ref_pct; renderPlans(allPlans); } });
+    }
+    function deletePlan(id) {
+      if (!confirm('Delete this data plan?')) return;
+      post('/admin-api/data-price/delete/', { plan_id: id })
+        .then(r => { toast(r.success ? '✓ Deleted' : '✗ ' + r.error); if (r.success) { allPlans = allPlans.filter(p => p.id !== id); renderPlans(allPlans); } });
+    }
+    function openAddPlan() { document.getElementById('addPlanModal').classList.add('open'); }
+    function submitAddPlan() {
+      const network = document.getElementById('ap-network').value.toLowerCase();
+      const size = document.getElementById('ap-size').value.trim();
+      const duration = document.getElementById('ap-duration').value.trim();
+      const price = document.getElementById('ap-price').value;
+      const networkid = document.getElementById('ap-netid').value;
+      const referral_percentage = document.getElementById('ap-referral').value || 0;
+      if (!size || !price) { toast('Size and price are required'); return; }
+      post('/admin-api/data-price/add/', { network, size, duration, price, networkid, referral_percentage })
+        .then(r => { toast(r.success ? '✓ ' + r.message : '✗ ' + r.error); if (r.success) { allPlans.push({ id: r.id, network, size, duration, price: parseInt(price), networkid: parseInt(networkid) || 0, referral_percentage }); renderPlans(allPlans); document.getElementById('addPlanModal').classList.remove('open'); } });
+    }
+
+    /* ══ RENDER REFERRALS ══════════════════════════════ */
+    function renderRefs(data) {
+      const total = data.reduce((s, r) => s + r.amount, 0);
+      const l1 = data.filter(r => r.level === 1), l2 = data.filter(r => r.level === 2);
+      const rc = document.getElementById('refCount'); if (rc) rc.textContent = data.length;
+      const rl1 = document.getElementById('refL1'); if (rl1) rl1.textContent = l1.length;
+      const rl2 = document.getElementById('refL2'); if (rl2) rl2.textContent = l2.length;
+      const rt = document.getElementById('refTotal'); if (rt) rt.textContent = '₦' + total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      document.getElementById('refsTbody').innerHTML = data.map(r => `
+        <tr>
+          <td style="font-weight:500">${r.beneficiary}</td>
+          <td>${r.source_user}</td>
+          <td><span class="badge ${r.level === 1 ? 'badge-active' : 'badge-pend'}">L${r.level}</span></td>
+          <td>${r.percentage}%</td>
+          <td style="font-weight:600;color:var(--blue)">${r.amount_display}</td>
+          <td style="font-size:11px;color:rgb(160,160,180)">${r.transaction_id || '-'}</td>
+          <td style="font-size:11px;color:rgb(160,160,180)">${r.created_at}</td>
+          <td><button class="action-btn" style="color:rgb(220,38,38)" onclick="deleteRef(${r.id})">Del</button></td>
+        </tr>`).join('');
+    }
+    function deleteRef(id) {
+      if (!confirm('Delete this referral record?')) return;
+      post('/admin-api/referral/delete/', { referral_id: id })
+        .then(r => { toast(r.success ? '✓ Deleted' : '✗ ' + r.error); if (r.success) { allRefs = allRefs.filter(x => x.id !== id); renderRefs(allRefs); } });
+    }
+
+    renderPlans(allPlans);
+    renderRefs(allRefs);
+
+    /* ══ EXPORT AND SETTINGS ═══════════════════════════ */
+    function exportCSV() {
+      const type = document.querySelector('#panel-reports select').value;
+      let urlType = 'users';
+      if (type.includes('Transaction')) urlType = 'transactions';
+      window.location.href = '/admin-api/report/export/?type=' + urlType;
+    }
+
+    /* ══ API PLAN FETCH LOGIC ═══════════════════════════ */
+    let apiPlansRaw = {};
+
+    function openApiPlanModal() {
+      document.getElementById('apiPlanModal').classList.add('open');
+      document.getElementById('api-provider-select').value = "";
+      document.getElementById('api-plan-select').innerHTML = '<option value="">-- Select Provider First --</option>';
+      document.getElementById('api-price-preview').textContent = "";
+    }
+
+    async function fetchPlansForSelectedProvider() {
+      const providerId = document.getElementById('api-provider-select').value;
+      const select = document.getElementById('api-plan-select');
+      select.innerHTML = '<option value="">Loading plans...</option>';
+      document.getElementById('api-price-preview').textContent = "";
+
+      let url = '/api/data-plans/';
+      if (providerId) {
+        url += '?provider_id=' + providerId;
+      }
+
+      try {
+        const resp = await fetch(url);
+        const data = await resp.json();
+        if (data.success) {
+          apiPlansRaw = data.plans;
+          populateApiPlans();
+        } else {
+          toast('Error fetching plans: ' + data.error);
+          select.innerHTML = '<option value="">Failed to load plans</option>';
+        }
+      } catch (e) {
+        toast('Failed to connect to API');
+        select.innerHTML = '<option value="">Connection error</option>';
+      }
+    }
+
+    function populateApiPlans() {
+      const select = document.getElementById('api-plan-select');
+      select.innerHTML = '<option value="">-- Select a Plan --</option>';
+      const networkNames = { "1": "MTN", "2": "Airtel", "3": "9mobile", "4": "GLO" };
+
+      for (const netId in apiPlansRaw) {
+        const netName = networkNames[netId] || `Net ${netId}`;
+        const optGroup = document.createElement('optgroup');
+        optGroup.label = netName;
+
+        apiPlansRaw[netId].forEach(plan => {
+          const opt = document.createElement('option');
+          const bp = plan.price || plan.telco_price || 0;
+          opt.value = JSON.stringify({ ...plan, network_id: netId, network_name: netName });
+          opt.textContent = `[ID: ${plan.id}] ${plan.name} (₦${bp})`;
+          optGroup.appendChild(opt);
+        });
+        select.appendChild(optGroup);
+      }
+    }
+
+    function updateApiPreview() {
+      const select = document.getElementById('api-plan-select');
+      const preview = document.getElementById('api-price-preview');
+      if (!select.value) {
+        preview.textContent = '';
+        return;
+      }
+      const plan = JSON.parse(select.value);
+      const pPercent = parseFloat(document.getElementById('api-price-percent').value) || 0;
+      const rPercent = parseFloat(document.getElementById('api-referral-percent').value) || 0;
+
+      const basePrice = parseFloat(plan.price || plan.telco_price || 0);
+      const finalPrice = Math.round(basePrice + (basePrice * pPercent / 100));
+      const refBonus = (basePrice * rPercent / 100).toFixed(2);
+
+      preview.innerHTML = `API Price: ₦${basePrice} | <b>User Price: ₦${finalPrice}</b> | Ref Bonus: ₦${refBonus}`;
+    }
+
+    async function submitApiPlan() {
+      const select = document.getElementById('api-plan-select');
+      if (!select.value) { toast('Please select a plan'); return; }
+
+      const plan = JSON.parse(select.value);
+      const pPercent = parseFloat(document.getElementById('api-price-percent').value) || 0;
+      const rPercent = parseFloat(document.getElementById('api-referral-percent').value) || 0;
+
+      const basePrice = parseFloat(plan.price || plan.telco_price || 0);
+      const finalPrice = Math.round(basePrice + (basePrice * pPercent / 100));
+
+      const data = {
+        network: plan.network_name.toLowerCase(),
+        size: plan.name,
+        duration: '30 days',
+        price: finalPrice,
+        networkid: plan.id,
+        referral_percentage: rPercent
+      };
+
+      if (plan.name.toLowerCase().includes('monthly')) data.duration = '30 days';
+      else if (plan.name.toLowerCase().includes('weekly')) data.duration = '7 days';
+      else if (plan.name.toLowerCase().includes('daily')) data.duration = '1 day';
+
+      const r = await post('/admin-api/data-price/add/', data);
+      toast(r.success ? '✓ Plan added' : '✗ ' + r.error);
+      if (r.success) {
+        allPlans.push({
+          id: r.id,
+          network: data.network,
+          size: data.size,
+          duration: data.duration,
+          price: data.price,
+          networkid: data.networkid,
+          referral_percentage: data.referral_percentage
+        });
+        renderPlans(allPlans);
+        document.getElementById('apiPlanModal').classList.remove('open');
+      }
+    }
+
+    function updateSettings() {
+      const min_airtime = document.getElementById('s-min-airtime').value;
+      const max_airtime = document.getElementById('s-max-airtime').value;
+      const daily_wallet_limit = document.getElementById('s-daily-limit').value;
+
+      const email_notifications = document.getElementById('tgl-email').classList.contains('on');
+      const sms_notifications = document.getElementById('tgl-sms').classList.contains('on');
+      const maintenance_mode = document.getElementById('tgl-maintenance').classList.contains('on');
+      const auto_kyc = document.getElementById('tgl-kyc').classList.contains('on');
+      const fraud_detection = document.getElementById('tgl-fraud').classList.contains('on');
+
+      post('/admin-api/settings/update/', {
+        min_airtime, max_airtime, daily_wallet_limit,
+        email_notifications, sms_notifications, maintenance_mode, auto_kyc, fraud_detection
+      }).then(r => {
+        if (r.success) {
+          const static_va = document.getElementById('tgl-static-va').classList.contains('on');
+          const dynamic_va = document.getElementById('tgl-dynamic-va').classList.contains('on');
+          post('/admin-api/payment-methods/update/', { enable_static_va: static_va, enable_dynamic_va: dynamic_va })
+            .then(r2 => { toast(r2.success ? '✓ Settings updated' : '✗ ' + r2.error); });
+        } else {
+          toast('✗ ' + r.error);
+        }
+      });
+    }
+
+    function updateAccount() {
+      const admin_name = document.getElementById('a-name').value;
+      const email = document.getElementById('a-email').value;
+      const password = document.getElementById('a-pwd').value;
+
+      post('/admin-api/account/update/', {
+        admin_name, email, password
+      }).then(r => {
+        toast(r.success ? '✓ ' + r.message : '✗ ' + r.error);
+        if (password) document.getElementById('a-pwd').value = '';
+      });
+    }
+
+    /* ══ CHART (CSS bars) ════════════════════════════════ */
+    const chartData = {{ chart_json| safe }};
+    document.getElementById('chartWrap').innerHTML = chartData.data.map(v => `
+  <div class="chart-bar-col">
+    <div class="chart-bar" style="height:${Math.round((v / chartData.max) * 88)}px" title="₦${v.toLocaleString()}" onclick="toast('₦${v.toLocaleString()} revenue')"></div>
+  </div>`).join('');
+    document.getElementById('chartLabels').innerHTML = chartData.labels.map(l => `
+      <span style="font-size:10px;color:rgb(160,160,180)">${l}</span>
+    `).join('');
+
+    /* ══ PANEL SWITCHING ════════════════════════════════ */
+    function switchPanel(name, navEl) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('panel-' + name).classList.add('active');
+      document.querySelectorAll('.nav-item[id^="snav-"]').forEach(n => n.classList.remove('active'));
+      const s = document.getElementById('snav-' + name);
+      if (s) s.classList.add('active');
+      document.querySelectorAll('.bn-item[id^="bn-"]').forEach(b => b.classList.toggle('active', b.id === 'bn-' + name));
+    }
+    function setBnActive(el) {
+      document.querySelectorAll('.bn-item').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    /* ══ USER ACTIONS ════════════════════════════════════ */
+    let editingId = null;
+
+    function openAddUser() {
+      editingId = null;
+      document.getElementById('modalTitle').textContent = 'Add New User';
+      ['m-name', 'm-phone', 'm-email'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('m-wallet').value = 0;
+      document.getElementById('m-status').value = 'active';
+      document.getElementById('userModal').classList.add('open');
+    }
+
+    function editUser(id) {
+      editingId = id;
+      const u = allUsers.find(u => u.id === id);
+      document.getElementById('modalTitle').textContent = 'Edit User';
+      document.getElementById('m-name').value = u.name;
+      document.getElementById('m-phone').value = u.phone;
+      document.getElementById('m-email').value = u.email;
+      document.getElementById('m-status').value = u.status;
+      document.getElementById('m-wallet').value = u.wallet.replace(/[₦,]/g, '');
+      document.getElementById('userModal').classList.add('open');
+    }
+
+    function openEditUser(id) {
+      const u = allUsers.find(x => x.id === id);
+      editingId = id;
+      document.getElementById('modalTitle').textContent = 'Edit User — ' + u.username;
+      document.getElementById('m-name').value = u.username;
+      document.getElementById('m-phone').value = u.phone !== '-' ? u.phone : '';
+      document.getElementById('m-email').value = u.email;
+      document.getElementById('m-status').value = u.is_active ? 'active' : 'suspended';
+      document.getElementById('m-wallet').value = u.wallet;
+      document.getElementById('m-verified').value = u.is_email_verified ? 'true' : 'false';
+      document.getElementById('userModal').classList.add('open');
+    }
+
+    function saveUser() {
+      const phone = document.getElementById('m-phone').value.trim();
+      const email = document.getElementById('m-email').value.trim();
+      const status = document.getElementById('m-status').value;
+      const wallet = document.getElementById('m-wallet').value;
+      const is_verified = document.getElementById('m-verified').value;
+      if (editingId) {
+        post('/admin-api/user/update/', { 
+          user_id: editingId, email, phone, wallet, 
+          is_active: status === 'active' ? 'true' : 'false',
+          is_email_verified: is_verified
+        })
+          .then(r => { toast(r.success ? '✓ ' + r.message : '✗ ' + r.error); if (r.success) { const u = allUsers.find(x => x.id === editingId); if (u) { u.email = email; u.phone = phone; u.is_active = status === 'active'; u.status = status; u.wallet = parseFloat(wallet) || u.wallet; u.wallet_display = '₦' + parseFloat(wallet).toLocaleString(); u.is_email_verified = is_verified === 'true'; } renderUsers(allUsers); } });
+      } else {
+        const uname = document.getElementById('m-name').value.trim();
+        const pwd = document.getElementById('m-pwd').value.trim();
+        post('/admin-api/user/add/', { username: uname, email, phone, password: pwd })
+          .then(r => { toast(r.success ? '✓ ' + r.message : '✗ ' + r.error); if (r.success) location.reload(); });
+      }
+      document.getElementById('userModal').classList.remove('open');
+    }
+
+    function manualVerify(id) {
+      if (!confirm('Manually verify this user?')) return;
+      post('/admin-api/user/update/', { user_id: id, is_email_verified: 'true', is_active: 'true' })
+        .then(r => { if (r.success) { const u = allUsers.find(x => x.id === id); if (u) { u.is_email_verified = true; u.is_active = true; u.status = 'active'; } renderUsers(allUsers); } toast(r.success ? '✓ User Verified' : '✗ ' + r.error); });
+    }
+
+    function toggleUser(id) {
+      const u = allUsers.find(x => x.id === id);
+      const newState = !u.is_active;
+      post('/admin-api/user/update/', { user_id: id, is_active: newState ? 'true' : 'false' })
+        .then(r => { if (r.success) { u.is_active = newState; u.status = newState ? 'active' : 'suspended'; renderUsers(allUsers); } toast(r.success ? '✓ ' + r.message : '✗ ' + r.error); });
+    }
+
+    function fundWallet(id, uname) {
+      const amt = prompt('Fund wallet for ' + uname + '\nEnter amount (negative to deduct):');
+      if (!amt) return;
+      const amount = parseFloat(amt);
+      const action = amount < 0 ? 'debit' : 'credit';
+      post('/admin-api/user/fund-wallet/', { user_id: id, amount: Math.abs(amount), action })
+        .then(r => { toast(r.success ? '✓ ' + r.message : '✗ ' + r.error); if (r.success) { const u = allUsers.find(x => x.id === id); if (u) { u.wallet = (u.wallet || 0) + amount; u.wallet_display = '₦' + Math.max(0, u.wallet).toLocaleString(); } renderUsers(allUsers); } });
+    }
+
+    function viewTxn(id) {
+      fetch('/admin-api/transaction/' + id + '/receipt/').then(r => r.json()).then(d => {
+        if (!d.success) { toast('Error: ' + d.error); return; }
+        const r = d.receipt;
+        alert(`Ref: ${r.customer_reference || r.reference}\nUser: ${r.user.username} (${r.user.email})\nService: ${r.service}\nAmount: ₦${r.amount}\nStatus: ${r.status}\nPhone: ${r.phone}\nDate: ${r.created_at}`);
+      });
+    }
+
+    function deleteTxn(id) {
+      if (!confirm('Delete this transaction?')) return;
+      post('/admin-api/transaction/delete/', { transaction_id: id })
+        .then(r => { toast(r.success ? '✓ Deleted' : '✗ ' + r.error); if (r.success) { allTxns = allTxns.filter(t => t.id !== id); renderTxns(allTxns); } });
+    }
+
+    function closeModal(e) {
+      if (e.target === document.getElementById('userModal'))
+        document.getElementById('userModal').classList.remove('open');
+    }
+
+    /* ══ TOGGLE SWITCH ══════════════════════════════════ */
+    function toggleSwitch(el) {
+      el.classList.toggle('on');
+      toast(el.classList.contains('on') ? 'Setting enabled' : 'Setting disabled');
+    }
+
+    /* ══ SEARCH & FILTER ════════════════════════════════ */
+    function adminSearch(q) {
+      q = q.toLowerCase();
+      if (!q) { renderUsers(allUsers); renderTxns(allTxns); return; }
+      renderUsers(allUsers.filter(u => u.name.toLowerCase().includes(q) || u.phone.includes(q) || u.email.toLowerCase().includes(q)));
+      renderTxns(allTxns.filter(t => t.user.toLowerCase().includes(q) || t.ref.toLowerCase().includes(q)));
+    }
+
+    function filterTxns() {
+      const type = document.getElementById('txnTypeFilter').value.toLowerCase();
+      const status = document.getElementById('txnStatusFilter').value.toLowerCase();
+      let filtered = allTxns;
+      if (type !== 'all') filtered = filtered.filter(t => t.type.toLowerCase() === type);
+      if (status !== 'all') filtered = filtered.filter(t => t.status.toLowerCase() === status);
+      renderTxns(filtered);
+    }
+
+    function filterUsers(val) {
+      let filtered = allUsers;
+      if (val === 'active') filtered = filtered.filter(u => u.is_active);
+      else if (val === 'suspended') filtered = filtered.filter(u => !u.is_active);
+      else if (val === 'pending') filtered = filtered.filter(u => false);
+      renderUsers(filtered);
+    }
+
+    /* ══ TOAST ═══════════════════════════════════════════ */
+    let toastTimer;
+    function toast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg; el.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.remove('show'), 3200);
+    }
+
+    /* ══ BROADCAST ══════════════════════════════════════ */
+
+    // Tab switching
+    function switchBcTab(tab) {
+      const isAll = tab === 'all';
+      document.getElementById('bc-section-all').style.display = isAll ? 'block' : 'none';
+      document.getElementById('bc-section-single').style.display = isAll ? 'none' : 'block';
+      document.getElementById('bc-tab-all').style.background = isAll ? 'var(--blue)' : 'var(--bg)';
+      document.getElementById('bc-tab-all').style.color = isAll ? '#fff' : 'var(--text-dim)';
+      document.getElementById('bc-tab-single').style.background = isAll ? 'var(--bg)' : 'var(--blue)';
+      document.getElementById('bc-tab-single').style.color = isAll ? 'var(--text-dim)' : '#fff';
+      
+      if (!isAll) {
+        loadBcUsers();
+      }
+    }
+
+    // User search for single send
+    let bcUsersLoaded = false;
+
+    // Load users list into select dropdown
+    function loadBcUsers() {
+      if (bcUsersLoaded) return; // already loaded
+      const select = document.getElementById('bc-selected-email');
+      
+      if (typeof allUsers !== 'undefined' && allUsers.length > 0) {
+        // Filter out users without email
+        const usersWithEmail = allUsers.filter(u => u.email && u.email.trim() !== '');
+        
+        if (usersWithEmail.length === 0) {
+          select.innerHTML = '<option value="">-- No users with email found --</option>';
+          bcUsersLoaded = true;
+          return;
+        }
+
+        let html = '<option value="">-- Select a user --</option>';
+        usersWithEmail.forEach(u => {
+          html += `<option value="${u.email}">${u.username} (${u.email})</option>`;
+        });
+        select.innerHTML = html;
+        bcUsersLoaded = true;
+      } else {
+         select.innerHTML = '<option value="">-- No users found --</option>';
+      }
+    }
+
+    // Preview email template popup (shared)
+    function _emailPreviewWin(subject, message) {
+      const win = window.open('', '_blank', 'width=700,height=800');
+      win.document.write(`
+        <html>
+          <head>
+            <title>Email Preview — ${subject}</title>
+            <style>
+              body { font-family: sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f4f7f6; }
+              .container { max-width: 600px; margin: 20px auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+              .header { background: linear-gradient(135deg, #3434ff, #8888fa); padding: 30px; text-align: center; color: #ffffff; }
+              .header h1 { margin: 0; font-size: 24px; letter-spacing: 1px; color: white; }
+              .header p { margin: 6px 0 0; font-size: 13px; color: rgba(255,255,255,0.75); }
+              .content { padding: 40px 30px; min-height: 200px; font-size: 16px; color: #444; }
+              .footer { background: #fafafa; padding: 20px; text-align: center; font-size: 12px; color: #888; border-top: 1px solid #eeeeee; }
+              .btn { display: inline-block; padding: 12px 25px; background-color: #3434ff; color: #ffffff !important; text-decoration: none; border-radius: 6px; font-weight: 600; margin-top: 20px; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header"><h1>Subcard</h1><p>Subject: ${subject}</p></div>
+              <div class="content">
+                <p>Hello <strong>User (Preview)</strong>,</p>
+                <div>${message}</div>
+                <a href="#" class="btn">Visit Dashboard</a>
+              </div>
+              <div class="footer"><p>&copy; 2026 Subcard Services. All rights reserved.</p></div>
+            </div>
+          </body>
+        </html>
+      `);
+    }
+
+    function previewBroadcast() {
+      const subject = document.getElementById('bc-subject').value;
+      const message = document.getElementById('bc-message').value;
+      if (!subject || !message) { toast('Please fill in both subject and message'); return; }
+      _emailPreviewWin(subject, message);
+    }
+
+    function previewSingleBroadcast() {
+      const subject = document.getElementById('bc-single-subject').value;
+      const message = document.getElementById('bc-single-message').value;
+      if (!subject || !message) { toast('Please fill in both subject and message'); return; }
+      _emailPreviewWin(subject, message);
+    }
+
+    // Send to ALL users
+    async function sendBroadcast() {
+      const subject = document.getElementById('bc-subject').value.trim();
+      const message = document.getElementById('bc-message').value.trim();
+
+      if (!subject || !message) { toast('Subject and message are required.'); return; }
+      if (!confirm('Are you sure you want to send this broadcast to ALL users?')) return;
+
+      const btn = document.getElementById('btn-send-bc');
+      const orig = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'Sending... Please wait';
+
+      try {
+        const r = await post('/admin-api/broadcast/send/', { subject, message });
+        if (r.success) {
+          toast('✓ ' + r.message);
+          document.getElementById('bc-subject').value = '';
+          document.getElementById('bc-message').value = '';
+        } else {
+          toast('✗ ' + (r.error || 'Unknown error'));
+        }
+      } catch (e) {
+        toast('✗ Failed to send broadcast');
+        console.error(e);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = orig;
+      }
+    }
+
+    // Send to SINGLE user
+    async function sendSingleBroadcast() {
+      const email = document.getElementById('bc-selected-email').value.trim();
+      const subject = document.getElementById('bc-single-subject').value.trim();
+      const message = document.getElementById('bc-single-message').value.trim();
+
+      if (!email) { toast('Please select a recipient first.'); return; }
+      if (!subject || !message) { toast('Subject and message are required.'); return; }
+      if (!confirm(`Send email to ${email}?`)) return;
+
+      const btn = document.getElementById('btn-send-single');
+      const orig = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+
+      try {
+        const r = await post('/admin-api/broadcast/send/', { subject, message, single_email: email });
+        if (r.success) {
+          toast('✓ ' + r.message);
+          document.getElementById('bc-single-subject').value = '';
+          document.getElementById('bc-single-message').value = '';
+          document.getElementById('bc-selected-email').value = '';
+        } else {
+          toast('✗ ' + (r.error || 'Unknown error'));
+        }
+      } catch (e) {
+        toast('✗ Failed to send email');
+        console.error(e);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = orig;
+      }
+    }
+
+    /* ══ API PROVIDER ACTIONS ════════════════════════════ */
+    function saveApiProvider(e) {
+      e.preventDefault();
+      const form = document.getElementById('api-provider-form');
+      const formData = new FormData(form);
+
+      fetch('/admin-api/api-provider/save/', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          toast('API Provider saved successfully.');
+          setTimeout(() => location.reload(), 1000);
+        } else {
+          alert('Error: ' + data.error);
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert('An unexpected error occurred.');
+      });
+    }
+
+    function editApiProvider(id, name, baseUrl, authKey, authVal, extraHeaders, plansEnd) {
+      document.getElementById('p-id').value = id;
+      document.getElementById('p-name').value = name;
+      document.getElementById('p-url').value = baseUrl;
+      document.getElementById('p-auth-key').value = authKey;
+      document.getElementById('p-auth-val').value = authVal;
+      document.getElementById('p-headers').value = extraHeaders;
+      document.getElementById('p-plans-end').value = plansEnd || '/plans';
+
+      document.getElementById('api-form-title').textContent = 'Edit API Provider';
+      document.getElementById('btn-cancel-edit').style.display = 'inline-block';
+    }
+
+    function cancelApiEdit() {
+      document.getElementById('p-id').value = '';
+      document.getElementById('api-provider-form').reset();
+      document.getElementById('p-plans-end').value = '/plans';
+      document.getElementById('api-form-title').textContent = 'Add API Provider';
+      document.getElementById('btn-cancel-edit').style.display = 'none';
+    }
+
+    function deleteApiProvider(id) {
+      if (!confirm('Are you sure you want to delete this API provider? Everything about this API will be deleted.')) {
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('provider_id', id);
+      formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+      fetch('/admin-api/api-provider/delete/', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          toast('API Provider deleted.');
+          setTimeout(() => location.reload(), 1000);
+        } else {
+          alert('Error: ' + data.error);
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert('An unexpected error occurred.');
+      });
+    }
+
+    /* ══ HAMBURGER ═══════════════════════════════════════ */
+    /* ══ THEME TOGGLE ═══════════════════════════════════ */
+    function toggleTheme() {
+      const html = document.documentElement;
+      const current = html.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('admin-theme', next);
+      updateThemeIcons(next);
+    }
+
+    function updateThemeIcons(theme) {
+      document.getElementById('sun-icon').style.display = theme === 'dark' ? 'block' : 'none';
+      document.getElementById('moon-icon').style.display = theme === 'dark' ? 'none' : 'block';
+    }
+
+    // Apply saved theme on load
+    (function () {
+      const saved = localStorage.getItem('admin-theme') || 'light';
+      document.documentElement.setAttribute('data-theme', saved);
+      updateThemeIcons(saved);
+    })();
+
+    function toggleMenu() {
+      const ham = document.getElementById('ham');
+      const nav = document.getElementById('mobNav');
+      const open = nav.classList.toggle('open');
+      ham.classList.toggle('open', open);
+      document.body.style.overflow = open ? 'hidden' : '';
+    }
+    function closeMenu() {
+      document.getElementById('ham').classList.remove('open');
+      document.getElementById('mobNav').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    window.addEventListener('resize', () => { if (window.innerWidth > 900) closeMenu(); });
+  </script>
+</body>
+
+</html>

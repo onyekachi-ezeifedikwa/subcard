@@ -1,0 +1,77 @@
+{% load static %}
+{% if maintenance_mode and not request.user.is_staff %}
+<div id="maintenance-overlay" style="
+  position: fixed; inset: 0; z-index: 99999;
+  background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #0f0f23 100%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-family: 'Segoe UI', sans-serif; color: #fff; text-align: center; padding: 20px;
+">
+  <!-- Animated gears -->
+  <div style="position: relative; width: 160px; height: 160px; margin-bottom: 30px;">
+    <!-- Outer ring pulse -->
+    <div style="
+      position: absolute; inset: 0; border-radius: 50%;
+      border: 2px solid rgba(99,102,241,0.3);
+      animation: pulse-ring 2s ease-in-out infinite;
+    "></div>
+    <!-- Big gear -->
+    <svg style="position: absolute; top: 10px; left: 10px; width: 90px; height: 90px;
+      animation: spin 6s linear infinite; transform-origin: center; filter: drop-shadow(0 0 10px rgba(99,102,241,0.6));"
+      viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="1.5">
+      <path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/>
+      <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+    </svg>
+    <!-- Small gear -->
+    <svg style="position: absolute; bottom: 5px; right: 5px; width: 55px; height: 55px;
+      animation: spin-reverse 4s linear infinite; filter: drop-shadow(0 0 6px rgba(167,139,250,0.6));"
+      viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.5">
+      <path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/>
+      <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+    </svg>
+    <!-- Dots orbit -->
+    <div style="position:absolute;inset:0;animation:spin 3s linear infinite;">
+      <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:8px;height:8px;border-radius:50%;background:#6366f1;box-shadow:0 0 8px #6366f1;"></div>
+    </div>
+  </div>
+
+  <h1 style="font-size:2rem; font-weight:800; margin:0 0 8px;
+    background: linear-gradient(135deg, #a78bfa, #6366f1, #818cf8);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    animation: fade-in 1s ease-in-out;">
+    Under Maintenance
+  </h1>
+  <p style="font-size:1rem; color:#94a3b8; margin: 0 0 6px; max-width:360px; animation: fade-in 1.3s ease-in-out;">
+    We're upgrading our systems to serve you better.
+  </p>
+  <p style="font-size:0.82rem; color:#64748b; animation: fade-in 1.6s ease-in-out;">
+    Please check back shortly. We apologize for the inconvenience.
+  </p>
+
+  <!-- Progress bar -->
+  <div style="width: 260px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 99px; margin-top: 30px; overflow:hidden;">
+    <div style="height:100%; width:60%; border-radius:99px;
+      background: linear-gradient(90deg, #6366f1, #a78bfa);
+      animation: progress 2.5s ease-in-out infinite alternate;
+    "></div>
+  </div>
+
+  <div style="margin-top: 20px; font-size: 11px; color: #475569;">
+    &mdash; Subcard Team &mdash;
+  </div>
+</div>
+
+<style>
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes spin-reverse { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+@keyframes pulse-ring {
+  0% { transform: scale(0.9); opacity: 0.5; }
+  50% { transform: scale(1.1); opacity: 0.2; }
+  100% { transform: scale(0.9); opacity: 0.5; }
+}
+@keyframes progress {
+  0% { width: 20%; margin-left: 0; }
+  100% { width: 60%; margin-left: 40%; }
+}
+@keyframes fade-in { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+</style>
+{% endif %}
