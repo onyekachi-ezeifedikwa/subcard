@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-t$wr+b!2(fqrw0vf#$w9zrwh6j7r0^7^rxr=tdw_%*1$(6igiv
 DEBUG = True
 
 
-ALLOWED_HOSTS = ['scalping-polio-deface.ngrok-free.dev', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['https://subcard.onrender.com', '127.0.0.1', 'localhost']
 CSRF_TRUSTED_ORIGINS = ['https://scalping-polio-deface.ngrok-free.dev']
 
 
